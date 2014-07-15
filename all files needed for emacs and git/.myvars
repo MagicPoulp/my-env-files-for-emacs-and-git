@@ -1,0 +1,53 @@
+#!/bin/bash
+
+export HISTSIZE=100000
+export HISTFILESIZE=100000
+
+alias findgrep='find . | xargs grep -i -n -s'
+#alias e='emacsclient -a "" -c -F "((fullscreen . maximized))"'
+alias e='emacs'
+alias search='find . -name 2>/dev/null'
+alias gohb='cd /usr/local/myapps/hbase'
+alias goec='cd /usr/local/myapps/ec2-api-tools-1.6.6.4'
+export DEV=/home/thierry/repos/dev
+export dev=$DEV
+export d=$DEV
+#alias rebar='$DEV/rebar'
+alias dld='deployinator list -e development'
+alias dlp='deployinator list -e production'
+alias elastic-mapreduce=/home/thierry/repos/elastic-mapreduce-ruby/elastic-mapreduce
+alias erl15='PATH=/usr/lib/erlang/bin:$PATH $@'
+alias erl16='PATH=/usr/lib/erlang-r16B01/bin:$PATH $@'
+HOME=/home/thierry
+RVM_DIR_PATH=/home/thierry/.rvm
+PATH=$DEV/bin:$HOME/bin:$RVM_DIR_PATH/bin:$PATH
+export PATH
+alias c='clear'
+
+alias gs='git status'
+alias gb='git branch'
+alias ga='git add'
+alias gr='git rm'
+alias gaa='git add */*'
+alias gca='git commit --amend'
+alias gco='git commit'
+alias gch='git checkout'
+alias gpush='git push -u'
+alias gpull='git pull --prune'
+alias jp='jenkins push'
+alias jd='jenkins del'
+alias gd='git diff --stat origin/master...'
+alias bf='git branch -a | grep'
+function syntax() { run_syntax_check ~/repos/dev/$1 $2; }
+
+alias gcom='gcom_function'
+function clean() {
+    dir=`pwd`
+    cd $d
+    search *~ | xargs rm 2>/dev/null
+    search *#* | xargs rm 2>/dev/null
+    cd $dir
+}
+function gcom_function {
+    eval "git commit -m \"$@\""
+}
