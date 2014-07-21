@@ -38,6 +38,13 @@ alias jp='jenkins push'
 alias jd='jenkins del'
 alias gd='git diff --stat origin/master...'
 alias bf='git branch -a | grep'
+alias bp='git format-patch master --stdout'
+
+# other useful patch commands:
+# git apply --stat fix_empty_poster.patch
+# git apply --check fix_empty_poster.patch
+# git am --signoff < fix_empty_poster.patch
+
 function syntax() { run_syntax_check ~/repos/dev/$1 $2; }
 
 alias gcom='gcom_function'
