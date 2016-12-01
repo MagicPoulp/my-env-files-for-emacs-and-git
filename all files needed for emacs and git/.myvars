@@ -29,7 +29,9 @@ alias gb='git branch'
 alias ga='git add'
 alias gr='git rm'
 alias gaa='git add */*'
-alias gca='git commit --amend'
+alias gcak='git commit --amend'
+alias gca='git commit --amend --date="$(date -R)"'
+alias gcan='git commit --amend --no-edit --date="$(date -R)"'
 alias gco='git commit'
 alias gch='git checkout'
 alias gpush='git push -u'
@@ -58,3 +60,8 @@ function clean() {
 function gcom_function {
     eval "git commit -m \"$@\""
 }
+
+currentDirectory=$PWD
+cd ~/Documents/VulkanSDK/1.0.30.0
+source setup-env.sh
+cd $currentDirectory

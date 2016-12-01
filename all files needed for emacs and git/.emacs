@@ -64,7 +64,7 @@
 
 (global-set-key [S-dead-grave] "`")
 
-(add-to-list 'load-path "~/.emacs.d/")
+;(add-to-list 'load-path "~/.emacs.d/")
 
 ; gtags and speedbar
 ; install gtas with apt-get install global
