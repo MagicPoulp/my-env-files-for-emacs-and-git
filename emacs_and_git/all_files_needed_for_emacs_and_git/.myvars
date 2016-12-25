@@ -63,7 +63,7 @@ function gcom_function {
 }
 
 function e_function {
-    eval 'emacsclient -q -a "" -c -F "((fullscreen . maximized))" "$@" >/dev/null 2>/dev/null &'
+    eval 'emacs_client &'
 }
 
 # for deactivating the insert key
