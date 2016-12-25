@@ -23,6 +23,7 @@ alias e='emacsclient -q -a "" -c -F "((fullscreen . maximized))" 2>/dev/null >/d
 alias search='find . -name 2>/dev/null'
 alias c='clear'
 alias ll='ls -l'
+alias l='ls'
 
 alias gs='git status'
 alias gb='git branch'

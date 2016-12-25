@@ -1,0 +1,3 @@
+in emacs:
+M-x package-install RET ace-window RET
+
