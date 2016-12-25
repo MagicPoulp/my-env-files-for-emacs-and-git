@@ -18,7 +18,7 @@ export PATH=$PATH:$HOME/bin:/sbin:/usr/sbin
 alias findgrep='find . | xargs grep -i -n -s'
 
 #running "emacs" directly will still make the emacs sessions have separate buffers
-alias e='emacsclient -q -a "" -c -F "((fullscreen . maximized))" 2>/dev/null >/dev/null'
+alias e='e_function'
 
 alias search='find . -name 2>/dev/null'
 alias c='clear'
@@ -57,8 +57,13 @@ function clean() {
     search *#* | xargs rm 2>/dev/null
     cd $dir
 }
+
 function gcom_function {
     eval "git commit -m \"$@\""
+}
+
+function e_function {
+    eval 'emacsclient -q -a "" -c -F "((fullscreen . maximized))" "$@" >/dev/null 2>/dev/null &'
 }
 
 # for deactivating the insert key
