@@ -5,8 +5,8 @@ export HISTSIZE=5000000
 export HISTFILESIZE=5000000
 
 alias findgrep='find . | xargs grep -i -n -s'
-#alias e='emacsclient -a "" -c -F "((fullscreen . maximized))"'
-alias e='emacs'
+alias e='emacsclient -a "" -c -F "((fullscreen . maximized))"'
+#alias e='emacs'
 alias search='find . -name 2>/dev/null'
 HOME=/home/thierry
 export HOME=/home/thierry
