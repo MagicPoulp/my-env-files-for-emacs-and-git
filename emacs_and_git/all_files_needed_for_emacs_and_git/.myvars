@@ -63,7 +63,7 @@ function gcom_function {
 }
 
 function e_function {
-    eval 'emacs_client &'
+    eval "emacs_client \"$@\" &"
 }
 
 # for deactivating the insert key

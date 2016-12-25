@@ -15,6 +15,7 @@ mkdir -p ~/bin
 cp $DIR_EMACS/$EXTRA_FOLDER/emacs_client ~/bin
 cp $DIR_EMACS/$EXTRA_FOLDER/.emacs ~/
 cp $DIR_EMACS/$EXTRA_FOLDER/.myvars ~/
+source ~/.myvars
 
 echo "--> all files have been copied"
 echo ""
