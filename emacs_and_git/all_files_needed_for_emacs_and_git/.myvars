@@ -61,7 +61,8 @@ function gcom_function {
     eval "git commit -m \"$@\""
 }
 
-
+# for deactivating the insert key
+xmodmap -e 'keycode 118='
 
 # for Vulkan
 
