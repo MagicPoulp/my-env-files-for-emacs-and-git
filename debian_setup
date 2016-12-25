@@ -28,6 +28,12 @@ firmware-realtek_0.43_all.deb
 sudo emacs /etc/gdm3/daemon.conf
 
 --> remove sound in wrong emacs command:
+System wide removal
+rmmod pcspkr
+Blacklisting the pcspkr module will prevent udev from loading it at boot:
+echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
+
+
 nano /etc/inputrc
 uncomment the line with bell-style none
 with a more complete solution here:
