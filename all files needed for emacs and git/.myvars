@@ -54,8 +54,8 @@ function gcom_function {
 
 # for Vulkan
 
-currentDirectory=$PWD
-VULKAN_SDK_VERSION1="1.0.30.0"
-cd ~/Documents/VulkanSDK/$VULKAN_SDK_VERSION1
-source setup-env.sh
-cd $currentDirectory
+#currentDirectory=$PWD
+#VULKAN_SDK_VERSION1="1.0.30.0"
+#cd ~/Documents/VulkanSDK/$VULKAN_SDK_VERSION1
+#source setup-env.sh
+#cd $currentDirectory
