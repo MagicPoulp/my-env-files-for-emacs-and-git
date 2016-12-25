@@ -110,3 +110,67 @@
 (define-key key-translation-map [dead-tilde] "~")
 
 
+; -----------------------------------------------------------
+; for GDB
+; http://dschrempf.github.io/posts/Emacs/2015-06-24-Debugging-with-Emacs-and-GDB.html
+
+
+(setq gdb-many-windows t)
+
+
+
+; to help starting gdb
+(defvar gdb-my-history nil "History list for dom-gdb-MYPROG.")
+(defun dom-gdb-MYPROG ()
+  "Debug MYPROG with `gdb'."
+  (interactive)
+  (let* ((wd "/path/to/working/directory")
+         (pr "/path/to/executable")
+         (dt "/path/to/datafile")
+         (guess (concat "gdb -i=mi -cd=" wd " --args " pr " -s " dt))
+         (arg (read-from-minibuffer "Run gdb (like this): "
+                                    guess nil nil 'gdb-my-history)))
+    (gdb arg)))
+
+
+
+; function dom-gdb-restore-windows, that resets the display and fixes the window layout:
+(defun dom-gdb-restore-windows ()
+  "Restore GDB session."
+  (interactive)
+  (if (eq gdb-many-windows t)
+      (gdb-restore-windows)
+    (dom-gdb-restore-windows-gud-io-and-source)))
+
+(defun dom-gdb-restore-windows-gud-io-and-source ()
+  "Restore GUD buffer, IO buffer and source buffer next to each other."
+  (interactive)
+  ;; Select dedicated GUD buffer.
+  (switch-to-buffer gud-comint-buffer)
+  (delete-other-windows)
+  (set-window-dedicated-p (get-buffer-window) t)
+  (when (or gud-last-last-frame gdb-show-main)
+    (let ((side-win (split-window nil nil t))
+          (bottom-win (split-window)))
+      ;; Put source to the right.
+      (set-window-buffer
+       side-win
+       (if gud-last-last-frame
+           (gud-find-file (car gud-last-last-frame))
+         (gud-find-file gdb-main-file)))
+      (setq gdb-source-window side-win)
+      ;; Show dedicated IO buffer below.
+      (set-window-buffer
+       bottom-win
+       (gdb-get-buffer-create 'gdb-inferior-io))
+      (set-window-dedicated-p bottom-win t))))
+
+(defun dom-gdb-display-source-buffer ()
+  "Display gdb source buffer if it is set."
+  (interactive)
+  (when (or gud-last-last-frame gdb-show-main)
+    (switch-to-buffer
+     (if gud-last-last-frame
+         (gud-find-file (car gud-last-last-frame))
+       (gud-find-file gdb-main-file))))
+  (delete-other-windows))
