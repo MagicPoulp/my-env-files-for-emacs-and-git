@@ -42,7 +42,7 @@
   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0)))
 (global-set-key [(control f4)] 'my-frame-toggle)
 
-;(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
      ;;; Prevent Extraneous Tabs
 (setq-default indent-tabs-mode nil)
