@@ -27,6 +27,12 @@ firmware-realtek_0.43_all.deb
 --> automatic login (not at work)
 sudo emacs /etc/gdm3/daemon.conf
 
+--> remove sound in wrong emacs command:
+nano /etc/inputrc
+uncomment the line with bell-style none
+with a more complete solution here:
+https://linuxconfig.org/turn-off-beep-bell-on-linux-terminal
+
 --> get the .myvars, .emacs, and git script from my github, MagicPoulp
 
 --> set up the pinning of packages from debian testing and unstable
