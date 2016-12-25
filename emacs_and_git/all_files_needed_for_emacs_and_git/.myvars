@@ -17,8 +17,11 @@ export PATH=$PATH:$HOME/bin:/sbin:/usr/sbin
 
 alias findgrep='find . | xargs grep -i -n -s'
 
+# emacs
 #running "emacs" directly will still make the emacs sessions have separate buffers
 alias e='e_function'
+# firefox
+alias f='f_function'
 
 alias search='find . -name 2>/dev/null'
 alias c='clear'
@@ -64,6 +67,10 @@ function gcom_function {
 
 function e_function {
     eval "emacs_client \"$@\" &"
+}
+
+function f_function {
+    eval "firefox \"$@\" &"
 }
 
 # for deactivating the insert key
