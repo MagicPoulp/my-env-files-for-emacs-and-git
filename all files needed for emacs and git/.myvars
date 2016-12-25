@@ -1,28 +1,18 @@
 #!/bin/bash
 
-export HISTSIZE=1000000
-export HISTFILESIZE=1000000
+# increase shell history
+export HISTSIZE=5000000
+export HISTFILESIZE=5000000
 
 alias findgrep='find . | xargs grep -i -n -s'
 #alias e='emacsclient -a "" -c -F "((fullscreen . maximized))"'
 alias e='emacs'
 alias search='find . -name 2>/dev/null'
-alias gohb='cd /usr/local/myapps/hbase'
-alias goec='cd /usr/local/myapps/ec2-api-tools-1.6.6.4'
-export DEV=/home/thierry/repos/dev
-export dev=$DEV
-export d=$DEV
-#alias rebar='$DEV/rebar'
-alias dld='deployinator list -e development'
-alias dlp='deployinator list -e production'
-alias elastic-mapreduce=/home/thierry/repos/elastic-mapreduce-ruby/elastic-mapreduce
-alias erl15='PATH=/usr/lib/erlang/bin:$PATH $@'
-alias erl16='PATH=/usr/lib/erlang-r16B01/bin:$PATH $@'
 HOME=/home/thierry
-RVM_DIR_PATH=/home/thierry/.rvm
-PATH=$DEV/bin:$HOME/bin:$RVM_DIR_PATH/bin:$PATH
-export PATH
+export HOME=/home/thierry
+export PATH=$PATH:$HOME/bin:/sbin:/usr/sbin
 alias c='clear'
+alias ll='ls l'
 
 alias gs='git status'
 alias gb='git branch'
@@ -48,8 +38,6 @@ alias bp='git format-patch master --stdout'
 # git apply --check fix_empty_poster.patch
 # git am --signoff < fix_empty_poster.patch
 
-function syntax() { run_syntax_check ~/repos/dev/$1 $2; }
-
 alias gcom='gcom_function'
 function clean() {
     dir=`pwd`
@@ -62,7 +50,12 @@ function gcom_function {
     eval "git commit -m \"$@\""
 }
 
+
+
+# for Vulkan
+
 currentDirectory=$PWD
-cd ~/Documents/VulkanSDK/1.0.30.0
+VULKAN_SDK_VERSION1="1.0.30.0"
+cd ~/Documents/VulkanSDK/$VULKAN_SDK_VERSION1
 source setup-env.sh
 cd $currentDirectory
