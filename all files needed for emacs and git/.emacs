@@ -85,24 +85,16 @@
          (gtags-mode 1)
          ))
 
-(setq c-default-style "linux"
-          c-basic-offset 4)
 
-(defun my-c++-mode-hook ()
-;  (setq c-basic-offset 4)
-  (c-set-offset 'inline-open 0)
-  (c-set-offset 'substatement-open 0)
-  (c-set-offset 'defun-block-intro 4))
-;  (c-set-offset 'statement-cont 0))
-(add-hook 'c++-mode-hook 'my-c++-mode-hook)
-(add-hook 'c-mode-hook 'my-c++-mode-hook)
+; http://stackoverflow.com/questions/663588/emacs-c-mode-incorrect-indentation
+(setq c-default-style "bsd" c-basic-offset 4)
 
 ; python must use tags and not gtags. produce tags with ctags
 ; find . -type f -name '*.py' | xargs etags
 
 ; use M-x speedbar
 ; Start speedbar automatically if we're using a window system like X, etc
-;(when window-system 
+;(when window-system
 ;   (speedbar t))
 ; open speedbar with M-x speedbar
 
