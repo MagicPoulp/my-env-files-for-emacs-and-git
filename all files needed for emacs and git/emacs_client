@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 # The file needs to be placed in $HOME/bin and added to the PATH
-exec emacsclient -a "" -c -F "((fullscreen . maximized))" "$@"
+emacsclient -q -a "" -c -F "((fullscreen . maximized))" "$@" >/dev/null 2>/dev/null
