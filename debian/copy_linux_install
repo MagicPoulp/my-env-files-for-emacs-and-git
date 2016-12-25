@@ -1,0 +1,76 @@
+IMPORTANT: the last / in rsync is needed
+
+--> backup:
+mkdir /media/thierry/ZZZ/slash
+sudo rsync -ahPHAXx --delete --exclude={/dev/*,/proc/*,/sys/*,/tmp/*,/run/*,/mnt/*,/media/*,/lost+found} / /media/thierry/ZZZ/slash
+
+--> prepare partition space
+disable secure boot in BIOS
+shrink windows partition to a very big size
+
+--> install the backup:
+- start Debian on a live CD or USB stick
+- format the partition using gparted
+gparted may required the -t testing access, see in the other file debian_setup
+need ext4 file system, and need 2 partitions, with 10 GB for swap
+
+- mount the partition to install on
+sudo fdisk -l
+mount /dev/sdaX /destination
+
+- mount the usb stick
+check for the usb stick folder in /media by using /mount
+if the folder in /media is missing, the USB stick may need to be mounted (ZZZ)
+
+- copy the data to the partition
+mkdir /mnt/slash
+sudo rsync -ahPHAXx /media/thierry/ZZZ/slash/ /mnt/slash/
+
+--> reload /stc/fstab
+
+Change fstab on target system
+the fstab only contains the linux partitions and the boot partition (efi)
+
+As root, edit /mnt/slash/etc/fstab
+For each partition (including swap), replace the first field with the new UUID or LABEL (it’s straightforward with LABELs):
+UUID=the-long-uuid, or LABEL=yourlabel
+
+two ways to get the UUIDs / LABELs:
+
+ls -l /dev/disk/by-uuid/
+blkid /dev/sdaX
+
+
+--> install grub for uefi
+if it does not work, try as follows:
+https://wiki.debian.org/GrubEFIReinstall
+
+REPLACE sdX by the DISK name like only an a, IT IS NOT the partition that Linux is installed on
+
+for i in /dev /dev/pts /proc /sys /run; do sudo mount -B $i /mnt/slash$i; done
+sudo chroot /mnt/slash
+grub-mkconfig -o /boot/grub/grub.cfg
+sudo grub-install --recheck /dev/sdX   <---------- replace the X
+sudo update-grub
+
+
+--> check the result of the grub installation
+# lsblk -no NAME,UUID /dev/sdbX
+
+where you substitute the desired partition for /dev/sdbX To list the UUIDs of partitions grub thinks it can boot, use grep:
+
+# grep UUID= /boot/grub/grub.cfg
+
+
+-------------------------
+best link:
+http://superuser.com/questions/709176/how-to-best-clone-a-running-system-to-a-new-harddisk-using-rsync
+
+another tutorial but less pro
+http://positon.org/clone-a-linux-system-install-to-another-computer
+
+to check other things:
+https://wiki.archlinux.org/index.php/full_system_backup_with_rsync
+
+grub:
+http://howtoubuntu.org/how-to-repair-restore-reinstall-grub-2-with-a-ubuntu-live-cd
