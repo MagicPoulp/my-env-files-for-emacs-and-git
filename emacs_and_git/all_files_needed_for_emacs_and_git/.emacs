@@ -99,7 +99,9 @@
 ;   (speedbar t))
 ; open speedbar with M-x speedbar
 
+; to switch between windows
 (global-set-key [C-tab] 'ace-window)
+
 (global-set-key (kbd "C-n") 'speedbar)
 (global-set-key (kbd "M-,") 'gtags-pop-stack)
 ; M-. for gtags-find-tag
