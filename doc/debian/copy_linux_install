@@ -1,8 +1,18 @@
 IMPORTANT: the last / in rsync is needed
 
---> backup:
+--> Backup:
+start:
+thierry@small:~/Documents$ sudo su -
+root@small:/root# mkdir /media/thierry/ZZZ
+root@small:/root# mount /dev/sdc1 /media/thierry/ZZZ
+
 mkdir /media/thierry/ZZZ/slash
-sudo rsync -ahPHAXx --delete --exclude={/dev/*,/proc/*,/sys/*,/tmp/*,/run/*,/mnt/*,/media/*,/lost+found} / /media/thierry/ZZZ/slash
+time rsync -ahPHAXx --delete --exclude={/dev/*,/proc/*,/sys/*,/tmp/*,/run/*,/mnt/*,/media/*,/lost+found} / /media/thierry/ZZZ/slash/ >/dev/null
+or a simple version:
+sudo rsync -ahPHAXx --delete --exclude={/dev/*,/proc/*,/sys/*,/tmp/*,/run/*,/mnt/*,/media/*,/lost+found} / /media/thierry/ZZZ/slash/
+
+----------------------------------------------------------------------------------------------------------------------
+--> Install
 
 --> prepare partition space
 disable secure boot in BIOS
