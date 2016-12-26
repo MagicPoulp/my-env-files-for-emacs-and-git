@@ -19,14 +19,15 @@ source ~/.myvars
 
 echo "--> all files have been copied"
 echo ""
-echo "--> still to do ONLY ONCE as sudo:"
-echo "update ~/.emacs.d with ./emacs_and_git/all_files_needed_for_emacs_and_git/.emacs.d"
-echo "update ~/.emacs_backup.d with ./emacs_and_git/all_files_needed_for_emacs_and_git/.emacs_backup.d"
+echo "--> still to do ONLY ONCE, as sudo for some commands:"
+echo "cd ./emacs_and_git/all_files_needed_for_emacs_and_git"
+echo "update ~/.emacs.d with .emacs.d"
+echo "update ~/.emacs_backup.d with .emacs_backup.d"
 echo ""
-echo "cp ~/.myvars /root/"
+echo "sudo cp .emacs_backup.d/.emacs_working_for_root root/.emacs"
 echo ""
 echo "install emacs24 emacs-goodies-el"
-echo 'echo "source /home/thierry/.myvars" >> /root/.bashrc'
+echo 'sudo echo "source /home/thierry/.myvars" >> /root/.bashrc'
 echo 'echo "source /home/thierry/.myvars" >> ~/.bashrc'
 echo ""
 echo "--> other manual setup to do:"
