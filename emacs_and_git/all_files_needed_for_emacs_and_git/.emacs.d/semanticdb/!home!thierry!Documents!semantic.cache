@@ -1,0 +1,51 @@
+;; Object Documents/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "Documents/"
+  :tables
+  (list
+    (semanticdb-table "foo.c"
+      :major-mode 'c-mode
+      :tags 
+        '( ("stdio.h" include (:system-flag t) nil [1 19])
+            ("foo.h" include nil nil [20 36])
+            ("f2" function
+               (:arguments 
+                  ( ("argc" variable (:type "int") (reparse-symbol arg-sub-list) [45 54])
+                    ("argv" variable
+                       (:pointer 1
+                        :dereference 1
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [55 68]))                  
+                :type "int")
+                nil [38 73])
+            ("main" function
+               (:arguments 
+                  ( ("argc" variable (:type "int") (reparse-symbol arg-sub-list) [84 93])
+                    ("argv" variable
+                       (:pointer 1
+                        :dereference 1
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [94 107]))                  
+                :type "int")
+                nil [75 244]))          
+      :file "foo.c"
+      :pointmax 246
+      :fsize 245
+      :lastmodtime '(22624 62882 838957 760000)
+      :unmatched-syntax nil)
+    (semanticdb-table "foo.h"
+      :major-mode 'c-mode
+      :tags 
+        '( ("RT" variable (:constant-flag t) nil [10 12]))          
+      :file "foo.h"
+      :pointmax 16
+      :fsize 15
+      :lastmodtime '(22624 16575 932153 161000)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("RT" . ((number "11" 13 . 15)))
+          )
+))
+  :file "!home!thierry!Documents!semantic.cache"
+  :semantic-tag-version "2.0"
+  :semanticdb-version "2.2")
