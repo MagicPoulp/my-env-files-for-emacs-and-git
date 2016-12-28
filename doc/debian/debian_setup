@@ -12,22 +12,6 @@ better to use gparted on a live usb for EFI booting
 --> Note that after installing Debian, the screen will be black.
 To boot, in grub, type e, then add "nomodeset" before quiet
 
-NOT NEEDED
-THE 4 IS NOT NEEDED WITH A GOOD EFI USB BOOT
-4. set up double boot
-One must use F12 at the startup.
-
-It may be that the order cannot be change. To live with it, we force the windows startup to crash.
-The Windows boot manager gets an error and then win OK one can pick windows, but only by choice
-
-use bcdedit on windows to block the windows startup by setting ubuntu at the top
-The boot order wont change but it will prevent windows from starting a long startup sequence.
-
-bcdedit /enum firmware
-bcdedit /default [[ubuntu id]]
-bcdedit /setdisplay {fwbootmgr} {default} /addfirst
-Don't break the computer by too many tries
-
 --> to fix the dmesg error:
 firmware: failed to load rtl_nic/rtl8168g-2.fw
 find the debian package
@@ -35,6 +19,9 @@ firmware-realtek_0.43_all.deb
 
 --> automatic login (not at work)
 sudo emacs /etc/gdm3/daemon.conf
+add:
+AutomaticLoginEnable = true
+AutomaticLogin = thierry
 
 --> change grub default timeout to 2 s
 sudo nano /etc/default/grub
@@ -53,6 +40,7 @@ with a more complete solution here:
 https://linuxconfig.org/turn-off-beep-bell-on-linux-terminal
 
 --> get the .myvars, .emacs, and git script from my github, MagicPoulp
+https://github.com/MagicPoulp/my-env-files-for-emacs-and-git.git
 
 --> set up the pinning of packages from debian testing and unstable
 PINNING is dangerous! one can make the distribution unstable or remove vital packages
@@ -67,7 +55,7 @@ APT::Cache-Limit "100000000";
 2. add an append.list in the sources.list.d
 http://www.binarytides.com/enable-testing-repo-debian/
 
-# jessie-backports, pinned 100 by default so that it does not update by default
+# jessie-backports, pinned 100 by default so that it does not install by default
 deb http://httpredir.debian.org/debian jessie-backports main contrib non-free
 
 # Testing repository - main, contrib and non-free branches
@@ -85,11 +73,16 @@ deb http://http.us.debian.org/debian unstable main non-free contrib
 deb-src http://http.us.debian.org/debian unstable main non-free contrib
 
 3. set up the pinning not taking all from unstable
---->> NO DOT (.) in the filename, and must be in the preferences.d directory
+
+https://wiki.debian.org/AptPreferences
+
+add into:
+/etc/apt/preferences.d/preferences
+---> NO DOT (.) in the filename in the preferences.d directory
+
 
 #backports are pinnined at 100 by default
 
-https://wiki.debian.org/AptPreferences
 Package: *
 Pin: release a=testing
 Pin-Priority: -5
