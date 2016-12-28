@@ -1,10 +1,19 @@
+﻿the Debian USB key needs to be created as EFI only. Note that Debian live does not have EFI, only Debian install has it.
+
 --> the XFCE desktop is much better because gnome is heavy with sounds and it uninstalls stuff when pinnin packagesx
 
 --> for double boot Debian/Windows
 1 deactivate secure boot in the bios
+deactivate fast startup in power options of windows, or we can break the OS
 2 -->> shrink the Windows partition on windows to make a partition of more than 300 GB, like 303 GB, to have exactly 300 GB in debian installer
-3 -->> install debian on exactly 300 GB
+better to use gparted on a live usb for EFI booting
+3 -->> install debian
 
+--> Note that after installing Debian, the screen will be black.
+To boot, in grub, type e, then add "nomodeset" before quiet
+
+NOT NEEDED
+THE 4 IS NOT NEEDED WITH A GOOD EFI USB BOOT
 4. set up double boot
 One must use F12 at the startup.
 
@@ -26,6 +35,10 @@ firmware-realtek_0.43_all.deb
 
 --> automatic login (not at work)
 sudo emacs /etc/gdm3/daemon.conf
+
+--> change grub default timeout to 2 s
+sudo nano /etc/default/grub
+update-grub
 
 --> remove sound in wrong emacs command:
 System wide removal
@@ -53,6 +66,10 @@ APT::Cache-Limit "100000000";
 
 2. add an append.list in the sources.list.d
 http://www.binarytides.com/enable-testing-repo-debian/
+
+# jessie-backports, pinned 100 by default so that it does not update by default
+deb http://httpredir.debian.org/debian jessie-backports main contrib non-free
+
 # Testing repository - main, contrib and non-free branches
 deb http://http.us.debian.org/debian testing main non-free contrib
 deb-src http://http.us.debian.org/debian testing main non-free contrib
@@ -67,8 +84,10 @@ deb-src http://security.debian.org/ testing/updates main contrib non-free
 deb http://http.us.debian.org/debian unstable main non-free contrib
 deb-src http://http.us.debian.org/debian unstable main non-free contrib
 
-3. set up the pinning not taking aall from unstable
+3. set up the pinning not taking all from unstable
 --->> NO DOT (.) in the filename, and must be in the preferences.d directory
+
+#backports are pinnined at 100 by default
 
 https://wiki.debian.org/AptPreferences
 Package: *

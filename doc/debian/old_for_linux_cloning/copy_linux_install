@@ -16,27 +16,33 @@ sudo rsync -ahPHAXx --delete --exclude={/dev/*,/proc/*,/sys/*,/tmp/*,/run/*,/mnt
 
 --> prepare partition space
 disable secure boot in BIOS
-shrink windows partition to a very big size
+enable CSM and disalble the windows default
+shrink windows partition using gparted on debian live
 
 --> install the backup:
 - start Debian on a live CD or USB stick
+- shrink windows partition using gparted on debian live
 - format the partition using gparted
-gparted may required the -t testing access, see in the other file debian_setup
-need ext4 file system, and need 2 partitions, with 10 GB for swap
+need ext4 file system, and need 2 partitions, with 20 GB for swap
 
 - mount the partition to install on
 sudo fdisk -l
 mount /dev/sdaX /destination
 
 - mount the usb stick
-check for the usb stick folder in /media by using /mount
-if the folder in /media is missing, the USB stick may need to be mounted (ZZZ)
+USE USB 3.0 that is faster
+sudo fdisk -l
+mkdir /media/usb1
+mount /dev/sdbX /media/usb1
 
 - copy the data to the partition
-mkdir /mnt/slash
-sudo rsync -ahPHAXx /media/thierry/ZZZ/slash/ /mnt/slash/
 
---> reload /stc/fstab
+mkdir /mnt/slash
+mount /dev/sda7 /mnt/slash
+sudo rsync -ahPHAXx /media/usb1/slash/ /mnt/slash/ >/dev/null
+the progress can be shown using df -H
+
+--> reload /etc/fstab
 
 Change fstab on target system
 the fstab only contains the linux partitions and the boot partition (efi)
@@ -48,7 +54,7 @@ UUID=the-long-uuid, or LABEL=yourlabel
 two ways to get the UUIDs / LABELs:
 
 ls -l /dev/disk/by-uuid/
-blkid /dev/sdaX
+or try blkid /dev/sdaX
 
 
 --> install grub for uefi

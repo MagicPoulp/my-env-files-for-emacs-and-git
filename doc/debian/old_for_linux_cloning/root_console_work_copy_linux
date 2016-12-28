@@ -1,0 +1,18 @@
+    1  mount /dev/sdc1 /media/usb1
+    2  ls /media/usb1/
+    3  nano /media/usb1/slash/home/thierry/Documents/debian_live
+    4  nano /media/usb1/slash/home/thierry/Documents/debian_live
+    5  nano /media/usb1/slash/home/thierry/Documents/debian_live
+    6  mv /media/usb1/slash/home/thierry/Documents/debian_live /media/usb1/slash/home/thierry/Documents/debian_live.sh
+    7  chmod +x /media/usb1/slash/home/thierry/Documents/debian_live.sh 
+    8  nano /media/usb1/slash/home/thierry/Documents/debian_live.sh 
+    9  chmod go-w /mnt/slash/usr/lib/sudo/sudoers.so 
+   10  chmod go-w /mnt/slash/etc/sudoers
+   11  chmod -R go-w /mnt/slash/etc/sudoers.d
+   12  cat /etc/resolv.conf 
+   13  cat /etc/hosts
+   14  history
+   15  history > /media/usb1/root_console_work
+
+grub-install: error: /usr/lib/grub/i386-pc/modinfo.sh doesn't exist. Please specify --target or --directory.
+Install the grub-pc-bin

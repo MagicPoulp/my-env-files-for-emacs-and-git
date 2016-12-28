@@ -1,0 +1,3 @@
+bcdedit /enum firmware
+
+bcdedit /set {fwbootmgr} displayorder {ID} /addfirst

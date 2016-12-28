@@ -1,0 +1,49 @@
+--> Note that after installing Debian, the screen will be black.
+In grub, type e, then add "nomodeset" before quiet
+
+
+---------------------------------------
+
+disable secure boot in BIOS and fast boot in Windows power options and nothing else
+
+use gparted from a live ubuntu CD to shrink the partition
+install debian in graphical
+make sure to have a swap partition
+choose default desktop on XFCE
+
+thierry@host:~$ su -
+root@host:~# adduser thierry sudo
+
+
+install graphics driver
+
+due to no graphics driver, the screen is black
+in grub, type e
+add nomodeset before the quiet
+
+Add jessie-backports to your /etc/apt/sources.list, for example:
+using the nano editor
+
+# jessie-backports
+deb http://httpredir.debian.org/debian jessie-backports main contrib non-free
+
+Install Linux headers for the kernel you are using. If you are using the 3.16 Linux kernel in Debian Jessie:
+
+# apt-get install linux-headers-$(uname -r|sed 's,[^-]*-[^-]*-,,')
+
+Or if you are already using a Linux kernel from jessie-backports:
+
+# apt-get install -t jessie-backports linux-headers-$(uname -r|sed 's,[^-]*-[^-]*-,,')
+
+Then we can install the package nvidia-driver.
+
+# apt-get update
+# apt-get install -t jessie-backports nvidia-driver
+
+DKMS will build the nvidia module for your system.
+Restart your system to enable the nouveau blacklist.
+
+restart from the OS menu, not on command line or it gets stuck
+change debian to be on top in the BIOS
+
+
