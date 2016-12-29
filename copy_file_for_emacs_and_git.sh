@@ -20,6 +20,13 @@ cp -r $DIR_EMACS/$EXTRA_FOLDER/.emacs_backup.d ~/
 source ~/.myvars
 mkdir ~/tmp
 
+rm -rf Music
+rm -rf Pictures
+rm -rf Public
+rm -rf Templates
+rm -rf Videos
+
+
 echo "--> all files have been copied"
 echo "a killall emacs may be needed"
 echo ""
