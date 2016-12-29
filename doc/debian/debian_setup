@@ -18,6 +18,9 @@ find the debian package
 firmware-realtek_0.43_all.deb
 
 --> automatic login (not at work)
+it depends on which desktop is used
+
+for gnome:
 sudo emacs /etc/gdm3/daemon.conf
 add:
 AutomaticLoginEnable = true
@@ -97,3 +100,10 @@ Pin-Priority: -5
 Package: *
 Pin: release o=Debian
 Pin-Priority: -10
+
+
+----------------------------------------------------
+sudo apt-get update && sudo apt-get dist-upgrade
+it will update all the backports packages for the graphics card
+
+sudo apt-get install -t testing gcc g++ cmake
