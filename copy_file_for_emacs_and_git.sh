@@ -18,13 +18,24 @@ cp $DIR_EMACS/$EXTRA_FOLDER/.myvars ~/
 cp -r $DIR_EMACS/$EXTRA_FOLDER/.emacs.d ~/
 cp -r $DIR_EMACS/$EXTRA_FOLDER/.emacs_backup.d ~/
 source ~/.myvars
+
+
+cp home_setup/user-dirs.dirs ~/.config/user-dirs.dirs
+
 mkdir ~/tmp
 
-rm -rf Music
-rm -rf Pictures
-rm -rf Public
-rm -rf Templates
-rm -rf Videos
+mv ~/Desktop ~/desktop
+mv ~/Downloads ~/downloads
+mv ~/Documents ~/documents
+
+mkdir ~/other
+mv ~/Music ~/other/
+mv ~/Pictures ~/other/
+mv ~/Music ~/other/
+mv ~/Pictures ~/other/
+mv ~/Public ~/other/
+mv ~/Templates ~/other/
+mv ~/Videos ~/other/
 
 
 echo "--> all files have been copied"
