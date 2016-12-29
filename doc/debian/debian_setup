@@ -29,6 +29,10 @@ sudo dpkg-reconfigure gdm3
 sudo nano /etc/default/grub
 update-grub
 
+--> start he console in full screen
+change the icon preferences:
+exo-open --launch TerminalEmulator xfce4-terminal --maximize
+
 --> remove sound in wrong emacs command:
 console only removal:
 rmmod pcspkr
