@@ -12,11 +12,6 @@ better to use gparted on a live usb for EFI booting
 --> Note that after installing Debian, the screen will be black.
 To boot, in grub, type e, then add "nomodeset" before quiet
 
---> to fix the dmesg error:
-firmware: failed to load rtl_nic/rtl8168g-2.fw
-find the debian package
-firmware-realtek_0.43_all.deb
-
 --> automatic login (not at work)
 it depends on which desktop is used
 
@@ -103,7 +98,15 @@ Pin-Priority: -10
 
 
 ----------------------------------------------------
+--> to fix the dmesg error:
+something like firmware: failed to load rtl_nic/rtl8168g-2.fw
+install from apt-get and not from .deb because only apt makes updates
+
+--> first packages to install:
+
 sudo apt-get update && sudo apt-get dist-upgrade
 it will update all the backports packages for the graphics card
 
 sudo apt-get install -t testing gcc g++ cmake
+
+
