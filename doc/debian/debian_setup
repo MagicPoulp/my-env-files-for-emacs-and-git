@@ -15,7 +15,22 @@ To boot, in grub, type e, then add "nomodeset" before quiet
 --> automatic login (not at work)
 it depends on which desktop is used
 
-for gnome:
+--> autologin for xfce:
+
+sudo emacs /etc/lightdm/lightdm.conf
+
+[Seat:*]
+pam-service=lightdm
+pam-autologin-service=lightdm-autologin
+autologin-user=thierry
+autologin-user-timeout=0
+session-wrapper=/etc/X11/Xsession
+greeter-session=lightdm-greeter
+
+sudo groupadd -r autologin
+sudo gpasswd -a thierry autologin
+
+--> autologin for gnome:
 sudo emacs /etc/gdm3/daemon.conf
 add:
 AutomaticLoginEnable = true
