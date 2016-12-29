@@ -18,6 +18,7 @@ cp $DIR_EMACS/$EXTRA_FOLDER/.myvars ~/
 cp -r $DIR_EMACS/$EXTRA_FOLDER/.emacs.d ~/
 cp -r $DIR_EMACS/$EXTRA_FOLDER/.emacs_backup.d ~/
 source ~/.myvars
+mkdir ~/tmp
 
 echo "--> all files have been copied"
 echo "a killall emacs may be needed"
