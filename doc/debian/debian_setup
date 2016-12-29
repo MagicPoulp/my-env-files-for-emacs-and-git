@@ -22,6 +22,8 @@ sudo emacs /etc/gdm3/daemon.conf
 add:
 AutomaticLoginEnable = true
 AutomaticLogin = thierry
+then run:
+sudo dpkg-reconfigure gdm3
 
 --> change grub default timeout to 2 s
 sudo nano /etc/default/grub
