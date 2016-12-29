@@ -30,13 +30,14 @@ sudo nano /etc/default/grub
 update-grub
 
 --> remove sound in wrong emacs command:
-System wide removal
+console only removal:
 rmmod pcspkr
+
+System wide removal
 Blacklisting the pcspkr module will prevent udev from loading it at boot:
-echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
+sudo echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
 
-
-nano /etc/inputrc
+sudo nano /etc/inputrc
 uncomment the line with bell-style none
 with a more complete solution here:
 https://linuxconfig.org/turn-off-beep-bell-on-linux-terminal
