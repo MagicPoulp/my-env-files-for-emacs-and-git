@@ -1,4 +1,7 @@
-﻿the Debian USB key needs to be created as EFI only. Note that Debian live does not have EFI, only Debian install has it.
+﻿nice reboot if Linux gets stuck, to avoid a cold restart:
+ALT + PRINT + REISUB
+
+the Debian USB key needs to be created as EFI only. Note that Debian live does not have EFI, only Debian install has it.
 
 --> the XFCE desktop is much better because gnome is heavy with sounds and it uninstalls stuff when pinnin packagesx
 
