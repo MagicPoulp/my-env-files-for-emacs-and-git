@@ -98,15 +98,16 @@ Pin-Priority: -10
 
 
 ----------------------------------------------------
---> to fix the dmesg error:
-something like firmware: failed to load rtl_nic/rtl8168g-2.fw
-install from apt-get and not from .deb because only apt makes updates
 
 --> first packages to install:
 
 sudo apt-get update && sudo apt-get dist-upgrade
 it will update all the backports packages for the graphics card
 
-sudo apt-get install -t testing gcc g++ cmake
+sudo apt-get update && sudo apt-get install -t testing gcc g++ cmake apt-file
 
+--> to fix the dmesg error:
+sudo apt-file search NAME of missing file in dmesg
+something like firmware: failed to load rtl_nic/rtl8168g-2.fw
 
+install from apt-get and not from .deb because only apt makes updates
