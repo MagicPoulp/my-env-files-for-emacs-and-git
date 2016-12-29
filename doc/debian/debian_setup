@@ -126,3 +126,15 @@ sudo apt-file search NAME of missing file in dmesg
 something like firmware: failed to load rtl_nic/rtl8168g-2.fw
 
 install from apt-get and not from .deb because only apt makes updates
+
+------------------------------------------------------------
+to setup the destop bar:
+right click on poanel preferences, uncheck lock panel, then you can drag the panel 1 bar to the bottom of the screen
+relock the panel
+delete panel 2
+add a launcher with a terminal and add --maximize to the command
+add a launcher with firefox
+move the lanchers to the bottom left using right click move
+
+
+
