@@ -80,6 +80,6 @@ xmodmap -e 'keycode 118='
 
 #currentDirectory=$PWD
 #VULKAN_SDK_VERSION1="1.0.30.0"
-#cd ~/Documents/VulkanSDK/$VULKAN_SDK_VERSION1
+#cd ~/documents/VulkanSDK/$VULKAN_SDK_VERSION1
 #source setup-env.sh
 #cd $currentDirectory
