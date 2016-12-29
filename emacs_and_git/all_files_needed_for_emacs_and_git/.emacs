@@ -1,5 +1,7 @@
 ;--> a killall emacs is needed after any change to this file
 
+; C/C++ environemnt
+; from: https://github.com/tuhdo/emacs-c-ide-demo
 (load-file "~/.emacs.d/init.el")
 
 (custom-set-variables
