@@ -17,9 +17,8 @@ setup-general.el
 and to replace it by a shortcut that activates the mode
 
 setup-general.el
-comment those lines
+comment this line
 ;  (global-company-mode 1)
-;  (delete 'company-semantic company-backends))
 
 .emacs
 add a shortcut C-TAB
