@@ -1,3 +1,0 @@
-in emacs:
-M-x package-install RET ace-window RET
-not needed when copying the .emacs.d folder

@@ -1,0 +1,26 @@
+this files documents the changes that were done to the initial package for emacs
+https://github.com/tuhdo/emacs-c-ide-demo
+Latest commit 671f522 on 8 Nov
+
+------------------------------------------------------------------------------------
+
+--> to allow shift + arrows to select
+the change for cua mode is documented here:
+https://www.emacswiki.org/emacs/WindMove
+
+setup-general.el
+;(windmove-default-keybindings)
+(windmove-default-key bindings 'meta)
+
+
+--> to avoid an automatic company-complete menu to open
+and to replace it by a shortcut that activates the mode
+
+setup-general.el
+comment those lines
+;  (global-company-mode 1)
+;  (delete 'company-semantic company-backends))
+
+.emacs
+add a shortcut C-TAB
+(global-set-key (kbd "<C-tab>") 'company-mode)

@@ -104,7 +104,8 @@
 ; open speedbar with M-x speedbar
 
 ; to switch between windows
-(global-set-key [C-tab] 'ace-window)
+; ace-window is not needed any more because ALT + arrows can change of window
+(global-set-key (kbd "<C-tab>") 'company-mode)
 
 (global-set-key (kbd "C-n") 'speedbar)
 (global-set-key (kbd "M-,") 'gtags-pop-stack)
