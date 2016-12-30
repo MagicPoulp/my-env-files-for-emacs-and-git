@@ -25,10 +25,12 @@
 (setq whitespace-style
 (quote (face trailing whitespace-line)))
 
+; install color-theme from emacs-goodies-el
+; to avoid but still possible to do:
 ; download manually color theme from:
 ; http://www.nongnu.org/color-theme/#sec5
 ; http://download.savannah.nongnu.org/releases/color-theme/
-(add-to-list 'load-path "/home/thierry/.emacs.d/color-theme-6.6.0/")
+; (add-to-list 'load-path "/home/thierry/.emacs.d/color-theme-6.6.0/")
 (require 'color-theme)
 (color-theme-initialize)
 (eval-after-load "color-theme" '(color-theme-clarity))
