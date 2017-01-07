@@ -141,3 +141,13 @@ move the lanchers to the bottom left using right click move
 
 
 
+----------------
+to remve tearing in Firefox:
+
+To enable OpenGL OMTC go to about:config and set:
+
+    layers.acceleration.force-enabled true
+
+Restart Firefox for changes to take effect.
+
+To check if OpenGL OMTC is enabled, go to about:support and under the "Graphics" section look for "Compositing". If it reports "Basic", OpenGL OMTC is disabled; if it reports "OpenGL" it is enabled.
