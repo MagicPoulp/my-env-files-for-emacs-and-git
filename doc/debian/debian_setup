@@ -142,7 +142,7 @@ move the lanchers to the bottom left using right click move
 
 
 ----------------
-to remve tearing in Firefox:
+to remove tearing in Firefox:
 
 To enable OpenGL OMTC go to about:config and set:
 
@@ -155,4 +155,5 @@ To check if OpenGL OMTC is enabled, go to about:support and under the "Graphics"
 -----------------
 How to remove screen saver on XFCE
 one has to use the menu
-settings power options
+1. settings power options
+2. settingst secreensaver, increase the delay to 700 min
