@@ -2,7 +2,7 @@
 
 ; C/C++ environemnt
 ; from: https://github.com/tuhdo/emacs-c-ide-demo
-(load-file "~/.emacs.d/init.el")
+;(load-file "~/.emacs.d/init.el")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
