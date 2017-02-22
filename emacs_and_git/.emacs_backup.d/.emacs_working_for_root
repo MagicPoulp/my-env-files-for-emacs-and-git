@@ -92,6 +92,7 @@
          (gtags-mode 1)
          ))
 
+(setq js-indent-level 2)
 
 ; http://stackoverflow.com/questions/663588/emacs-c-mode-incorrect-indentation
 (setq c-default-style "bsd" c-basic-offset 4)
