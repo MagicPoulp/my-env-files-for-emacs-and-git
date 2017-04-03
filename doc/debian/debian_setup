@@ -1,4 +1,7 @@
-﻿nice reboot if Linux gets stuck, to avoid a cold restart:
+﻿-----------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FOR BOOTING:
+
+nice reboot if Linux gets stuck, to avoid a cold restart:
 ALT + PRINT + REISUB
 
 the Debian USB key needs to be created as EFI only. Note that Debian live does not have EFI, only Debian install has it.
@@ -45,9 +48,11 @@ sudo dpkg-reconfigure gdm3
 sudo nano /etc/default/grub
 update-grub
 
---> start he console in full screen
-change the icon preferences:
-exo-open --launch TerminalEmulator xfce4-terminal --maximize
+
+
+---------------------------------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FOR PINNING AND UPGRADING
+
 
 --> remove sound in wrong emacs command:
 console only removal:
@@ -63,6 +68,7 @@ with a more complete solution here:
 https://linuxconfig.org/turn-off-beep-bell-on-linux-terminal
 
 --> get the .myvars, .emacs, and git script from my github, MagicPoulp
+run the copy script
 https://github.com/MagicPoulp/my-env-files-for-emacs-and-git.git
 
 --> set up the pinning of packages from debian testing and unstable
@@ -130,7 +136,27 @@ something like firmware: failed to load rtl_nic/rtl8168g-2.fw
 
 install from apt-get and not from .deb because only apt makes updates
 
-------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OTHER, INPARTICULAR FOR DESKTOP
+
+--> start the console in full screen
+change the icon preferences:
+exo-open --launch TerminalEmulator xfce4-terminal --maximize
+
+-----------------
+set a screen saver policy, either to lock scrren in normal settings, or to deactivate it completely
+
+How to remove screen saver on XFCE
+one has to use the menu
+1. settings power options
+2. settingst secreensaver, increase the delay to 700 min
+
+-----------------------------------
+BELOW THIS LINE, NOT NECESSARY
+-----------------------------------
+
 to setup the destop bar:
 right click on poanel preferences, uncheck lock panel, then you can drag the panel 1 bar to the bottom of the screen
 relock the panel
@@ -152,8 +178,4 @@ Restart Firefox for changes to take effect.
 
 To check if OpenGL OMTC is enabled, go to about:support and under the "Graphics" section look for "Compositing". If it reports "Basic", OpenGL OMTC is disabled; if it reports "OpenGL" it is enabled.
 
------------------
-How to remove screen saver on XFCE
-one has to use the menu
-1. settings power options
-2. settingst secreensaver, increase the delay to 700 min
+

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+killall emacs
+
 git config --global push.default current
 git config --global remote.origin.push HEAD
 git config --global core.editor emacs_client
@@ -28,25 +30,40 @@ mv ~/Desktop ~/desktop 2> /dev/null
 mv ~/Downloads ~/downloads 2> /dev/null
 mv ~/Documents ~/documents 2> /dev/null
 
-mkdir -p ~/other
-mv ~/Music ~/other/ 2> /dev/null
-mv ~/Pictures ~/other/ 2> /dev/null
+mkdir -p ~/other 2> /dev/null
 mv ~/Music ~/other/ 2> /dev/null
 mv ~/Pictures ~/other/ 2> /dev/null
 mv ~/Public ~/other/ 2> /dev/null
 mv ~/Templates ~/other/ 2> /dev/null
 mv ~/Videos ~/other/ 2> /dev/null
 
+mkdir ~/desktop 2> /dev/null
+mkdir ~/downloads 2> /dev/null
+mkdir ~/documents 2> /dev/null
 
-echo "--> all files have been copied"
-echo "a killall emacs may be needed"
+mkdir -p ~/other 2> /dev/null
+mkdir ~/other/Music 2> /dev/null
+mkdir ~/other/Pictures 2> /dev/null
+mkdir ~/other/Public 2> /dev/null
+mkdir ~/other/Templates 2> /dev/null
+mkdir ~/other/Videos 2> /dev/null
+
+
+echo ""
+echo "--> REMINDER OF OTHER THINGS TO DO FIRST ON DEBIAN AFTER INSTALLATION: "
+echo "su -         adduser thierry sudo        log out"
+echo "increase font in shell"
+echo "set wallpaper"
+echo "remove beep in emacs (see debian_setup in doc)"
+echo "set up pinning"
+echo "run sudo apt-get update && sudo apt-get dist-upgrade"
+echo ""
+echo "--> the script will copy files for emacs and the shell"
 echo ""
 echo "--> TO DO ONCE PER INSTALLATION"
 echo ""
-echo 'sudo echo "source /home/thierry/.myvars" >> /root/.bashrc'
 echo 'echo "source /home/thierry/.myvars" >> ~/.bashrc'
-echo "sudo install emacs24 emacs-goodies-el"
 echo ""
-echo "--> FOR EVERY CHANGE TO ~/.emacs"
-echo ""
+echo "sudo apt-get install emacs24 emacs-goodies-el"
+echo "sudo sh -c 'cp ~/.myvars /root/; echo \"source /root/.myvars\" >> /root/.bashrc'"
 echo "sudo cp -r ~/.emacs_backup.d/.emacs_working_for_root /root/.emacs"
