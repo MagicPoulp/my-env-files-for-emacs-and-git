@@ -10,14 +10,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cua-mode t nil (cua-base))
-;; '(custom-enabled-themes nil)
- '(inhibit-startup-screen t)
  '(global-whitespace-mode t)
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-)
+ '(inhibit-startup-screen t)
+ '(package-selected-packages
+   (quote
+    (json-mode zygospore yasnippet ws-butler volatile-highlights use-package undo-tree js2-mode iedit helm-swoop helm-projectile helm-gtags dtrt-indent company clean-aindent-mode anzu ace-window))))
 
 (blink-cursor-mode 0)
 
@@ -40,7 +37,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-'(default ((t (:inherit nil :stipple nil :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 143 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
+ '(default ((t (:inherit nil :stipple nil :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 143 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
 
 (defun my-frame-toggle ()
   "Maximize/Restore Emacs frame using 'wmctrl'."
@@ -182,3 +179,19 @@
          (gud-find-file (car gud-last-last-frame))
        (gud-find-file gdb-main-file))))
   (delete-other-windows))
+
+; for JavaScript
+; https://elpa.gnu.org/packages/js2-mode.html
+
+; To install it as your major mode for JavaScript editing:
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+; You may also want to hook it in for shell scripts running via node.js:
+
+(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+
+; Support for JSX is available via the derived mode `js2-jsx-mode'.  If you
+; also want JSX support, use that mode instead:
+
+(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))

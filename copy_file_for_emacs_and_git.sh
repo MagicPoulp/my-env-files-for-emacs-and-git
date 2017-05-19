@@ -17,7 +17,6 @@ cp $DIR_EMACS_FILES/emacs_client ~/bin
 cp $DIR_EMACS_FILES/.emacs ~/
 cp $DIR_EMACS_FILES/.myvars ~/
 cp -r $DIR_EMACS_FILES/.emacs.d ~/
-cp -r $DIR_EMACS_FILES/.emacs_backup.d ~/
 source ~/.myvars
 
 
@@ -58,12 +57,13 @@ echo "remove beep in emacs (see debian_setup in doc)"
 echo "set up pinning"
 echo "run sudo apt-get update && sudo apt-get dist-upgrade"
 echo ""
-echo "--> the script will copy files for emacs and the shell"
+echo "--> the script will copy files for emacs and the shell environment"
 echo ""
 echo "--> TO DO ONCE PER INSTALLATION"
 echo ""
 echo 'echo "source /home/thierry/.myvars" >> ~/.bashrc'
 echo ""
-echo "sudo apt-get install emacs24 emacs-goodies-el"
 echo "sudo sh -c 'cp ~/.myvars /root/; echo \"source /root/.myvars\" >> /root/.bashrc'"
-echo "sudo cp -r ~/.emacs_backup.d/.emacs_working_for_root /root/.emacs"
+echo "sudo apt-get install emacs25 emacs-goodies-el"
+echo "sudo cp ~/.emacs /root/"
+
