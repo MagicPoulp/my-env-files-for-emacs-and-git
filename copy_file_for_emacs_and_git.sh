@@ -64,6 +64,6 @@ echo ""
 echo 'echo "source /home/thierry/.myvars" >> ~/.bashrc'
 echo ""
 echo "sudo sh -c 'cp ~/.myvars /root/; echo \"source /root/.myvars\" >> /root/.bashrc'"
-echo "sudo apt-get install emacs25 emacs-goodies-el elpa-markdown-mode"
+echo "sudo apt-get install -t testing emacs25 emacs-goodies-el elpa-markdown-mode"
 echo "sudo cp ~/.emacs /root/"
 
