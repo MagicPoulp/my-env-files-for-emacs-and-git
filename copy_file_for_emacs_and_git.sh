@@ -24,6 +24,7 @@ DIR_HOME_SETUP=$DIR1/home_dir_setup
 cp $DIR_HOME_SETUP/user-dirs.dirs ~/.config/user-dirs.dirs
 
 mkdir -p ~/tmp
+mkdir -p ~/.emacs_backups
 
 mv ~/Desktop ~/desktop 2> /dev/null
 mv ~/Downloads ~/downloads 2> /dev/null
