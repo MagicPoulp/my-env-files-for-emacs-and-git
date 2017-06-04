@@ -1,4 +1,0 @@
-in FAT there is no user mode, so atrick is needed to mount for non root users
-
-sudo mount /dev/sdb1 /media/thierry/KINGSTON -o rw,umask=0000
-

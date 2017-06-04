@@ -1,0 +1,35 @@
+--> I must not shutdown my computer with a non-ejected USB stick. Rebooting can corrupt the USB stick.
+
+I must eject the USB stick in a good way as documented below.
+It is important because sometimes I have a read only corrupted USB stick that I must reformat with gparted
+
+--> to list available devices:
+
+sudo fdisk -l
+
+--> to mount a FAT42 stick:
+
+in FAT there is no user mode, so atrick is needed to mount for non root users
+
+sudo mount /dev/sdb1 /media/thierry/KINGSTON -o rw,umask=0000
+
+--> to mount an ext4 stick:
+
+sudo mount /dev/sdb1 /media/thierry/KINGSTON -o rw
+
+--> to eject:
+
+close all shells using the USB stick
+
+unmount:
+sudo umount /media/thierry/KINGSTON
+
+eject:
+sudo eject /dev/sdb1
+
+see StackOverfloow thread that recommends to usee eject
+https://unix.stackexchange.com/questions/35508/eject-usb-drives-eject-command
+
+--> gparted
+gparted can format an USB disk if all its data is saved somewhere else
+a special device must be selected in the menu of gparted to see USB devices
