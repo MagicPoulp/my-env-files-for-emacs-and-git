@@ -89,8 +89,6 @@
          (gtags-mode 1)
          ))
 
-(setq js-indent-level 2)
-
 ; http://stackoverflow.com/questions/663588/emacs-c-mode-incorrect-indentation
 (setq c-default-style "bsd" c-basic-offset 4)
 
@@ -180,8 +178,13 @@
        (gud-find-file gdb-main-file))))
   (delete-other-windows))
 
-; for JavaScript
+;; -----------------------------------------------------------------------
+
+; --> for JavaScript
 ; https://elpa.gnu.org/packages/js2-mode.html
+
+; In the Google Javascript guide, Javascript has 2 letters of indentation
+(setq js-indent-level 2)
 
 ; To install it as your major mode for JavaScript editing:
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
@@ -195,3 +198,18 @@
 
 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
+
+;; ----> to install less-css-mode from the ELPA repository
+; --> uncomment the code below:
+;
+; (require 'package) ;; You might already have this line
+; (add-to-list 'package-archives
+;             '("melpa" . "https://melpa.org/packages/"))
+; (when (< emacs-major-version 24)
+;  ;; For important compatibility libraries like cl-lib
+;  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+;(package-initialize) ;; You might already have this line
+
+; ALT + x list-packages
+; CTRL + s less-css-mode
+; click with the mouse on install
