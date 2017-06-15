@@ -57,6 +57,11 @@ alias gd='git diff --stat origin/master...'
 alias bf='git branch -a | grep'
 alias bp='git format-patch master --stdout'
 
+# To remove hanging git commits that are under no branch
+# source:
+# https://stackoverflow.com/questions/3765234/listing-and-deleting-git-commits-that-are-under-no-branch-dangling
+alias greflog='git reflog expire --expire-unreachable=now --all && git gc --prune=now'
+
 # other useful patch commands:
 # git apply --stat fix_empty_poster.patch
 # git apply --check fix_empty_poster.patch
