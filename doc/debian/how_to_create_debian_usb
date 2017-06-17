@@ -1,0 +1,39 @@
+IMPORTANT:
+if the device is on /dev/sdb1, one must write of=/dev/sdb, without the terminating 1
+I saw myself that this small difference makes the disk bootable
+
+-------------------------------------------------------------------------
+
+--> get the iso image from the Debian official website:
+
+there is the live images
+there is the install image, really designed for EFI but it works also on legacy boots
+one can even format the entire disk, create a 3rd partition for the EFI, and then activate the BIOS to boot on that EFI partition as a new boot option
+
+--> to create the bootable usb:
+
+the different accessible file systems can be listed by using
+sudo fdisk -l
+usually sda is for the hard disk and is dangerous to use
+sdb1 or sdc1 should be for the USB stick
+
+The usb stick can be formated with gparted
+
+from the Debian doc:
+https://www.debian.org/CD/faq/
+dd if=<file> of=<device> bs=4M; sync
+
+IMPORTANT:
+if the device is on /dev/sdb1, one must write of=/dev/sdb, without the terminating 1
+
+example:
+dd if=pathToDebian.iso of=/dev/sdb bs=4M; sync
+
+--> to install Debian
+
+1. shrink the partition on Windows
+
+2. install from the usb stick, after deactivating secure boot and fast boot in the BIOS, and optionaly after activating legacy boot (but all in EFI boot is better)
+choose the graphic install
+create a logical partition as swap
+create a primary partition as ext4 mounted on /
