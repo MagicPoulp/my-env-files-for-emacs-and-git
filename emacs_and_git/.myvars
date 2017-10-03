@@ -21,6 +21,13 @@ HOME=/home/thierry
 export HOME=/home/thierry
 export PATH=$PATH:$HOME/bin:/sbin:/usr/sbin
 
+# for using npm binaries
+export PATH="$PATH:./node_modules/.bin"
+
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 # ------------------------------------------------------------
 # aliases
