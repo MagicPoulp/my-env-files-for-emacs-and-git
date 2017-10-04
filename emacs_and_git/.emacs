@@ -112,6 +112,8 @@
 
 (define-key key-translation-map [dead-tilde] "~")
 
+; for the backtick with ALT-1
+(define-key key-translation-map (kbd "M-1") (kbd "`"))
 
 ; -----------------------------------------------------------
 ; for GDB

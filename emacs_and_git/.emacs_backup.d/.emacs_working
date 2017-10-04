@@ -10,14 +10,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cua-mode t nil (cua-base))
-;; '(custom-enabled-themes nil)
- '(inhibit-startup-screen t)
  '(global-whitespace-mode t)
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-)
+ '(inhibit-startup-screen t)
+ '(package-selected-packages
+   (quote
+    (json-mode zygospore yasnippet ws-butler volatile-highlights use-package undo-tree js2-mode iedit helm-swoop helm-projectile helm-gtags dtrt-indent company clean-aindent-mode anzu ace-window))))
 
 (blink-cursor-mode 0)
 
@@ -40,7 +37,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-'(default ((t (:inherit nil :stipple nil :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 143 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
+ '(default ((t (:inherit nil :stipple nil :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 143 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
 
 (defun my-frame-toggle ()
   "Maximize/Restore Emacs frame using 'wmctrl'."
@@ -92,8 +89,6 @@
          (gtags-mode 1)
          ))
 
-(setq js-indent-level 2)
-
 ; http://stackoverflow.com/questions/663588/emacs-c-mode-incorrect-indentation
 (setq c-default-style "bsd" c-basic-offset 4)
 
@@ -117,6 +112,8 @@
 
 (define-key key-translation-map [dead-tilde] "~")
 
+; for the backtick with ALT-1
+(define-key key-translation-map (kbd "M-1") (kbd "`"))
 
 ; -----------------------------------------------------------
 ; for GDB
@@ -182,3 +179,39 @@
          (gud-find-file (car gud-last-last-frame))
        (gud-find-file gdb-main-file))))
   (delete-other-windows))
+
+;; -----------------------------------------------------------------------
+
+; --> for JavaScript
+; https://elpa.gnu.org/packages/js2-mode.html
+
+; In the Google Javascript guide, Javascript has 2 letters of indentation
+(setq js-indent-level 2)
+
+; To install it as your major mode for JavaScript editing:
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+; You may also want to hook it in for shell scripts running via node.js:
+
+(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+
+; Support for JSX is available via the derived mode `js2-jsx-mode'.  If you
+; also want JSX support, use that mode instead:
+
+(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
+
+;; ----> to install less-css-mode from the ELPA repository
+; --> uncomment the code below:
+;
+; (require 'package) ;; You might already have this line
+; (add-to-list 'package-archives
+;             '("melpa" . "https://melpa.org/packages/"))
+; (when (< emacs-major-version 24)
+;  ;; For important compatibility libraries like cl-lib
+;  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+;(package-initialize) ;; You might already have this line
+
+; ALT + x list-packages
+; CTRL + s less-css-mode
+; click with the mouse on install
