@@ -14,7 +14,8 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (json-mode zygospore yasnippet ws-butler volatile-highlights use-package undo-tree js2-mode iedit helm-swoop helm-projectile helm-gtags dtrt-indent company clean-aindent-mode anzu ace-window))))
+;    (json-mode zygospore yasnippet ws-butler volatile-highlights use-package undo-tree js2-mode iedit helm-swoop helm-projectile helm-gtags dtrt-indent company clean-aindent-mode anzu ace-window))))
+    (json-mode js2-mode))))
 
 (blink-cursor-mode 0)
 
