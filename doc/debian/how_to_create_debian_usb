@@ -37,3 +37,9 @@ dd if=pathToDebian.iso of=/dev/sdb bs=4M; sync
 choose the graphic install
 create a logical partition as swap
 create a primary partition as ext4 mounted on /
+
+--> to reset the usb stick:
+once I had a corruption error and the following ocmmand removed the problem taht could not be removed by just removing partitions
+dd if=/dev/zero of=/dev/sdb bs=512 count=1
+
+https://unix.stackexchange.com/questions/30322/how-do-i-partition-a-usb-drive-so-that-its-bootable-and-has-a-windows-compatibl
