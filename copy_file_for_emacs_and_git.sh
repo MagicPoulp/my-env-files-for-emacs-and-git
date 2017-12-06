@@ -1,6 +1,9 @@
 #!/bin/bash
 
-killall emacs
+echo ""
+echo "--> the script will copy files for emacs and for the shell environment"
+
+killall emacs 2> /dev/null
 
 git config --global push.default current
 git config --global remote.origin.push HEAD
@@ -52,19 +55,20 @@ mkdir ~/other/Videos 2> /dev/null
 echo ""
 echo "--> REMINDER OF OTHER THINGS TO DO FIRST ON DEBIAN AFTER INSTALLATION: "
 echo "su -         adduser thierry sudo        log out"
-echo "increase font in shell"
+echo "increase font in shell, set it to 18"
+echo "note: tab opening is done with: ALT+SHIT+t, workspace chage is done with CTRL+ALT+right arrow"
 echo "set wallpaper"
-echo "remove beep in emacs (see debian_setup in doc)"
+echo "remove pcspeaker beep in emacs (see debian_setup in doc)"
 echo "set up pinning"
-echo "run sudo apt-get update && sudo apt-get dist-upgrade"
-echo ""
-echo "--> the script will copy files for emacs and the shell environment"
+echo "change the system font in xfce settings editor, xsettings, set it to 16"
+echo "run to update: sudo apt-get update && sudo apt-get dist-upgrade"
 echo ""
 echo "--> TO DO ONCE PER INSTALLATION"
 echo ""
-echo 'echo "source /home/thierry/.myvars" >> ~/.bashrc'
-echo ""
-echo "sudo sh -c 'cp /home/thierry/.myvars /root/; echo \"source /root/.myvars\" >> /root/.bashrc'"
+echo 'echo "source ~/.myvars" >> ~/.bashrc'
 echo "sudo apt-get install -t testing emacs25 emacs-goodies-el elpa-markdown-mode"
-echo "sudo cp /home/thierry/.emacs /root/"
+echo ""
+echo "And if affecting root is fine:"
+echo "sudo sh -c 'cp $HOME/.myvars /root/; echo \"source /root/.myvars\" >> /root/.bashrc'"
+echo "sudo cp $HOME/.emacs /root/"
 

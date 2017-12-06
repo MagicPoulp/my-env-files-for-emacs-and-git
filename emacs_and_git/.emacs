@@ -184,7 +184,7 @@
 ; https://elpa.gnu.org/packages/js2-mode.html
 
 ; In the Google Javascript guide, Javascript has 2 letters of indentation
-(setq js-indent-level 2)
+(setq js-indent-level 4)
 
 ; To install it as your major mode for JavaScript editing:
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
@@ -198,6 +198,9 @@
 
 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
+
+(setq-default js2-strict-missing-semi-warning nil)
+(setq-default js2-strict-trailing-comma-warning nil)
 
 ;; ----> to install less-css-mode from the ELPA repository
 ; --> uncomment the code below:

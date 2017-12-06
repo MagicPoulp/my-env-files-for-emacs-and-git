@@ -1,3 +1,15 @@
 #!/bin/sh
+
 # The file needs to be placed in $HOME/bin and added to the PATH
-emacsclient -q -a "" -c -F "((fullscreen . maximized))" "$@" >/dev/null 2>/dev/null
+# It can open the file at a certain a line number by using the command following syntax:
+# e test/unit_tests/components/images_tests.js:101:56
+
+FILE1=`echo $1 | cut -d ":" -f 1`
+
+if [ $FILE1 != $1 ]; then
+    LINE1=`echo $1 | cut -d ":" -f 1  --complement`
+    if [ $LINE1 != "" ]; then
+        LINE1="+$LINE1"
+    fi
+fi
+emacsclient $LINE1 -q -a "" -c -F "((fullscreen . maximized))" "$FILE1" >/dev/null 2>/dev/null

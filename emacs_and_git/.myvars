@@ -33,7 +33,10 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 alias findgrep='find . | xargs grep -i -n -s'
 
 # emacs
-#running "emacs" directly will still make the emacs sessions have separate buffers
+# shortcut to start emacs while using the emacs server.
+# It can open the file at a certain a line number by using the command following syntax:
+# e test/unit_tests/components/images_tests.js:101:56
+# however, using "emacs" without the shortcut will make the emacs sessions have separate buffers
 alias e='e_function'
 # firefox
 alias f='f_function'
@@ -86,7 +89,7 @@ function gcom_function {
 }
 
 function e_function {
-    eval "emacs_client \"$@\" &"
+    eval "emacs_client $@ &"
 }
 
 function f_function {
