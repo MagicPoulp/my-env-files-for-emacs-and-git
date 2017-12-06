@@ -1,0 +1,14 @@
+#backports are pinnined at 100 by default
+# if this is not negative, a dist-upgrade can move too many packages to the backports versions
+Package: *
+Pin: release a=stretch-backports
+Pin-Priority: -4
+
+Package: *
+Pin: release a=testing
+Pin-Priority: -5
+
+Package: *
+Pin: release o=Debian
+Pin-Priority: -10
+
