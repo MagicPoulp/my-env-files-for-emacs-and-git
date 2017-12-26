@@ -40,6 +40,15 @@ mv ~/Public ~/other/ 2> /dev/null
 mv ~/Templates ~/other/ 2> /dev/null
 mv ~/Videos ~/other/ 2> /dev/null
 
+mv ~/Skrivbord ~/desktop 2> /dev/null
+mv ~/Dokument ~/documents 2> /dev/null
+mv ~/Hämtningar ~/downloads 2> /dev/null
+mv ~/Video ~/other/Videos 2> /dev/null
+mv ~/Publikt ~/other/Public 2> /dev/null
+mv ~/Musik ~/other/Musik 2> /dev/null
+mv ~/Mallar ~/other/Templates 2> /dev/null
+mv ~/Bilder ~/other/Pictures 2> /dev/null
+
 mkdir ~/desktop 2> /dev/null
 mkdir ~/downloads 2> /dev/null
 mkdir ~/documents 2> /dev/null
