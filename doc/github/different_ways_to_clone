@@ -1,0 +1,8 @@
+with ssh key only:
+git clone ssh://git@github.com/MagicPoulp/my-env-files-for-emacs-and-git.git
+
+with user and password:
+git clone https://github.com/MagicPoulp/my-env-files-for-emacs-and-git.git
+
+use ssh-add to register a passphrase
+
