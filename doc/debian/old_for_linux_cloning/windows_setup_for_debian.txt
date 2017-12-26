@@ -1,3 +1,7 @@
 bcdedit /enum firmware
 
+This below does not work since windows always reset the order
 bcdedit /set {fwbootmgr} displayorder {ID} /addfirst
+
+see the other file that explains how to boot GRUB before windows by shortcutting bootmgr and linking it to the BRUG booter
+
