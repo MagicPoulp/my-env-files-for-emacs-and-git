@@ -1,0 +1,20 @@
+When both debian and windows are in EFI mode, windows will always try to start first.
+
+GRUB is the debian linux boot loader.
+
+Here is a solution. Be carefult because it will forever short circuit the default windows fwbootmgr.
+But if you can boot on Windows from GRUB, it should be fine to have only grub.
+
+1. In the BIOS (during the start), remove all the secure boot things related to Windows (there are many)
+And this before installing debian
+2. Install debian
+3. make sure windows can be started from grub
+use F12 (or F8 and the BIOS) to boot on GRUB
+start windows from GRUB
+4. in windows, WIndows system, start a command shell awit hright click run as administrator
+bcdedit /enum firmware
+bcdedit /set {bootmgr} path \EFI\DEBIAN\GRUBX64.EFI
+It will link to GRUB when Windows tries to start. But no worry since GRUB can also start windows.
+And bootmgr is not vital.
+5. retart the computer
+
