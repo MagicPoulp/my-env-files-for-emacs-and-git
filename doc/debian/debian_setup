@@ -1,3 +1,7 @@
+Most relevant:
+--> remove sound of pcspkr
+--> enable pinning
+
 ----------------------------------------------------------------------------------
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FOR BOOTING:
 
@@ -53,8 +57,7 @@ update-grub
 ---------------------------------------------------------------------------------------------------------
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FOR PINNING AND UPGRADING
 
-
---> remove sound in wrong emacs command:
+--> remove sound in wrong emacs command or TAB:
 console only removal:
 rmmod pcspkr
 
@@ -80,6 +83,7 @@ https://github.com/MagicPoulp/my-env-files-for-emacs-and-git.git
 --> set up the pinning of packages from debian testing and unstable
 PINNING is dangerous! one can make the distribution unstable or remove vital packages
 We only want to update if asked, so we use negative priorities
+>>>>>> UPDATE and copy the files in the pinning_files folder
 
 1.
 apt-get clean
