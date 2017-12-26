@@ -202,6 +202,11 @@
 (setq-default js2-strict-missing-semi-warning nil)
 (setq-default js2-strict-trailing-comma-warning nil)
 
+; for indentations in CSS and Javascript
+(setq css-indent-offset 4)
+(setq js-switch-indent-offset 4)
+(setq js2-indent-switch-body t)
+
 ;; ----> to install less-css-mode from the ELPA repository
 ; --> uncomment the code below:
 ;
