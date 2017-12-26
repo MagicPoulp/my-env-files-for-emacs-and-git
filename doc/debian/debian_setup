@@ -58,10 +58,16 @@ update-grub
 console only removal:
 rmmod pcspkr
 
-System wide removal
+System wide removal in 2 steps
+1. blacklist pcspkr
 Blacklisting the pcspkr module will prevent udev from loading it at boot:
 sudo echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf
+or use nano:
+nano /etc/modprobe.d/nobeep.conf
+and add the line:
+blacklist pcspkr
 
+2. remove bell on tab
 sudo nano /etc/inputrc
 uncomment the line with bell-style none
 with a more complete solution here:
