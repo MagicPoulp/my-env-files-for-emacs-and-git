@@ -1,3 +1,6 @@
+this is dangerous the nouveau driver are more stable
+isntalling proprietary graphics drivers can make the system unstable and make updates not work well
+
 --> Note that after installing Debian, the screen will be black.
 In grub, type e, then add "nomodeset" before quiet
 
