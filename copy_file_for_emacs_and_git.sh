@@ -95,6 +95,8 @@ echo "--> TO DO ONCE PER INSTALLATION"
 echo ""
 echo 'echo "source ~/.myvars" >> ~/.bashrc'
 echo "sudo apt-get install -t testing emacs25 emacs-goodies-el elpa-markdown-mode"
+echo "uncomment the melpa repository in the .emacs"
+echo "install js2-mode and scss-mode and json-mode using ALT-X list-packages"
 echo ""
 echo "And if affecting root is fine:"
 echo "sudo sh -c 'cp $HOME/.myvars /root/; echo \"source /root/.myvars\" >> /root/.bashrc'"
