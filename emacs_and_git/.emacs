@@ -203,7 +203,7 @@
 (setq-default js2-strict-trailing-comma-warning nil)
 
 ; for indentations in CSS and Javascript
-(setq css-indent-offset 4)
+(setq css-indent-offset 2)
 (setq js-switch-indent-offset 4)
 (setq js2-indent-switch-body t)
 
