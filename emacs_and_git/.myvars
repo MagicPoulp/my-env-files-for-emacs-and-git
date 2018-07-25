@@ -26,7 +26,6 @@ export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME
 
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export GREP_OPTIONS='--color=always'
 
 # ------------------------------------------------------------
 # aliases
@@ -70,6 +69,8 @@ alias bp='git format-patch master --stdout'
 # source:
 # https://stackoverflow.com/questions/3765234/listing-and-deleting-git-commits-that-are-under-no-branch-dangling
 alias greflog='git reflog expire --expire-unreachable=now --all && git gc --prune=now'
+
+alias grep="grep --color=always"
 
 # other useful patch commands:
 # git apply --stat fix_empty_poster.patch
