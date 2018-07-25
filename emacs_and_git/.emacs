@@ -12,7 +12,9 @@
  '(cua-mode t nil (cua-base))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
- '(package-selected-packages (quote (json-mode js2-mode))))
+ '(package-selected-packages
+   (quote
+    (typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 
 (blink-cursor-mode 0)
 
