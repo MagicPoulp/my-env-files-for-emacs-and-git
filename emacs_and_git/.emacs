@@ -48,8 +48,11 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-     ;;; Prevent Extraneous Tabs
+;;; Prevent Extraneous Tabs
 (setq-default indent-tabs-mode nil)
+
+;;; tab size
+(setq default-tab-width 4)
 
 ;(add-to-list 'load-path "~/ErlangRigEmacsConfig")
 ;(require 'my-config)
