@@ -70,7 +70,7 @@ alias bp='git format-patch master --stdout'
 # https://stackoverflow.com/questions/3765234/listing-and-deleting-git-commits-that-are-under-no-branch-dangling
 alias greflog='git reflog expire --expire-unreachable=now --all && git gc --prune=now'
 
-alias grep="grep --color=always"
+alias grep="grep --color=auto"
 
 # other useful patch commands:
 # git apply --stat fix_empty_poster.patch
