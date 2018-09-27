@@ -1,0 +1,22 @@
+Yocto in Python 2
+Yocto is developed by the Linux foudnation which is the main organization for Linux development
+
+a central Yocto project defines the baseline with the HASH used an each repository
+It relieves continuous integration.
+you only need to build jenkins for the baseline change not all the small repos. This allows many intermediate commits.
+
+1. build a recipe
+
+see the example with the recipe
+
+se an example with a git clone
+
+compile and install
+
+2. SDK:
+see picture in the doc
+one can build only at one place, once the SDK is loaded, one can can customize one's own build.
+
+--
+demo from scratch
+RDEPENDS for linked dependencies

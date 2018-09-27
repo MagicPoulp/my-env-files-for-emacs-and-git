@@ -1,0 +1,38 @@
+http://yoctoproject.org/documentation
+
+# for the setup
+
+https://www.yoctoproject.org/docs/2.0/yocto-project-qs/yocto-project-qs.html
+install apt-get packages
+git clone git://git.yoctoproject.org/poky
+
+cd ~/poky
+git tag -n
+checkout a version
+
+source oe-init-build-env
+
+build/conf/local.conf
+add
+# remove temp files
+INHERIT += "rm_work"
+
+change
+PACKAGE_CLASSES ?= "package_deb"
+
+-----------------------------
+
+create a layer (it may be require to source the oe-init-build-env)
+reset; ~/tmp/yocto/poky/bitbake/bin/bitbake-layers create-layer mylayer
+
+after on creates a build, one should rune a cutsom recipe. The examples recipes take too long. The best is to add
+the recipe in a new layer and udpate the config to support that layer. But do not remove the old layers since bitbke.conf and other are in there
+
+create build
+source ~/tmp/yocto/poky/oe-init-build-env
+bitbake recipe1
+
+to speed up the build, one should create a new layer
+-------------------------------------
+for do_compile to work, a makefile containing the raget oe_runmake must be present in the repository
+
