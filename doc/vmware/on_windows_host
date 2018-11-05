@@ -3,6 +3,8 @@ apt-get install open-vm-tools
 it enhances many things in the guest OS
 
 the display resolution can be changed
+1680 x 1050 is good in full screen, the maximum one can have
+
 to quit the full screen mode CTRL ALT ENTER when the mouse is visible
 
 There is no need of swap when isntalling debian linux
