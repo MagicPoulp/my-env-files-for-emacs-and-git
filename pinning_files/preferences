@@ -9,6 +9,5 @@ Pin: release a=testing
 Pin-Priority: -5
 
 Package: *
-Pin: release o=Debian
+Pin: release a=unstable
 Pin-Priority: -10
-
