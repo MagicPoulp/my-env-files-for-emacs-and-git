@@ -14,7 +14,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
+    (py-autopep8 js2-mode scss-mode json-mode))))
 
 (blink-cursor-mode 0)
 
@@ -193,6 +193,8 @@
 
 ; To install it as your major mode for JavaScript editing:
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+; typescript mode has a broken indentation so do not use it
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
 
 ; You may also want to hook it in for shell scripts running via node.js:
 
