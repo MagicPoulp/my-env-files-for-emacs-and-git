@@ -4,5 +4,8 @@ there is a details page once one starts a VM
 
 there is the virtio driver iso from fedora that improves the graphics
 
-a raw file is better
+a raw file is better, then pick it in the installer using virt-manager
 qemu-img create -f raw win10.img 150G
+
+install the spice-guest-tools, and then put the video on QXL, and reboot, and then this command line can ssh to windows:
+remote-viewer spice://localhost:5900
