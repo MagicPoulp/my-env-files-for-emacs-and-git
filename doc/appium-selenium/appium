@@ -1,10 +1,14 @@
 http://appium.io/docs/en/drivers/windows/
 
 run WinAppDriver in a console as administrator
+WinAppDriver.exe 127.0.0.1 4723
 https://github.com/Microsoft/WinAppDriver
+check well the port if it does not work
 
 set Windows in developer mode
 https://www.howtogeek.com/292914/what-is-developer-mode-in-windows-10/
 
 try the samples
 there is an option to remove if tests cannot be seen, in TOols, Options, Tests
+
+note the examples may need to be adjusted. The notepad sample is designed for an English keyboard, and the notepad title may be changed to Swedish
