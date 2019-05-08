@@ -9,3 +9,8 @@ qemu-img create -f raw win10.img 150G
 
 install the spice-guest-tools, and then put the video on QXL, and reboot, and then this command line can ssh to windows:
 remote-viewer spice://localhost:5900
+
+
+one must also add a hardware channel, spicevmc type, redhat domain, to enable teh clipboard, and restart well everything ,tested to work
+
+https://blogs.nologin.es/rickyepoderi/index.php?/archives/87-Copy-n-Paste-in-KVM.html
