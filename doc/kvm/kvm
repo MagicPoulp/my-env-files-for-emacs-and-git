@@ -1,0 +1,8 @@
+https://wiki.debian.org/KVM
+
+there is a details page once one starts a VM
+
+there is the virtio driver iso from fedora that improves the graphics
+
+a raw file is better
+qemu-img create -f raw win10.img 150G
