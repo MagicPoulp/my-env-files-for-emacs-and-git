@@ -1,0 +1,10 @@
+http://appium.io/docs/en/drivers/windows/
+
+run WinAppDriver in a console as administrator
+https://github.com/Microsoft/WinAppDriver
+
+set Windows in developer mode
+https://www.howtogeek.com/292914/what-is-developer-mode-in-windows-10/
+
+try the samples
+there is an option to remove if tests cannot be seen, in TOols, Options, Tests
