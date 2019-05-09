@@ -1,0 +1,21 @@
+https://unix.stackexchange.com/questions/86071/use-virt-manager-to-share-files-between-linux-host-and-windows-guest
+
+shared folder by right click on windows
+
+linux with Nautilus can connect to the smb://IP_WINDOWS
+
+enable firware rules on windows
+    Open Control Panel, click System and Security, and then click Windows Firewall.
+
+    In the left pane, click Advanced settings, and in the console tree, click Inbound Rules.
+
+    Under Inbound Rules, locate the rules File and Printer Sharing (NB-Session-In) and File and Printer Sharing (SMB-In).
+
+    For each rule, right-click the rule, and then click Enable Rule.
+
+
+find ips using ipconfig and ifconfig
+
+remove password protection for smb
+https://pureinfotech.com/setup-network-file-sharing-windows-10/
+
