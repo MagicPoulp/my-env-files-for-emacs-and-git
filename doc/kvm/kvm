@@ -1,3 +1,5 @@
+here is some info for using a Windows 10 guest on a deiban 10 host
+
 https://wiki.debian.org/KVM
 
 there is a details page once one starts a VM
@@ -14,3 +16,7 @@ remote-viewer spice://localhost:5900
 one must also add a hardware channel, spicevmc type, redhat domain, to enable teh clipboard, and restart well everything ,tested to work
 
 https://blogs.nologin.es/rickyepoderi/index.php?/archives/87-Copy-n-Paste-in-KVM.html
+
+to activate the network
+sudo virsh net-autostart default
+sudo virsh net-start default
