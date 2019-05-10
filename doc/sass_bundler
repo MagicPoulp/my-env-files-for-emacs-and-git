@@ -1,0 +1,7 @@
+clone bundler in the folder ~/sass/
+git clone https://github.com/bundler/bundler.git
+
+put Gemfile in the folder ~/sass/
+~/sass/bundler/bin/bundle install
+~/sass/bundler/bin/bundle exec compass compile path to config.rb
+
