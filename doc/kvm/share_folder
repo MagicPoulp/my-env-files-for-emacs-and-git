@@ -19,3 +19,13 @@ find ips using ipconfig and ifconfig
 remove password protection for smb
 https://pureinfotech.com/setup-network-file-sharing-windows-10/
 
+
+--
+And this is how to mount
+sudo mount -t cifs //192.168.122.252/Users/ThierryVilmart/Desktop/repos /media/vm -o user=externo,password=asd
+
+or add this in /etc/fstab
+//192.168.122.252/Users/ThierryVilmart/Desktop/repos /media/vm cifs user=externo,password=asd
+And then one can mount using
+sudo mount /media/vm
+
