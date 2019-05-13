@@ -19,13 +19,16 @@ find ips using ipconfig and ifconfig
 remove password protection for smb
 https://pureinfotech.com/setup-network-file-sharing-windows-10/
 
+It is important to deactivate authenticate for all networks in the network configuration in windows, accessible from file sharing. then the folder must be create from scratch to make sure it works
 
 --
 And this is how to mount
-sudo mount -t cifs //192.168.122.252/Users/ThierryVilmart/Desktop/repos /media/vm -o user=externo,password=asd
+sudo mount -t cifs //192.168.122.125/Users/ThierryVilmart/Desktop/repos /media/vm -o user=externo,password=asd,uid=1000,gid=1000
 
 or add this in /etc/fstab
-//192.168.122.252/Users/ThierryVilmart/Desktop/repos /media/vm cifs user=externo,password=asd
+//192.168.122.125/Users/ThierryVilmart/Desktop/repos /media/vm cifs user=externo,password=asd,uid=1000,gid=1000
 And then one can mount using
 sudo mount /media/vm
 
+it is important to replace teh gid and uid with the ones of the linux machine, using id -g thierry and id -u thierry
+the ui adn gid are so taht not only root has access but also the user
