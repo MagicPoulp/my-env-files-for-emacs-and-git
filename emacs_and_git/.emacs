@@ -212,6 +212,12 @@
 (setq js-switch-indent-offset 4)
 (setq js2-indent-switch-body t)
 
+; mode for cshtml
+; download file here http://web-mode.org/
+;(load-file "~/.emacs.d/web-mode.el")
+;(require 'web-mode)
+;(add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
+
 ;; ----> to install less-css-mode from the ELPA repository
 ; --> uncomment the code below:
 ;
