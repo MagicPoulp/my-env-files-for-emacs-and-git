@@ -1,0 +1,5 @@
+when not puttin the @ in the email it may open a window for auth the app password
+https://outlook.office365.com/EWS/Exchange.asmx
+
+there may be an app password or several ones with 2 steps authentication
+install evolution and evolution-ews
