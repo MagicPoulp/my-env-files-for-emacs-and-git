@@ -23,12 +23,14 @@ It is important to deactivate authenticate for all networks in the network confi
 
 --
 And this is how to mount
-sudo mount -t cifs //192.168.122.125/Users/ThierryVilmart/Desktop/repos /media/vm -o user=externo,password=asd,uid=1000,gid=1000
+sudo mount -t cifs //192.168.122.125/Users/ThierryVilmart/Desktop/repos /media/vm -o user=externo,password=asd,uid=1000,gid=1000,mfsymlinks
 
 or add this in /etc/fstab
-//192.168.122.125/Users/ThierryVilmart/Desktop/repos /media/vm cifs user=externo,password=asd,uid=1000,gid=1000
+//192.168.122.125/Users/ThierryVilmart/Desktop/repos /media/vm cifs user=externo,password=asd,uid=1000,gid=1000,mfsymlinks
 And then one can mount using
 sudo mount /media/vm
 
 it is important to replace teh gid and uid with the ones of the linux machine, using id -g thierry and id -u thierry
 the ui adn gid are so taht not only root has access but also the user
+
+the option mfsymlinks enables symlinks to work
