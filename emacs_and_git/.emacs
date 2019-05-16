@@ -208,8 +208,10 @@
 (setq-default js2-strict-trailing-comma-warning nil)
 
 ; for indentations in CSS and Javascript
+(setq js-indent-level 2)
+(setq typescript-indent-level 2)
 (setq css-indent-offset 2)
-(setq js-switch-indent-offset 4)
+(setq js-switch-indent-offset 2)
 (setq js2-indent-switch-body t)
 
 ; mode for cshtml
