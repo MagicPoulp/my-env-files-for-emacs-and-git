@@ -20,3 +20,15 @@ https://blogs.nologin.es/rickyepoderi/index.php?/archives/87-Copy-n-Paste-in-KVM
 to activate the network
 sudo virsh net-autostart default
 sudo virsh net-start default
+
+-----
+
+A better client for the VM that allows shortcuts for setting and unsetting fullscreen
+sudo apt-get install spice-client-gtk
+spicy --uri spice://localhost:5900
+-f can set fullscreen from start
+
+note the VM must be started
+shortcuts:
+Shift+F11 set fullscreen
+Shift+F12 uset fullscreen
