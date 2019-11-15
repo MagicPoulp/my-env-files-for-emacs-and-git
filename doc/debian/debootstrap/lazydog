@@ -1,0 +1,37 @@
+sudo apt-get install debootstrap
+42366  [2019-11-13 12:55:24] sudo mkdir /stable-chroot
+42367  [2019-11-13 12:55:45] chown thierry:thierry /stable-chroot
+42368  [2019-11-13 12:55:48] sudo chown thierry:thierry /stable-chroot
+42369  [2019-11-13 12:55:49] c
+42370  [2019-11-13 12:56:01] debootstrap stable /stable-chroot http://deb.debian.org/debian/
+42371  [2019-11-13 12:56:05] sudo debootstrap stable /stable-chroot http://deb.debian.org/debian/
+42376  [2019-11-13 13:17:14] cd /stable-chroot/
+42377  [2019-11-13 13:17:16] mount -t proc proc proc/
+42378  [2019-11-13 13:17:16] mount --rbind /sys sys/
+42379  [2019-11-13 13:17:23] sudo mount -t proc proc proc/
+42383  [2019-11-13 13:17:40] sudo mount --rbind /sys sys/
+42384  [2019-11-13 13:17:48] sudo mount --rbind /dev dev/
+42374  [2019-11-13 13:01:37] sudo chroot /stable-chroot/ /bin/bash
+
+
+then install monodevelop using the tutorial
+
+---------
+https://wiki.archlinux.org/index.php/chroot#Run_graphical_applications_from_chroot
+
+Run graphical applications from chroot
+
+If you have an X server running on your system, you can start graphical applications from the chroot environment.
+
+To allow the chroot environment to connect to an X server, open a virtual terminal inside the X server (i.e. inside the desktop of the user that is currently logged in), then run the xhost command, which gives permission to anyone to connect to the user's X server (see also Xhost):
+
+$ xhost +local:
+
+Then, to direct the applications to the X server from chroot, set the DISPLAY environment variable inside the chroot to match the DISPLAY variable of the user that owns the X server. So for example, run
+
+$ echo $DISPLAY
+
+as the user that owns the X server to see the value of DISPLAY. If the value is ":0" (for example), then in the chroot environment run
+
+# export DISPLAY=:0
+
