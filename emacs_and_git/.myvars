@@ -21,6 +21,7 @@ export PATH=$PATH:$HOME/bin:/sbin:/usr/sbin
 
 # for using npm binaries
 export PATH="$PATH:./node_modules/.bin"
+export PATH="$PATH:/home/thierry/node/node-v10.16.0-linux-x64/bin"
 
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME
@@ -78,6 +79,8 @@ alias grep="grep --color=auto"
 # git am --signoff < fix_empty_poster.patch
 
 alias gcom='gcom_function'
+alias gcomt='gcomt_function'
+
 function clean() {
     dir=`pwd`
     cd $d
@@ -86,8 +89,16 @@ function clean() {
     cd $dir
 }
 
+
+function gcomt_function {
+    command="/home/thierry/repos/translate-shell/translate -b sv:en \"$1\" | sed -s 's/# /#/' | xargs -d '\n' -I {} git commit --cleanup=whitespace -m {} -m \"$1\""
+    echo $command > /home/thierry/tmp/gcomt_command
+    chmod +x /home/thierry/tmp/gcomt_command
+    echo "stdbuf -i0 -o0 -e0 ~/tmp/gcomt_command"
+}
+
 function gcom_function {
-    eval "git commit -m \"$@\""
+    eval "git commit --cleanup=whitespace -m \"$@\""
 }
 
 function e_function {
