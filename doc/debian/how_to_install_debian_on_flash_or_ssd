@@ -1,0 +1,4 @@
+first usb has limite write cycles so not so good
+when isntalling on ssd, one must use the advanced installer
+or run after the installation this:
+grub-install --removable
