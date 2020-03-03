@@ -1,0 +1,31 @@
+One should not use flash memory because the write cycles are limited and will wear out
+The advanced debian installer must be used to be sure GPT partitioning is used or it adds an extended partition if MBR is used
+
+After the installation, reinstall grub so that it finds the stuff that by standard is put on the flash of the motherboard
+grub-install --removable
+update-grub
+
+do not use gnome it looks too strange
+xfce4 is nice
+
+it may be good to install firmwares
+add contrib non-free in the apt sources.list
+firmware-atheros
+firmware-linux-nonfree
+firmware-realtek
+
+install linux-image-amd64 from buster-backports
+It fixes problems booting on USB3.
+
+When all works fine, run the following to check the USB speed
+lsusb
+lsusb -t
+
+10000M means USB 3.1
+5000M means USB 3.0
+400M means USB 2.0
+
+If the screen is slightly flickering,
+it maye be good to isntall graphics drivers, but it will reduce stability and require reinstallation after every kernel update
+linux-headers-amd64 nvidia-driver nvidia-kernel-dkms
+
