@@ -2,17 +2,24 @@ One should not use flash memory because the write cycles are limited and will we
 The advanced debian installer must be used to be sure GPT partitioning is used or it adds an extended partition if MBR is used
 
 After the installation, reinstall grub so that it finds the stuff that by standard is put on the flash of the motherboard
-grub-install --removable
+grub-install --removable --efi-directory=/mnt/efi --boot-directory=/mnt/efi/boot
 update-grub
+
+See the last line at the second link
+first mount the efi partition, and create the directories
+https://wiki.archlinux.org/index.php/GRUB
+https://www.gnu.org/software/grub/manual/grub/html_node/Installing-GRUB-using-grub_002dinstall.html
 
 do not use gnome it looks too strange
 xfce4 is nice
 
-it may be good to install firmwares
+it may be good to install firmwares, which are fully portable.
 add contrib non-free in the apt sources.list
 firmware-atheros
 firmware-linux-nonfree
 firmware-realtek
+
+It is better to isntall in advanced mode and allow non-free, and one must find the tar file with the list of all firmwares one can intall.
 
 install linux-image-amd64 from buster-backports
 It fixes problems booting on USB3.
@@ -26,6 +33,7 @@ lsusb -t
 400M means USB 2.0
 
 If the screen is slightly flickering,
-it maye be good to isntall graphics drivers, but it will reduce stability and require reinstallation after every kernel update
+it maye be good to install graphics drivers, but it will reduce stability and require reinstallation after every kernel update
+Note: graphics drivers are not portable accross computers
 linux-headers-amd64 nvidia-driver nvidia-kernel-dkms
 
