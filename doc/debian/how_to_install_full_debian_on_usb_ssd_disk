@@ -2,8 +2,23 @@ One should not use flash memory because the write cycles are limited and will we
 The advanced debian installer must be used to be sure GPT partitioning is used or it adds an extended partition if MBR is used
 
 After the installation, reinstall grub so that it finds the stuff that by standard is put on the flash of the motherboard
-grub-install --removable --efi-directory=/mnt/efi --boot-directory=/mnt/efi/boot
+One must reinstall grub using a chroot on the mounted usb from another computer, or in rescue mode iin the debian installer
+
+sudo mnt /dev/sdb1 /mnt/usb
+cd /mnt/usb
+sudo mount -t proc proc proc/
+sudo mount --rbind /sys sys/
+sudo mount --rbind /dev dev/
+sudo chroot /mnt/usb /bin/bash
+grub-install --removable
 update-grub
+
+check that /etc/fstab is matching the following and if not edit fstab with nano
+ls -l /dev/disk/by-uuid
+
+optional:
+remove non-grub things in /EFI/boot/
+so that the bios auto detects the right one.
 
 See the last line at the second link
 first mount the efi partition, and create the directories
@@ -36,4 +51,3 @@ If the screen is slightly flickering,
 it maye be good to install graphics drivers, but it will reduce stability and require reinstallation after every kernel update
 Note: graphics drivers are not portable accross computers
 linux-headers-amd64 nvidia-driver nvidia-kernel-dkms
-
