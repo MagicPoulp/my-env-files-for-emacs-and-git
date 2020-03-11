@@ -10,12 +10,16 @@ sudo mount -t proc proc proc/
 sudo mount --rbind /sys sys/
 sudo mount --rbind /dev dev/
 sudo chroot /mnt/usb /bin/bash
-grub-install --removable
+grub-install --removable --uefi-secure-boot
 update-grub
 
 note:
 grub-install --force-extra-removable is not good, it is to support buggy firmwarses in a normal install
 see the source apt-get source grub2-common
+
+--uefi-secure-boot     install an image usable with UEFI Secure Boot.
+one must install grub-efi-amd64-signed
+and the produced removable image is totally different
 
 optional and dangerous: it may be good to copy grubx64.efi into BOOTX64.efi if bootx64 cannot boot
 
