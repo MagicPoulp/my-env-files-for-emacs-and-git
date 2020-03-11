@@ -10,14 +10,14 @@ sudo mount -t proc proc proc/
 sudo mount --rbind /sys sys/
 sudo mount --rbind /dev dev/
 sudo chroot /mnt/usb /bin/bash
-grub-install --force-extra-removable
+grub-install --removable
 update-grub
 
 note:
-grub-install --force-extra-removable is better than --removable
-one said it adds efi variables
+grub-install --force-extra-removable is not good, it is to support buggy firmwarses in a normal install
+see the source apt-get source grub2-common
 
-it may be good to copy grubx64.efi into BOOTX64.efi if bootx64 cannot boot
+optional and dangerous: it may be good to copy grubx64.efi into BOOTX64.efi if bootx64 cannot boot
 
 check that /etc/fstab is matching the following and if not edit fstab with nano
 ls -l /dev/disk/by-uuid
