@@ -1,0 +1,48 @@
+this is techincal about how sibelius muenus and buttons work
+
+triple click gets all score, a double click onlz gets a local area
+ctrl a selects all
+ctrl z cancels
+ctrl y redo
+
+
+guitar tabs:
+once triple click ctrl + alt click on guitar tab will create guitar tab
+
+shift t opens transposition
+
+to remove pages select them with the mouse then there is a delete staff on the home menu
+
+to merge pages, you can go in layout, either change layout margin etc using the hidden small corner arrow
+
+or there is a unlock  button to the right of the menu bar
+
+right click, changing the voice (to 3) will make guitar rythm more readable
+
+
+----------
+
+detailed example:
+1. scan music in photoscore, if the music tracks are not the same on each page, you have to change each track manually on each page.
+save file as opt
+be sure to remove the noisy text that was scanned or it will overlap with the edited score
+2. open in sibelius, and save as a .sib file
+menu Home / Add or remove / and add an acoustic guitar with rythm, move it down
+
+there is another button next to add/remove, it is to changed an instrument for an existing unnamed staff. ANd zou can change it for example to violin1.
+
+menu layout
+use CTRL + A to select the entire score, and press the unlock format button
+it will prevent staves from overlapping
+
+now triple click the second row to select all pages for just one row.
+ctrl + alt click on the guitar tab and it will copy the track
+triple click and then right click and zou can change the voice, it seems the voice 4 is best to read the tablature track
+in layout, you can change the space between staves and between systems to have more rows per page, but if zou have too small space, the rows will overlap. You can also change the normal size of a staff so that you have more rows per page but all scalled smaller
+
+when done, you can export to pdf, put a clear file name to remember the edition
+
+
+
+
+
