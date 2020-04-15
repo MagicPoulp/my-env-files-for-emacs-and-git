@@ -3,14 +3,14 @@
 what is nice is that it is a portable computer but just with the drive.
 
 This usb drive has 2 partitions:
-a windows compatible partition with 1.5 terabytes
+a windows compatible partition with 1.5 terabytes. And the SSD technology is very robust it will not "get old" and stop working.
 a linux partition with debian linux, with 2 softwares for music editing, and a space simulator, and tuxmath game
 One music software, Sibelius, can play the violin and the guitar on its own.
 
 type the folloying in a terminal to see teh list and disk use
 df -H
 
-In order to start linux you need to find it in the bios boot order.
+In order to start linux you need to find it in the bios boot order. One can start the bios with F2, or F8 during booting.
 
 You must never disconnect the USB without a successful "eject" (arrow and right click at the bottom right of Microsoft Windows).
 
@@ -52,7 +52,7 @@ This is very handy to start Sibelius or Photoscore
 
 
 ```
-Run the following to run updates and security updates (usuallz after each login):
+Run the following to run updates and security updates (usually after each login):
 ```
 sudo apt-get update && sudo apt-get dist-upgrade
 
@@ -116,7 +116,7 @@ less /home/gilles/.bash_eternal_history
 
 # gimp open source image editor
 
-It as advanced as Photoshop.
+It almost as advanced as Photoshop.
 
 Open by typing gimp
 
@@ -125,6 +125,17 @@ sudo apt-get install gimp
 gimp
 
 ```
+
+mount another usb stick
+
+sudo fdisk -l
+then find the right sdXXXX to mount
+sudo mount /dev/sdc1 /media/usb1
+
+and the usb will be available in /media/usb1
+to remove it you need to do:
+sudo umount /media/usb1
+sudo eject /dev/sdc1
 
 # Tuxmath, a game for kids to teach math
 
@@ -149,7 +160,7 @@ make install
 
 to start:
 /home/gilles/documents/celestia/install/bin/celestia-qt
-you can be faster and not retype all teh line with CTRL + R   and then celestia and then CTRL +R several times
+you can be faster and not retype all the line with CTRL + R   and then celestia and then CTRL +R several times
 you can also navigate with arrow up
 
 interesting things to do:
@@ -170,7 +181,7 @@ Then on the planet, if you right click there is an option alternate surfaces
 source:
 http://celestiamotherlode.net/
 
-note: the surface normal maps are needed and tehz are on separate pages
+note: the surface normal maps are needed and they are on separate pages
 
 doc for customizing the config:
 https://www.classe.cornell.edu/~seb/celestia/textures.html#2.4
@@ -183,7 +194,7 @@ and I copied the files here:
 first line
 Modify "Mars" "Sol"
 
-The 16K is set a s default because it is more shinz but the 32 K is more precise and available via right click
+The 16K is set a s default because it is more shiny but the 32 K is more precise and available via right click
 
 32K VT Mars Surface Map
 	John van Vliet
@@ -211,9 +222,9 @@ It is less realistic to add surface maps for a gaseous planet, or a planet wit h
 
 # Possiblity to isntall windows in a VM
 
-I did not detail here too much but if zou want zou can have window on this SSD drive. I master the technical details for it.
+I did not detail here too much but if you want you can have window on this SSD drive. I master the technical details for it.
 
-At work I have a Linux host with a "paid licensed" windows in a VM. And I can share the copy paste, I can share the files, I can mount the windows VM drive on linux to use it from linux. And it is very fast because it is graphics accelerated. It is the best VM technology that exists. It is linux kernel stuff. THe onlz limitation is for a VM inside a VM that is not possible.
+At work I have a Linux host with a "paid licensed" windows in a VM. And I can share the copy paste, I can share the files, I can mount the windows VM drive on linux to use it from linux. And it is very fast because it is graphics accelerated. It is the best VM technology that exists. It is linux kernel stuff. The only limitation is for a VM inside a VM that is not possible.
 
 # Photoscore
 
@@ -223,13 +234,32 @@ https://shop.avid.com/ccrz__ProductDetails?viewState=DetailView&cartID=&sku=AR-A
 and sibelius is 139 dollar for a perpetual license
 https://shop.avid.com/ccrz__ProductDetails?viewState=DetailView&cartID=&sku=SBDYNA10009&cclcl=sv
 
-NOTE: to visualise a partition, go in the folder contaiing the file, and write firefox filename
+NOTE: to visualise a partition, go in the folder containing the file, and write firefox filename
 
 A scanner of pdf, and a small editor of tracks
-Usually one scans in photoscore, saves a certain photoscore format, that can be imported in Sibelius
+Usually one cleans up the pdf using libreoffice, scans in photoscore, saves a certain photoscore .opt format, that can be imported in Sibelius
 if the instruments tracks are not in order on every page, you will have to edit manually the partition
-I did it for one partition. It is quite fast to do.
 
+Scanning can have errors so one must check in the scanned doc for red selections. Photoscore can edit the partition to fix anomalies. It is necessary to navigate quickly on each page using the page down key on the keyboard. One can quickly find totally broken pages that can be fixed just bz editing. There is usually somthing overlaping that has to be removed.
+
+update about the errors below: vertical accolades and long vertical bars do not cause copmlete errors. In fact the page is scanned correctly but in a 90 degrees rotation causing the total chause with the mute page. This can be fixed very quickly without editing the pdf. In photoscore at the top, it says double click to edit. Doing it will change the mode to edition. To come back later to view mode one can double click on the top row in the left browser menu. In editing mode, one can go on the absurdly scanned page, and then one can see the scanned page that is rotated. From the top menu one can fix the rotation. Then in the edit mode menu, you must choose replace page (or click the button read page) or changes will not be changed.
+
+long half page vertical lines can cause an error where Photoscore thinks all staves are muted for a long time. TO fix this, I removed the lines with oipenoffice.
+
+half vertical acolades (}) could cause scanning errors if you remove one staff of the accolade but not the other. To fix this, remove the accolade }. In fact I really think now that accolades do not cause errors.
+
+inside photoscore, one can change an instrument for a specific staff one one page only. But it is even better if you fix the pdf in libbreoffice so that the scanning has all intruments in the right order.
+
+I find it good to edit the pdf in libreoffice before scanning the pdf. I can for example remove staves.
+To select an area in libreoffice, the click must start outside the page. When exporting to pdf in libreoffice, one can choose lossless compression and reduce resolution to 600 DPI
+
+Photoscore assumes the instruments on the first page are aligned iwth all other pages. If not it sets wrong instruments.
+It is simpler to remove staves in libreoffice than to reassign the right instruments on each page inside Photoscore.
+
+When scanning, you must take the hight resolution, and the scanning is in 2 staps. One its done, it wil slowly load each page taking 5s on each apge. It is better to wait to be sure to have a full score.
+
+Symphonies have several parts or movements.
+If there is some text on page 1, and then a secon part with text on page 47, the scanning will put all text on page 1. But you can still scan all the document with all movements in on shot.
 
 TO START:
 ~/documents/wine_custom/wine/build/wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Neuratron/PhotoScore\ +\ NotateMe\ Ultimate\ 2018\ Demo/Neuratron\ PhotoScore.exe
@@ -238,6 +268,10 @@ you can be faster and not retype all teh line with CTRL + R   and then Photoscor
 you can also navigate with arrow up
 
 the other software Sibelius can export to pdf. In photoscore, you cannot but you can print to file in pdf. Then if you try top open it it say the file has something wrong. The file is bugged. but if you open it in another pdf viewer and then print to file again, it is not corrupted any more.
+
+One must keep the smart .opt format and not the image format.
+After saving to .opt, it is good to remove the whole scanned pdf from the left menu in photoscore, with one row for each scanned page.
+One can remove the whole thing in on click from the top row.
 
 here is a website with many free partitions
 imslp has both free and non free
@@ -259,7 +293,9 @@ For me it is important to not alter the original composition of the music author
 But if you just copy the Fa key piano part to a SOL key for guitar with tablature, then you change very little.
 
 TO START
-~/documents/wine_custom/wine/build/wine ~/.wine/drive_c/Program\ Files/Avid/Sibelius/Sibelius.exe
+faketime '2020-04-16' ~/documents/wine_custom/wine/build/wine ~/.wine/drive_c/Program\ Files/Avid/Sibelius/Sibelius.exe
+
+note the faketime is to be sure the trial version does not expire. and when it starts it opens a popup, you should pick the ultimate version
 
 If it gets stuck and does not start, press CTRL + C wait 5s and try again.
 
@@ -270,7 +306,7 @@ see the other file next to the current files for instructions of how to use Sibe
 
 on USB3 it can take 1 or 2 min to start, or 1min for me. On usb2 it can take a few more minutes.
 
-it takes a few minutes to start, and if takes long it is probably because your usb 3 is not working correctly, mazbe update the bios, check the socket is blue.
+it takes a few minutes to start, and if takes long it is probably because your usb 3 is not working correctly, maybe update the bios, check the socket is blue.
 
 when you quit, wine still remains in memory it is good to kill it (copy the process ids that are in the leftmost column)
 ps aux | grep wine
@@ -280,6 +316,10 @@ Note:
 The sound works inside wine, but...
 The trial version of Sibelius was stripped down to not include all their backplay sounds. But it still works with MIDI sound.
 https://www.sibeliusforum.com/viewtopic.php?t=71265
+
+--> important manual steps to get the sound playing to work:
+in Sibelius, in the menu play, tab Setup, there is a small arrow to open playbacks,
+and you have to add timidity port 0, unfortunately it must be added after each restart of wine
 
 # Summary
 
@@ -304,14 +344,25 @@ you must not start Photoscore before copying the crack
 rm -rf ~/.wine
 remember to be careful with the rm command you can erase the wrong things
 the star below works as it is
-cd ~/documents/copy_of_installers/sibelius/*
+cd ~/documents/copy_of_installers/sibelius
 ~/documents/wine_custom/wine/build/wine start
 and in MS DOS run Install_Sibelius.exe and you must not click launch sibelius after
 
 it is important to select install fonts just for me if it asks
-note: there is another folder with sibelius_trial_old, it is a trial version not downloaded via a crack. But it will expire and need resintalling all the time.
 
-then copy the crack:
+After the installation it will complain that fonts are missing (Opus, etc), even thow the fonts are in windows/Fonts.
+
+type winetricks to start winetricks. click continue after the first question. then install a font, install all fonts.
+It seems to trigger something, and then when starting Sibelius it does not complain any more.
+It seems that starting Sibelius several times, and killing avid process helps Sibelius to find fonts.
+I never picked the option to stop showing the warning about fonts. And it does not show up any more. So it seems fonts are found.
+
+note: there is another folder sibelius_cracked_old_less_reliable, it is a cracked version. But it is old, I had a crash, difficulties to start sometimes, and it still expires over time. Hence I prefer to use the original trial file with a fake date during the startup of wine.
+
+alternative:
+cd ~/documents/copy_of_installers/sibelius_cracked_old_less_reliable/*
+~/documents/wine_custom/wine/build/wine start
+then copy the crack (do not copy the crack if you are not installing the sibelius from sibelius_cracked_old_less_reliable):
 cp /home/gilles/documents/copy_of_installers/sibelius/Avid\ Sibelius\ Ultimate\ 2019.5\ Build\ 1469\ x64\ Multilingual\ +\ Crack\ \[FileCR\]/Crack/netapi32.dll /home/gilles/.wine/drive_c/Program\ Files/Avid/Sibelius/
 
 # Appendix - how wine was built from source
@@ -377,7 +428,7 @@ https://wiki.debian.org/MIDI
 https://wiki.debian.org/AlsaMidi
 
 sudo apt-get install timidity
-note the debian soundfront is alreadz in place ance configured for timidity
+note the debian soundfront is already in place ance configured for timidity
 
 sudo nano /etc/systemd/system/timidity.service
 
@@ -406,14 +457,14 @@ The MCI shell
 One such application is the interactive MCI shell attached to bug #20232, comment #10. It allows you to send MCI string commands to any device. A sample session goes like this:
 
 $ wine wintest.exe mcishell
-mci.c:891: Type your commands to the MCI, end with Ctrl-Z/^D
+mci.c:891: Type your commands to the MCI, end with Ctrl-Z/
 open z:\home\downloads\super.mid alias m
 play m from 0
 status m position
 close m
 <- Ctrl-D to end the session in UNIX, Ctrl-Z in DOS
 
-then in Sibelius, in the menu plaz, tab Setup, there is a small arrow to open plazbacks,
-and you have to add timidity port 0
-tehre is no need to wrap wine with a command
+then in Sibelius, in the menu play, tab Setup, there is a small arrow to open playbacks,
+and you have to add timidity port 0, unfortunately it must be added after each restart of wine
+there is no need to wrap wine with a command
 and the sound was tested to work in wine

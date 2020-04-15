@@ -1,15 +1,21 @@
 this is techincal about how sibelius muenus and buttons work
+you must not click too fast or it may crash
+save your work in different files
+shift + mouse draging allows t oselect a group of elements, verz useful to remove manz text items.
 
-triple click gets all score, a double click onlz gets a local area
+
+triple click gets all score, a double click only gets a local area
 ctrl a selects all
 ctrl z cancels
 ctrl y redo
 
+note: CTRL + triple clicks makes a different selection. I think it is a system selection, and it allows key transposition when you transpose
 
 guitar tabs:
 once triple click ctrl + alt click on guitar tab will create guitar tab
 
 shift t opens transposition
+note: photoscore can also do transposition and it behaves differently by default than sibelius
 
 to remove pages select them with the mouse then there is a delete staff on the home menu
 
