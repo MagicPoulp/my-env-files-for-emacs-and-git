@@ -1,3 +1,26 @@
+last minute complement:
+
+to have sound in sibelius:
+sudo systemctl start timidity.service
+
+however, it takes over the sound for MIDI. The sound will not work any more in firefox.
+But you can revert the change:
+sudo systemctl start timidity.service
+
+You can activate or deactivate the MIDI sound for Sibelius at boot time using
+sudo systemctl enable timidity.service
+sudo systemctl disable timidity.service
+
+the Photoscore scanning errors disappear with only few anomalies if you add image contrast in gimp
+in gimp, menu Colors, brightness/contrast, if you add a maximum value of contrast, save the image, add it in libroffice, export to pdf
+filter/enhance/sharpen may help too
+
+To keep quality:
+when 2. below did not work, 1. worked. It seems to be the most quality preserving because the pdf is kept in vector mode, or rather vector-like, and then gimp remakes the vectors when exporting.
+And Photoscore will work better on a pdf that has vector mode.
+1. from libreoffice save to pdf, lossless. In gimp import the pdf, and during the import choose a higher resolution. 500 is good.
+2. from libreoffice save to bmp, then from gimp save as pdf, and the high contrast and filter/enhance/sharpen seem to be the only things needed
+
 # short memo
 
 To start photoscore:
@@ -262,6 +285,9 @@ if the instruments tracks are not in order on every page, you will have to edit 
 Scanning can have errors so one must check in the scanned doc for red selections. Photoscore can edit the partition to fix anomalies. It is necessary to navigate quickly on each page using the page down key on the keyboard. One can quickly find totally broken pages that can be fixed just bz editing. There is usually somthing overlaping that has to be removed.
 
 Fixing is very time consuming but it is possible.
+
+the Photoscore scanning errors disappear with only few anomalies if you add image contrast in gimp
+in gimp, menu Colors, brightness/contrast, if you add a maximum value of contrast, save the image, add it in libroffice, export to pdf
 
 faster fixing: since libroffice is slow and freezses if you select a large group, it is faster to save each page as an expot to an image format .bmp. And then in gimp one can enlarge the images. larger images will be eayier to scan for Photoscore.
 
