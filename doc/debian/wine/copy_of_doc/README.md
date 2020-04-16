@@ -1,3 +1,22 @@
+# short memo
+
+To start photoscore:
+~/documents/wine_custom/wine/build/wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Neuratron/PhotoScore\ +\ NotateMe\ Ultimate\ 2018\ Demo/Neuratron\ PhotoScore.exe
+
+To start Sibelius:
+faketime '2020-04-16' ~/documents/wine_custom/wine/build/wine ~/.wine/drive_c/Program\ Files/Avid/Sibelius/Sibelius.exe
+
+--> important manual steps to get the sound playing to work:
+in Sibelius, in the menu play, tab Setup, there is a small arrow to open playbacks,
+and you have to add timidity port 0, unfortunately it must be added after each restart of wine
+
+To start celestia:
+
+/home/gilles/documents/celestia/install/bin/celestia-qt
+
+To start tuxmath:
+tuxmath
+
 # introduction
 
 what is nice is that it is a portable computer but just with the drive.
@@ -242,11 +261,18 @@ if the instruments tracks are not in order on every page, you will have to edit 
 
 Scanning can have errors so one must check in the scanned doc for red selections. Photoscore can edit the partition to fix anomalies. It is necessary to navigate quickly on each page using the page down key on the keyboard. One can quickly find totally broken pages that can be fixed just bz editing. There is usually somthing overlaping that has to be removed.
 
+Fixing is very time consuming but it is possible.
+
+faster fixing: since libroffice is slow and freezses if you select a large group, it is faster to save each page as an expot to an image format .bmp. And then in gimp one can enlarge the images. larger images will be eayier to scan for Photoscore.
+
 update about the errors below: vertical accolades and long vertical bars do not cause copmlete errors. In fact the page is scanned correctly but in a 90 degrees rotation causing the total chause with the mute page. This can be fixed very quickly without editing the pdf. In photoscore at the top, it says double click to edit. Doing it will change the mode to edition. To come back later to view mode one can double click on the top row in the left browser menu. In editing mode, one can go on the absurdly scanned page, and then one can see the scanned page that is rotated. From the top menu one can fix the rotation. Then in the edit mode menu, you must choose replace page (or click the button read page) or changes will not be changed.
 
 long half page vertical lines can cause an error where Photoscore thinks all staves are muted for a long time. TO fix this, I removed the lines with oipenoffice.
 
 half vertical acolades (}) could cause scanning errors if you remove one staff of the accolade but not the other. To fix this, remove the accolade }. In fact I really think now that accolades do not cause errors.
+
+if you edit in libreoffice, every time you re-export in pdf, there is a risk of error, even if you use lossless compression.
+I ended up with an unscannable page, I had to copy again the page from the original document.
 
 inside photoscore, one can change an instrument for a specific staff one one page only. But it is even better if you fix the pdf in libbreoffice so that the scanning has all intruments in the right order.
 
@@ -451,7 +477,7 @@ aconnect -l
 aplaymidi -p128:0 /home/gilles/downloads/super.mid
 this will play in a debian shell
 
-in wine, you can test in the shell (copied from teh wine midi link above, and the wintest.exe and the .mid file must be downloaded):
+in wine, you can test in the shell (copied from the wine midi link above, and the wintest.exe and the .mid file must be downloaded):
 
 The MCI shell
 One such application is the interactive MCI shell attached to bug #20232, comment #10. It allows you to send MCI string commands to any device. A sample session goes like this:

@@ -1,4 +1,6 @@
-this is techincal about how sibelius muenus and buttons work
+# Sibelius documentation
+
+this is techincal about how sibelius munus and buttons work
 you must not click too fast or it may crash
 save your work in different files
 shift + mouse draging allows t oselect a group of elements, verz useful to remove manz text items.
@@ -47,8 +49,5 @@ triple click and then right click and zou can change the voice, it seems the voi
 in layout, you can change the space between staves and between systems to have more rows per page, but if zou have too small space, the rows will overlap. You can also change the normal size of a staff so that you have more rows per page but all scalled smaller
 
 when done, you can export to pdf, put a clear file name to remember the edition
-
-
-
 
 
