@@ -1,3 +1,9 @@
+the debian advanced installer will only create a gpt table if you put zeros on teh disk first and only with dd
+the ndont install grub from the installer
+sudo fdisk -l
+sudo dd if=/dev/zero of=/dev/sdb bs=512 count=1
+
+
 One should not use flash memory because the write cycles are limited and will wear out
 The advanced debian installer must be used to be sure GPT partitioning is used or it adds an extended partition if MBR is used
 
