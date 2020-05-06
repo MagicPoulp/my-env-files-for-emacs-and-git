@@ -1,5 +1,9 @@
+sumarry:
 the debian advanced installer will only create a gpt table if you put zeros on teh disk first and only with dd
-the ndont install grub from the installer
+then dont install grub from the installer, start in the installer rescue mode, grub-install --removable, then update-grub
+install the buster-backports kernel before running update-grub
+apt update && apt-get install linux-image-amd64 -t buster-backports
+and pick http as mirror
 sudo fdisk -l
 sudo dd if=/dev/zero of=/dev/sdb bs=512 count=1
 
