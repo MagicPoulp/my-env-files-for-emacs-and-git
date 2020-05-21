@@ -259,7 +259,7 @@ For me it is important to not alter the original composition of the music author
 But if you just copy the Fa key piano part to a SOL key for guitar with tablature, then you change very little.
 
 TO START
-~/documents/wine_custom/wine/build/wine ~/.wine/drive_c/Program\ Files/Avid/Sibelius/Sibelius.exe
+faketime "2020-05-25" ~/documents/wine_custom/wine/build/wine ~/.wine/drive_c/Program\ Files/Avid/Sibelius/Sibelius.exe
 
 If it gets stuck and does not start, press CTRL + C wait 5s and try again.
 
