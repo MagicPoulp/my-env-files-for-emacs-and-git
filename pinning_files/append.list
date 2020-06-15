@@ -8,8 +8,8 @@ deb-src http://ftp.se.debian.org/debian testing main contrib non-free
 
 
 # Testing security updates repository
-deb http://security.debian.org/ testing/updates main contrib non-free
-deb-src http://security.debian.org/ testing/updates main contrib non-free
+deb http://security.debian.org/ testing-security main contrib non-free
+deb-src http://security.debian.org/ testing-security main contrib non-free
 
 
 # Unstable repo main, contrib and non-free branches, no security updates here

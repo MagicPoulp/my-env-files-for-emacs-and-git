@@ -1,4 +1,6 @@
 The correct solution is to package up the software locally:
+in a chroot
+https://wiki.debian.org/BuildingTutorial
 
 viewtopic.php?f=16&t=38976
 
