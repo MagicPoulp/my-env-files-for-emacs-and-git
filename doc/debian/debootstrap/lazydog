@@ -1,17 +1,15 @@
 sudo apt-get install debootstrap
-42366  [2019-11-13 12:55:24] sudo mkdir /stable-chroot
-42367  [2019-11-13 12:55:45] chown thierry:thierry /stable-chroot
-42368  [2019-11-13 12:55:48] sudo chown thierry:thierry /stable-chroot
-42369  [2019-11-13 12:55:49] c
-42370  [2019-11-13 12:56:01] debootstrap stable /stable-chroot http://deb.debian.org/debian/
-42371  [2019-11-13 12:56:05] sudo debootstrap stable /stable-chroot http://deb.debian.org/debian/
-42376  [2019-11-13 13:17:14] cd /stable-chroot/
-42377  [2019-11-13 13:17:16] mount -t proc proc proc/
-42378  [2019-11-13 13:17:16] mount --rbind /sys sys/
-42379  [2019-11-13 13:17:23] sudo mount -t proc proc proc/
-42383  [2019-11-13 13:17:40] sudo mount --rbind /sys sys/
-42384  [2019-11-13 13:17:48] sudo mount --rbind /dev dev/
-42374  [2019-11-13 13:01:37] sudo chroot /stable-chroot/ /bin/bash
+sudo mkdir /stable-chroot
+sudo chown thierry:thierry /stable-chroot
+c
+debootstrap stable /stable-chroot http://deb.debian.org/debian/
+sudo debootstrap stable /stable-chroot http://deb.debian.org/debian/
+cd /stable-chroot/
+
+sudo mount -t proc proc proc/
+sudo mount --rbind /sys sys/
+sudo mount --rbind /dev dev/
+sudo chroot /stable-chroot/ /bin/bash
 
 
 then install monodevelop using the tutorial
