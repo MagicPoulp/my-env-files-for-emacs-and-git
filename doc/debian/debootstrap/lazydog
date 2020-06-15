@@ -1,14 +1,14 @@
 sudo apt-get install debootstrap
 sudo mkdir /stable-chroot
 sudo chown thierry:thierry /stable-chroot
-c
-debootstrap stable /stable-chroot http://deb.debian.org/debian/
+clear
 sudo debootstrap stable /stable-chroot http://deb.debian.org/debian/
-cd /stable-chroot/
 
+cd /stable-chroot/
 sudo mount -t proc proc proc/
 sudo mount --rbind /sys sys/
 sudo mount --rbind /dev dev/
+sudo mount --rbind /var var/
 sudo chroot /stable-chroot/ /bin/bash
 
 
