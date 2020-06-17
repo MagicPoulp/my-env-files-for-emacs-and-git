@@ -8,12 +8,15 @@ sudo chroot /stable-chroot /usr/bin/apt install locales
 sudo sed -i '/en_US.UTF-8/s/^# //;/en_US.UTF-8/s/^# //' /stable-chroot/etc/locale.gen
 sudo chroot /stable-chroot /usr/sbin/locale-gen
 sudo bash -c "echo -e 'LANG=en_US.UTF-8\nLANGUAGE=en_US.UTF-8' > /stable-chroot/etc/default/locale"
+sudo bash -c "echo 'LANG=en_US.UTF-8' >> /stable-chroot/etc/profile"
+sudo bash -c "echo 'LANGUAGE=en_US.UTF-8' >> /stable-chroot/etc/profile"
+sudo bash -c "echo 'LC_ALL=en_US.UTF-8' >> /stable-chroot/etc/profile"
 
 cd /stable-chroot/
 sudo mount -t proc proc proc/
 sudo mount --rbind /sys sys/
 sudo mount --rbind /dev dev/
-LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 sudo chroot /stable-chroot/ /bin/bash
+sudo chroot /stable-chroot/ /bin/bash --login
 
 note:
 there is also schroot to access more easily without sudo with a premounted home folder
