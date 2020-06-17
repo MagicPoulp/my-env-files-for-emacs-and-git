@@ -1,0 +1,6 @@
+
+a JAVA boot version is needed
+install a java 8 version from here, 4 .deb files are needed
+https://www.mirbsd.org/~tg/Debs/dists/buster/wtf/Pkgs/openjdk-8/
+
+then follow the debian build tutorial
