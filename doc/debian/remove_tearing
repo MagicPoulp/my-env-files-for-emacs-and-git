@@ -1,0 +1,24 @@
+https://www.maketecheasier.com/get-rid-screen-tearing-linux/
+
+https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_sidenav
+a browser trnasition will tear
+
+XFCE (proven to work)
+
+XFCE is notorious for screen tearing. It’s always been a problem, and it can seriously get in the way. However, there’s a fairly simple solution. All you need to do is rip out XFCE’s compositor and replace it with a different one, in this case Compton.
+
+XFCE Disable Compositing
+
+Open the XFCE settings, then locate the window manager settings. Click on the “Compositor” tab, and uncheck the box to “Enable display compositing.” Apply the settings.
+
+Next, install Compton. It’s an independent compositor that works very well with lightweight desktops. The command here is for Debian-based distributions, but Compton is available on just about every popular distro.
+
+sudo apt install compton
+
+XFCE Run Compton At Start
+
+Return to the XFCE settings. This time, click on “Session and Startup.” Add a new application to run at startup. In case you haven’t guessed, that application is Compton. Paste the following in as your command. It contains several key options to run Compton optimally.
+
+/usr/bin/compton --backend glx --paint-on-overlay --vsync opengl-swc
+
+Save and exit. You can either log out and log back in or run the command to start Compton.
