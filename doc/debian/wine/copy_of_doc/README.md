@@ -383,7 +383,7 @@ https://wiki.debian.org/MIDI
 https://wiki.debian.org/AlsaMidi
 
 sudo apt-get install timidity
-note the debian soundfront is alreadz in place ance configured for timidity
+note the debian soundfront is already in place ance configured for timidity
 
 sudo nano /etc/systemd/system/timidity.service
 

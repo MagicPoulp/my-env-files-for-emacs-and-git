@@ -1,0 +1,26 @@
+Documentation links with very advanced stuff
+
+https://wiki.debian.org/PulseAudio
+https://wiki.archlinux.org/index.php/PulseAudio/Examples
+
+arrows may be needed in alsamixer to see the rear mic and not jsut the front mic
+
+solution:
+connect microphone before booting
+sudo rm -r ~/.config/pulse /tmp/pulse-*
+pulseaudio --kill
+pulseaudio --start
+sudo alsamixer
+unmute and add volume to the rear mic
+
+then this command here works:
+arecord -f S24_LE -c 2 -r 192000 -d 3 /tmp/test-mic.wa
+And I get the recorded sound with aplay.
+
+However, the sound is of extremely bad quality with lots of noise.
+But this is another problem.
+
+Update:
+WIth the mic volume to 75, and the boost to 55, the sound quality becomes quite good. Especially good since my computer's ventilator is loud and I do not hear it at all.
+the idea was found here:
+https://askubuntu.com/questions/588823/ ... -14-04-lts
