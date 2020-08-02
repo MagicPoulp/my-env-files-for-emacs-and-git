@@ -12,6 +12,7 @@ pulseaudio --kill
 pulseaudio --start
 sudo alsamixer
 unmute and add volume to the rear mic
+sudo alsactl store
 
 then this command here works:
 arecord -f S24_LE -c 2 -r 192000 -d 3 /tmp/test-mic.wa
