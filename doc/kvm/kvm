@@ -32,3 +32,8 @@ note the VM must be started
 shortcuts:
 Shift+F11 set fullscreen
 Shift+F12 uset fullscreen
+
+---
+
+how to edit the XML:
+virsh -c qemu:///system edit win10
