@@ -1,0 +1,4 @@
+do not add manually the device in virt-manager
+adding a usb redirction device, and leaving the standard usb on usb3, so 2 things in virt-manager
+
+on the host you can run lsusb -v to see the device
