@@ -1,0 +1,34 @@
+
+man intel
+Option "TearFree" "boolean"
+              Disable  or  enable TearFree updates. This option forces X to perform all rendering to a backbuffer prior to updating the actual
+              display. It requires an extra memory allocation the same size as a framebuffer, the occasional extra copy, and  requires  Damage
+              tracking. Thus enabling TearFree requires more memory and is slower (reduced throughput) and introduces a small amount of output
+              latency, but it should not impact input latency. However, the update to the screen is then performed synchronously with the ver‐
+              tical  refresh  of  the  display  so that the entire update is completed before the display starts its refresh. That is only one
+              frame is ever visible, preventing an unsightly tear between two visible and differing frames. Note that this replicates what the
+              compositing  manager  should be doing, however TearFree will redirect the compositor updates (and those of fullscreen games) di‐
+              rectly on to the scanout thus incurring no additional overhead in the composited case. Also note that not all  compositing  man‐
+              agers prevent tearing, and if the outputs are rotated, there will still be tearing without TearFree enabled.
+
+              Default: TearFree is disabled.
+
+
+test that tearfree is active
+grep -i tear /var/log/Xorg.0.log
+
+https://wiki.debian.org/Xorg#What_if_I_do_not_have_a_xorg_config_file.3F
+create the following file:
+/etc/X11/xorg.conf.d/20-intel.conf
+
+Section "Device"
+  Identifier "Intel Graphics"
+  Driver "intel"
+
+  Option "TearFree" "true"
+EndSection
+
+
+on can also put it here:
+/usr/share/X11/xorg.conf.d
+https://wiki.debian.org/Xorg#What_if_I_do_not_have_a_xorg_config_file.3F
