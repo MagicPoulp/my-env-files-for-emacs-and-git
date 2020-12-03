@@ -1,0 +1,17 @@
+install gnome that has wayland by default
+
+for xwayland, X11 must be configured for TearFree on intel integrated graphics.
+
+firefox-esr need a flag to use wayland, then check about:support and the window protocol
+
+to create a launcher for firefox-wayland on the gnome desktop:
+~/.local/share/applications
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=firefox-wayland
+Exec=env MOZ_ENABLE_WAYLAND=1 /usr/bin/firefox
+Icon=/usr/share/icons/hicolor/64x64/apps/firefox-esr.png
+Terminal=false
+
