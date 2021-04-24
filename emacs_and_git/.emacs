@@ -234,3 +234,6 @@
 ; ALT + x list-packages
 ; CTRL + s less-css-mode
 ; click with the mouse on install
+
+; remove the bell sound when scrolling in the Gnome desktop
+(setq ring-bell-function 'ignore)
