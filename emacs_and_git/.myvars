@@ -28,6 +28,9 @@ export PATH=$PATH:$ANDROID_HOME
 
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
+export ANDROID_SDK_ROOT=/home/thierry/Android/Sdk
+export ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/21.3.6528147
+
 # ------------------------------------------------------------
 # aliases
 
