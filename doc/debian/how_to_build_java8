@@ -1,6 +1,28 @@
+openjdk-8-debian-buster.zip att the root of the repo can be used using the deps install shown below.
 
-a JAVA boot version is needed
-install a java 8 version from here, 4 .deb files are needed
-https://www.mirbsd.org/~tg/Debs/dists/buster/wtf/Pkgs/openjdk-8/
+1. install openjdk so that you can build it.
+The deb files need teh dependencies below
+apt-get install libpulse0 libgif7 libatk-wrapper-java-jni libgtk2.0-0 libgl1-mesa-glx libxinerama1 libxrandr2
+apt --fix-broken install
+apt-get install libpulse0 libgif7 libatk-wrapper-java-jni libgtk2.0-0 libgl1-mesa-glx libxinerama1 libxrandr2
+
+2. to build on debian stable
+
+do not install a crazy package
+get the source project from an old debian stretch,
+
+add this to apt source
+deb-src http://ftp.se.debian.org/debian/ stretch main contrib non-free
+make a folder openjdk
+apt-get source openjdk-8-jdk
 
 then follow the debian build tutorial
+https://wiki.debian.org/BuildingTutorial
+
+Maybe you need to edit the rules files, but probably not
+With the latest revision, changing g++-9 to 8 (and also th CXX part) in the control file, and then it will build fine.
+
+you must have openjdk installed in order to build it (it depends on itself or a previous version, deep in the root)
+
+the build deps are:
+quilt zip sharutils gawk pkg-config xvfb xfonts-base libgl1-mesa-dri xfwm4 x11-xkb-utils dbus-x11 jtreg testng time fastjar libxtst-dev libxi-dev libxt-dev libxaw7-dev libxrender-dev libcups2-dev libasound2-dev liblcms2-dev libfreetype6-dev libxinerama-dev libkrb5-dev xsltproc libpcsclite-dev libgtk2.0-dev libffi-dev zlib1g-dev libattr1-dev libpng-dev libjpeg-dev libgif-dev libpulse-dev systemtap-sdt-dev libnss3-dev
