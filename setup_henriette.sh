@@ -17,7 +17,7 @@ DIR_EMACS_FILES=$DIR1/emacs_and_git
 mkdir -p ~/bin
 
 cp $DIR_EMACS_FILES/emacs_client ~/bin
-cp $DIR_EMACS_FILES/.emacs ~/
+cp $DIR_EMACS_FILES/.emacs_henriette ~/.emacs
 cp $DIR_EMACS_FILES/.myvars ~/
 cp -r $DIR_EMACS_FILES/.emacs.d ~/
 source ~/.myvars
@@ -101,6 +101,13 @@ echo "the last was updated since the packages are now present in the stable bran
 echo "uncomment the melpa repository in the .emacs"
 echo "install js2-mode and scss-mode and json-mode using ALT-X list-packages"
 echo ""
+echo "mkdir ~/downloads"
+echo "wget http://download.savannah.nongnu.org/releases/color-theme/color-theme-6.6.0.zip"
+echo "unzip color-theme-6.6.0.zip"
+echo "mv color-theme-6.6.0.zip ~/.emacs.d/"
+echo ""
+echo "wget https://raw.github.com/fxbois/web-mode/master/web-mode.el"
+echo "mv web-mode.el ~/.emacs.d/"
 #echo "And if affecting root is fine:"
 #echo "sudo sh -c 'cp $HOME/.myvars /root/; echo \"source /root/.myvars\" >> /root/.bashrc'"
 #echo "sudo cp $HOME/.emacs /root/"
