@@ -15,7 +15,7 @@
  '(package-selected-packages
    (quote
     (typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
-
+;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
 (require 'whitespace)
@@ -237,3 +237,15 @@
 
 ; remove the bell sound when scrolling in the Gnome desktop
 (setq ring-bell-function 'ignore)
+
+; html
+;(setq sgml-basic-offset 4)
+(put 'upcase-region 'disabled nil)
+
+;(prefer-coding-system 'utf-8)
+
+; mode for cshtml
+; download file here http://web-mode.org/
+;(load-file "~/.emacs.d/web-mode.el")
+;(require 'web-mode)
+;(add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
