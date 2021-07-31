@@ -1,0 +1,31 @@
+it worked on a galaxy S4, GT-19515, code jfvelte
+
+main wiki
+https://www.howtogeek.com/348545/how-to-install-lineageos-on-android/
+
+Install odin and install TWRT on the device (you must have a tar and use the ap button only)
+you can skip the Samsung kies USB drivers since its hard to install
+https://nerdschalk.com/how-to-install-twrp-recovery-using-odin/
+
+THe acat procedure in ODIN is here : and you need a tar
+https://www.lineageosrom.com/2017/07/how-to-flash-custom-rom-via-odin.html
+
+remove auto reboot or TWRT will not show up
+https://android.stackexchange.com/questions/143685/after-flashing-twrp-with-odin-nothing-happens-and-the-oem-recovery-is-still-the
+
+then in twrt wipe 3 places and then reboot again in twrt
+
+adb.exe is here: once Android stdio is installed and and SK isinstalled in SDK manager
+C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools
+
+C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe devices
+C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe push .\lineage-18.1.zip /sdcard
+C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe push .\gapps11.zip /sdcard
+
+C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell rm /sdcard/gapps11.zip
+C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell rm /sdcard/lineage-18.1.zip
+
+do not forget to remove those zip files to free space
+after setting up lineageOS, you need to enable debug mode (7 taps on build number in about phone)
+and then in develop options you need to enable USB debugging
+then the phone itself must allow always iwith a checkbox
