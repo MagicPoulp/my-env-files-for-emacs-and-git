@@ -8,8 +8,8 @@ killall emacs 2> /dev/null
 git config --global push.default current
 git config --global remote.origin.push HEAD
 git config --global core.editor emacs_client
-git config --global user.name "Henriette Walker"
-git config --global user.email "henriette.walker@genero.se"
+git config --global user.name "Thierry Vilmart"
+git config --global user.email "thierry.vilmart@cgi.com"
 git config --global color.ui auto
 
 DIR1=`dirname "$(readlink -f "$0")"`
@@ -23,12 +23,13 @@ cp -r $DIR_EMACS_FILES/.emacs.d ~/
 source ~/.myvars
 
 
-DIR_HOME_SETUP=$DIR1/home_dir_setup
-cp $DIR_HOME_SETUP/user-dirs.dirs ~/.config/user-dirs.dirs
+#DIR_HOME_SETUP=$DIR1/home_dir_setup
+#cp $DIR_HOME_SETUP/user-dirs.dirs ~/.config/user-dirs.dirs
 
 mkdir -p ~/tmp
 mkdir -p ~/.emacs_backups
 
+exit
 mv ~/Desktop ~/desktop 2> /dev/null
 mv ~/Downloads ~/downloads 2> /dev/null
 mv ~/Documents ~/documents 2> /dev/null
