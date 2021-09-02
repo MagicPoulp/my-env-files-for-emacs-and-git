@@ -1,0 +1,7 @@
+set background nil in .emacs
+remove the modes
+source my vars in /etc/bashrc
+set in settings on the user the bash shell
+
+execute the setup_henriette that is for macos AND NOT DEBIAN
+
