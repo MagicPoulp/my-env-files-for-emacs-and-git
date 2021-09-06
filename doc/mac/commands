@@ -1,0 +1,4 @@
+android studio licences need java@8 via brew, but then all stuff need java@11
+
+recurrsive grep needs pattern followed by folder
+grep -r pattern .
