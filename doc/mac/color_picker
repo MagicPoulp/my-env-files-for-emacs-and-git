@@ -1,5 +1,7 @@
 search in the programs:
 digital colour meter
 
-make sure to pick RGB to calculate the html code
+make sure to pick sRGB in Digital Colour Meter to pick in the same way as in gimp
+
+to calculate the html code
 https://jumk.de/color-calculator/
