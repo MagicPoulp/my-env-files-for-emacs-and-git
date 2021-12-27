@@ -1,4 +1,8 @@
-brew install java@8
+Java 8 can be installed from menu project structure / graddle settings and install from version 1.8 the amazon one
+then put back the default openjdk
+
 
 /System/Volumes/Data/Users/thierryvilmart/Library/Android/sdk/tools/bin/sdkmanager --licenses
+
+
 
