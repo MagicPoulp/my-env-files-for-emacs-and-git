@@ -1,0 +1,4 @@
+brew install java@8
+
+/System/Volumes/Data/Users/thierryvilmart/Library/Android/sdk/tools/bin/sdkmanager --licenses
+
