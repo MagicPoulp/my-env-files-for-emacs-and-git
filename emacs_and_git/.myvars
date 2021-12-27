@@ -23,13 +23,15 @@ export PATH=$PATH:$HOME/bin:/sbin:/usr/sbin
 export PATH="$PATH:./node_modules/.bin"
 export PATH="$PATH:/home/thierry/node/node-v10.16.0-linux-x64/bin"
 
-export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_HOME=/System/Volumes/Data/Users/thierryvilmart/Library/Android/sdk
+export ANDROID_SDK_ROOT=/System/Volumes/Data/Users/thierryvilmart/Library/Android/sdk
+
 export PATH=$PATH:$ANDROID_HOME
+export ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/23.1.7779620
 
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-
-export ANDROID_SDK_ROOT=/home/thierry/Android/Sdk
-export ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/21.3.6528147
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+export PATH="/Users/thierryvilmart/.gem/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
 # ------------------------------------------------------------
 # aliases
@@ -105,7 +107,8 @@ function gcom_function {
 }
 
 function e_function {
-    eval "emacs_client $@ &"
+    #eval "emacs_client $@ &"
+    eval "emacs $@"
 }
 
 function f_function {
@@ -113,7 +116,7 @@ function f_function {
 }
 
 # for deactivating the insert key
-xmodmap -e 'keycode 118='
+#xmodmap -e 'keycode 118='
 
 # for Vulkan
 
@@ -122,3 +125,7 @@ xmodmap -e 'keycode 118='
 #cd ~/documents/VulkanSDK/$VULKAN_SDK_VERSION1
 #source setup-env.sh
 #cd $currentDirectory
+
+export MOLTENVK_PATH=/Users/thierryvilmart/repos/MoltenVK
+
+
