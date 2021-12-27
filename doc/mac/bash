@@ -1,0 +1,2 @@
+chsh -s /bin/bash
+set source myvars in .bash_profile
