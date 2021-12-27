@@ -1,2 +1,9 @@
 chsh -s /bin/bash
 set source myvars in .bash_profile
+change in shell preferences to use the command bash, or it does not fetc hthe profile file
+
+add to myvars
+
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+export PATH="/Users/thierryvilmart/.gem/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
