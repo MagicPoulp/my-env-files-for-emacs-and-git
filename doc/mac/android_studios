@@ -5,4 +5,11 @@ then put back the default openjdk
 /System/Volumes/Data/Users/thierryvilmart/Library/Android/sdk/tools/bin/sdkmanager --licenses
 
 
+Update:
+pas besoin de Java 8 avec le dernier Android Studios
+par contre il faut copier qemu/darwin_aarch64 dans qemu /darwin_x86_64
+sinon Android Studios ne démarre pas. C'est à cause de la chip ARM de macOS, chipset M1
+
+cd /System/Volumes/Data/Users/thierryvilmart/Library/Android/sdk/emulator/qemu
+cp -r darwin-aarch64 darwin-x86_64
 
