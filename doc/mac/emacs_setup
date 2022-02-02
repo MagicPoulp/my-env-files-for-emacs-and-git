@@ -1,0 +1,7 @@
+mettre foreground nil dans le .emacs
+copier les 3 lignes de path dans le .myvars
+
+
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+export PATH="/Users/thierryvilmart/.gem/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"

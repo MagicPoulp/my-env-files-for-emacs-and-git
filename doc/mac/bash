@@ -1,6 +1,7 @@
 chsh -s /bin/bash
 set source myvars in .bash_profile
-change in shell preferences to use the command bash, or it does not fetc hthe profile file
+change in shell preferences to use the command /bin/bash sans tiret, or it does not fetch the profile file
+décosher subshell
 
 add to myvars
 
