@@ -7,16 +7,15 @@ killall emacs 2> /dev/null
 
 git config --global push.default current
 git config --global remote.origin.push HEAD
-git config --global core.editor emacs_client
+git config --global core.editor emacs
 git config --global user.name "Thierry Vilmart"
-git config --global user.email "thierry@getwemap.com"
+git config --global user.email "thierry.vilmart@REPLACE.com"
 git config --global color.ui auto
 
 DIR1=`dirname "$(readlink -f "$0")"`
 DIR_EMACS_FILES=$DIR1/emacs_and_git
 mkdir -p ~/bin
 
-cp $DIR_EMACS_FILES/emacs_client ~/bin
 cp $DIR_EMACS_FILES/.emacs_henriette ~/.emacs
 cp $DIR_EMACS_FILES/.myvars ~/
 cp -r $DIR_EMACS_FILES/.emacs.d ~/
