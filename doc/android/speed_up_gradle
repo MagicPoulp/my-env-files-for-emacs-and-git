@@ -1,0 +1,12 @@
+pi")
+        }
+                ...
+                    }
+
+and for kapt (used by hilt, but careful do not activate experimental optimizations)
+https://kotlinlang.org/docs/kapt.html#improving-the-speed-of-builds-that-use-kapt
+
+tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask.class)
+    .configureEach {
+        kaptProcessJvmArgs.add('-Xmx1g')
+    }
