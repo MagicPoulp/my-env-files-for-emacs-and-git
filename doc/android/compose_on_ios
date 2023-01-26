@@ -1,5 +1,7 @@
 J'ai vu de mes yeux que Compose marche sur ios. (une feature expérimentale de Jetpack Compose)
 
+Avec kotlin multiplatform, tout kotlin marche sur iOS, ktor sert pour les appels réseau
+
 Il suffit de cloner ce repo, syncher gradle, puis de lancer depuis le terminal
 ./gradlew uikit:iosDeployIPhone13Debug -i
 ou bien le run-uikit.sh
@@ -7,15 +9,5 @@ voici le main entry point.
 https://github.com/AlexGladkov/Odyssey/blob/main/documentation/IOS.md
 https://github.com/AlexGladkov/Odyssey/blob/main/uikit/src/uikitMain/kotlin/main.uikit.kt
 Plus d'info sur la config gradle (les flags metal pour iOS, etc)
-https://betterprogramming.pub/jetpack-compose-for-ios-getting-started-step-by-step-e7be6f52edd4 (e (edited) 
-white_check_mark
-+1
-raised_hands
-
-
-
-
-
-New
-
+https://betterprogramming.pub/jetpack-compose-for-ios-getting-started-step-by-step-e7be6f52edd4
 
