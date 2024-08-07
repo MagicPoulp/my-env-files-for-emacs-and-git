@@ -1,0 +1,49 @@
+We are talking about compressing a deployed and runnable VM in the Users folder, we are not talking about not an export (.ova)
+We will fille zéros on unused space and then rune a viurtualbox command that reduces teh disk size
+
+create a root user
+sudo passwd root
+
+We follow that tutiral for the rest
+https://askubuntu.com/questions/1092812/zerofree-on-ubuntu-18-04
+answered Mar 27, 2020 at 8:40
+Teoman
+
+-----------------------
+
+-- install zerofree
+
+sudo apt install zerofree
+
+-- reboot into ubuntu recovery console, hold down [RIGHT SHIFT]
+sudo reboot
+
+in the grub menu start in recovery mode
+advanced options -> recovery mode -> root console
+put root passworf to enter the console
+
+-- find the root directory
+
+mount |grep "sda"
+
+no space before grep
+
+-- run zerofree
+
+after the echo "u" below the shell will become hard to use due to message but it can be used
+the echo u command helps to mount in read only
+
+echo "u" > /proc/sysrq-trigger
+mount /dev/mapper / -o remount,ro
+zerofree -v /dev/sda1
+reboot
+
+shutdown -r now
+
+-- compress the drive
+
+cd to the VM that contains the disk
+C:\Users\SESA780079\VirtualBox VMs\linux-dev-v2 1>
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" modifyhd linux-dev-v2-disk001.vdi --compact
+
+
