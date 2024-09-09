@@ -199,6 +199,19 @@ the information below is just for extra help and information.
 
 -----------------------------------------------
 
+Setup LineageOS
+
+I recommend moving one level up the text size just after the LineageOS installation is done and starts. it is on level 2, and I put in on 3.
+
+To copy data from another device, you may need to pair manually the device in the bluetooth menu (slide from top bar), and do it on both devices
+On the source phone, open google app (installable in google play)
+And type set up my device in the search bar.
+To perform this operation from the destination device, you need to wait for a notification that says last step to set up device (slide top bar to see it in blue notification).
+
+You can installing missing stuff like Google photos from Tha Play store.
+
+-----------------------------------------------
+
 useful adb commands:
 If ever you need adb, note that the recovery mode has an option to enable adb
 
