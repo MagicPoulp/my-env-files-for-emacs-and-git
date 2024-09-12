@@ -76,7 +76,7 @@ search in settings there are several places with automatic updates, even securit
 Reboot Android.
 Now go in the setting and find the reset, to factory reset Android.
 
-The phone will restart, and like all new you must pick the loangauge etc. You do not need to enter your google account. DO the minimum since you will override it later by LineageOS.
+The phone will restart, and like all new you must pick the loangauge etc. You do not need to enter your google account. Do the minimum setup since you will override it later by LineageOS.
 
 But it is important that you connect to a working Wifi, with the wifi password. And you must perform the update.
 
@@ -208,7 +208,11 @@ On the source phone, open google app (installable in google play)
 And type set up my device in the search bar.
 To perform this operation from the destination device, you need to wait for a notification that says last step to set up device (slide top bar to see it in blue notification).
 
-You can installing missing stuff like Google photos from Tha Play store.
+You can install missing things like Google Photos from the Play store.
+
+During the initial configuration, The fingerprint sensor may take 15 seconds to appear, just be patient on the black screen.
+
+I use English as a system language. For the keyboard, I use a French(querty) with autocorrection that give suggestsions of words for the accents. Android keyboard (AOSP) has 2 entries in the settings, one called manage allows you to pick a language. There can be multiple already set up. If you pick juste one, like French (Querty), it will be the only language for the keyboard, and also it appleis to the spelling correction.
 
 -----------------------------------------------
 
@@ -274,7 +278,7 @@ main wiki
 
 https://www.howtogeek.com/348545/how-to-install-lineageos-on-android/
 
-Install odin and install TWRT on the device (you must have a tar and use the ap button only)
+Install odin and install TWRT on the device (you must have a tar and use the app button only)
 you can skip the Samsung kies USB drivers since its hard to install
 
 https://nerdschalk.com/how-to-install-twrp-recovery-using-odin/
@@ -303,7 +307,7 @@ C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell 
 
 C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell rm /sdcard/lineage-18.1.zip
 
-do not forget to remove those zip files to free space after setting up lineageOS, you need to enable debug mode (7 taps on build number in about phone)
+do not forget to remove those zip files to free space after setting up LineageOS, you need to enable debug mode (7 taps on build number in about phone)
 
 and then in develop options you need to enable USB debugging
 then the phone itself must allow always with a checkbox
