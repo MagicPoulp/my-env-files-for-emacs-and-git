@@ -4,7 +4,11 @@ This picture provides a proof of a successful installation of Lineage OS.
 [![enter image description here][1]][1]
 
 
-This guide explains how to install LineageOS (open source Android) 21 (based on Android 14) on Samsung Galaxy S10. From Debian or Ubuntu Linux. This guide can workd for other phone models. The combination of buttons to start fastboot mode or download mode may change.
+This guide explains how to install LineageOS (open source Android) 21 (based on Android 14) on Samsung Galaxy S10. From Debian or Ubuntu Linux.
+
+The question of this thread was asking on MacOS Linux not Debian Linux. On MacOS you will have to find a way to install adb, fastboot, and heimdall by searching on the internet. adb is installed easily with Android Studio or with a standalone download. For heimdall and fastboot, there are many answers on the internet. You should use fastboot and avoid heimdall for flashing all the .img. Fastboot cannot be used for everything. You need heimdall for the recovery.img that needs heimdall once to create a fastboot mode on the device, this mode is shipped with the lineageOS recovery.img.
+
+This guide can work for other phone models. The combination of buttons to start fastboot mode or download mode may change.
 
 
 The model I have does not have a fastboot mode at all but it has a download mode and a recovery mode from Samsung.
@@ -197,9 +201,11 @@ FINISHED.
 
 the information below is just for extra help and information.
 
+In the Trust settings (searching Android security patches), it says vendor patch is NOT up to date. It refers to the firmware from Samsung. There is a firmware provided by LineageOS for my device. But I decided NOT to flash the firmware. Because during 5 years owning the device, Samsung never made me update that firmware. And I am not 100% trusting for that LineageOS firmware. But I use my phone with low risk, not paying with it, etc.
+
 -----------------------------------------------
 
-Setup LineageOS
+Setup LineageOS to make it user friendly
 
 I recommend moving one level up the text size just after the LineageOS installation is done and starts. it is on level 2, and I put in on 3.
 
