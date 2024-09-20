@@ -1,31 +1,30 @@
 
-This picture provides a proof of a successful installation of Lineage OS.
+This picture provides a proof of a successful installation of LineageOS.
 
 [![enter image description here][1]][1]
 
+This guide explains how to install LineageOS (open source Android) 21 (based on Android 14) on Samsung Galaxy S10 from Debian or Ubuntu Linux.
 
-This guide explains how to install LineageOS (open source Android) 21 (based on Android 14) on Samsung Galaxy S10. From Debian or Ubuntu Linux.
-
-The question of this thread was asking on MacOS Linux not Debian Linux. On MacOS you will have to find a way to install adb, fastboot, and heimdall by searching on the internet. adb is installed easily with Android Studio or with a standalone download. For heimdall and fastboot, there are many answers on the internet. You should use fastboot and avoid heimdall for flashing all the .img. Fastboot cannot be used for everything. You need heimdall for the recovery.img that needs heimdall once to create a fastboot mode on the device, this mode is shipped with the lineageOS recovery.img.
+The question of this thread was asking on MacOS Linux not Debian Linux. On macOS you will have to find a way to install adb, fastboot, and heimdall by searching on the internet. adb is installed easily with Android Studio or with a standalone download. For heimdall and fastboot, there are many answers on the internet. You should use fastboot and avoid heimdall for flashing all the .img. Fastboot cannot be used for everything. You need heimdall for the recovery.img that needs heimdall once to create a fastboot mode on the device, this mode is shipped with the lineageOS recovery.img. And the program I used on Debian is called fastboot, not fastbootd, so without an ending D.
 
 This guide can work for other phone models. The combination of buttons to start fastboot mode or download mode may change.
-
 
 The model I have does not have a fastboot mode at all but it has a download mode and a recovery mode from Samsung.
 The download mode allows to flash a recovery from Lineage os that can run a fastboot mode and do other things like install non official binaries using adb sideload
 
 Note on nice Lineage features:
-Lineage allows to have security updates on devices that Samsung stopped to support for security updates.
-Lineage allows to have a newer Android version.
-Lineage is secure due to its open source nature (Like Linux kernel, or Debian). A few security companies support it.
-LineageOS 21 (Android 14) when it starts, it allows to copy all settings from another android using bluetooth using a qr code that one phone takes with the camera (we do not have this at startup on the original Android 12 after a factory reset)
-LineageOS allows to install old Androids for testing purpose
 
-1. preparation and set OEM unlock
+- Lineage allows to have security updates on devices that Samsung stopped to support for security updates.  
+- Lineage allows to have a newer Android version.  
+- Lineage is secure due to its open source nature (Like Linux kernel, or Debian). A few security companies support it.  
+- LineageOS 21 (Android 14) when it starts, it allows to copy all settings from another Android using Bluetooth using a QR code that one phone takes with the camera (we do not have this at startup on the original Android 12 after a factory reset).    
+- LineageOS allows to install old Androids for testing purpose.  
 
-Back up all data so you do not risk losing data
-Enable debug mode in android settings pressing 7 times build version
-In developer mode set usb mode and set OEM unlock, that is the thing that protects flashing another android
+<span>1.</span> Preparation and set OEM unlock
+
+- Back up all data so you do not risk losing data.
+- Enable debug mode in Android settings pressing 7 times build version
+- In developer mode set USB mode and set OEM unlock, that is the thing that protects flashing another Android.
 
 Bootloader unlock and OEM unlock are 2 different things. And following the next steps of this guide, you will need 3 steps. OEM unlock in settings, bootloader unlock in the download mode screen, and then a trick to make OEM be grayed out in settings and really triggered.
 
@@ -34,15 +33,17 @@ Remember that pressing all buttons will shut down the phone if you are stuck
 After later reboots, you will see OEM enable. And if something does not work later, go back to this step and check it.
 
 Install adb heimdall-flash and fastboot
-note: adb could be use from android studio
+note: adb could be used from Android Studio
 
 adb is to run commands on the device and to push files and to reboot in download mode
 heimdall is to flash the recovery.img
 fastboot is to flash all remaining .img after booting in recovery
 
+```none
 sudo apt update && sudo apt install default-jdk
 sudo apt install android-tools-adb && sudo apt install android-tools-fastboot
 sudo apt install heimdall-flash
+```
 
 Download all the files for lineagesOS from the website, and pick the right device. All files are important.
 Pick the latest Lineage version you can find.
@@ -50,9 +51,9 @@ Download gapps of the right android version. it is for goole mail apps, etc and 
 
 Note: as a commenter said, the Android SDK is not mandatory. I used adb from the Android SDK because I had it already. But you can have adb via the apt install command above.
 
-2. Enter Download mode
+<span>2.</span> Enter Download mode
 
-Download mode is a mode that allows using heimdall, a flash program for Linus
+Download mode is a mode that allows using heimdall, a flash program for Linux
 
 It depends on devices,
 
@@ -60,57 +61,56 @@ volume down + bixby + plug in USB cable that is connected to the computer, enter
 
 Another way to enter download mode is via adb reboot download when the device is in USB debug mode (an option in developer settings, and developer settigns is enabled by pressing 7 times the build number in software information in the settings on Android).
 
-3. unlock bootloader
+<span>3.</span> Unlock bootloader
 
 It documents one the screens what you can do.
 In download mode pressing volume up for a long time will unlock the bootloader, to allow installing and flashing
 
-3.bis ensure OEM unlock is grayed out in the settings
+<span>3.</span> bis ensure OEM unlock is grayed out in the settings
 
 Before you move to step 4, you must ensure that OEM unlock is present and grayed out in the Developer settings in a Android.
 If it is not, you will not be able to flash any custom binary.
 There is a combination of tricks to ensure that it is that way.
 
-It was found on a tutorial that I give for curiosity but I will sum it up.
+It was found on a tutorial that I give for curiosity, but I will sum it up.
 
 https://www.thecustomdroid.com/fix-missing-oem-unlock-toggle-samsung-galaxy-devices/#how_to_fix_missing_oem_unlock_toggle_on_samsung_galaxy_devices
 
-Go in Android and put the time to a date older that 8 days ago. Remove auto time update.
-search in settings there are several places with automatic updates, even security updates.
-Reboot Android.
-Now go in the setting and find the reset, to factory reset Android.
+1. Go in Android and put the time to a date older that 8 days ago.  
+2. Remove auto time update.  
+3. Search in settings there are several places with automatic updates, even security updates.  
+4. Reboot Android.  
+5. Now go in the Settings and find the reset, to factory reset Android.  
 
-The phone will restart, and like all new you must pick the loangauge etc. You do not need to enter your google account. Do the minimum setup since you will override it later by LineageOS.
-
-But it is important that you connect to a working Wifi, with the wifi password. And you must perform the update.
+The phone will restart, and like all new you must pick the language, etc. You do not need to enter your Google Account. Do the minimum setup since you will override it later by LineageOS, but it is important that you connect to a working WiFi, with the WiFi password. And you must perform the update.
 
 After the phone starts, go in the settings and enable the developer options (it shows up with tap 7 times on the row Build number in Sofwware information). And in the Developer options, chevk that OEM unlock is grayed out in the list. If it is you have succeeded.
-Enable the USB debugging in the Devleoper settings.
+Enable the USB debugging in the Developer settings.
 
-4. Use the adb command to start in a better version of download mode with less text
+<span>4.</span> Use the adb command to start in a better version of download mode with less text
 ~/Android/Sdk/platform-tools/adb devices
 
-if adb devices does not look good, you need to unplug the usb-c cable and plug it again, to trigger a reconnection. It is important that USB debugging is activated in the Developer options
+if adb devices does not look good, you need to unplug the USB-C cable and plug it again, to trigger a reconnection. It is important that USB debugging is activated in the Developer options
 ~/Android/Sdk/platform-tools/adb reboot download
 
-There are two different downlowad mode: the adb way and the bixby + volume down and plug in power cable. It is recommended to use the adb reboot download to flash heimdall.
+There are two different download mode: the adb way and the bixby + volume down and plug in power cable. It is recommended to use the adb reboot download to flash heimdall.
 
 For later: To enter Recovery mode
 restart from volume mode that allows volume up + bixby + power for a long time and it enters the recovery mode
 lineageos has a recovery you can flash
 
-heimdall can be installed on debian
+heimdall can be installed on Debian
 it is heimdall that can flash the recovery
-be sure to have oem unlock in debug options of android, then in download mode boot, unlock bootloader
+be sure to have OEM unlock in debug options of android, then in download mode boot, unlock bootloader
 then if your reboot enough and wipe data then heimdall will have no error and can flash
 use "adb reboot download"
 to enter a good mode for the download mode so you can flash with heimdall
 
-If the command below results with a red line of error (only official binaries...) on the phone's screen, you miss the step 3.bis above.
+If the command below results with a red line of error (only official binaries...) on the phone's screen, you miss the step 4. bis above.
 
-heimdall flash --RECOVERY recovery.img --no-reboot
+    heimdall flash --RECOVERY recovery.img --no-reboot
 
-The --no-reboot is important so you have time to leave the download mode and immediately press the right buttons for the recovery mode.
+The `--no-reboot` is important so you have time to leave the download mode and immediately press the right buttons for the recovery mode.
 If you are not fast enough, it will erase what you have just flashed when rebooting. This trick was found on link 2 at the end.
 
 For me, heimdall had an error "ERROR: Failed to receive session end confirmation!"
@@ -124,44 +124,45 @@ adb reboot download, and this may need to be down after a standard android start
 So I erased data in the samsung recovery mode, and I check OEM unlock is well set.
 It is important you do not skip the bootloader unlock above.
 
-5. trick to enter recovery mode
-at this step you are in download mode and jsut flashed with heimdall a recovery.img from lineage
+<span>5.</span> trick to enter recovery mode
+at this step you are in download mode and just flashed with heimdall a recovery.img from lineage
 press volume down + bixby
 it will leave the download mode and reboot
-as soon as the screeen change, press very fast volume up + bixby + power, and keep pressing for 20s until the phone enters recovery mode
+as soon as the screen change, press very fast volume up + bixby + power, and keep pressing for 20 seconds until the phone enters recovery mode
 
 If you fail, you cant press all button to shutdown everything. Put the phone in rest. and later enter again the download mode using one of 2 ways (adb from a started Android, or volume down + bixby and then insert power cable when phone is shutdown).
 
 Recovery mode is much easier to enter by holding pressed very fast the right buttons when leaving download mode using 2 buttons. You cannot just start the phone and enter recovery mode that easily.
 
-6. In recovery mode if you have reached it, it will say recovery at the top in a very special screen
+<span>6.</span> In recovery mode if you have reached it, it will say recovery at the top in a very special screen
 you will have the lineage logo on top if you have the good recovery mode.
 
-If it says samsung at the top, then you had an error in the heimdall command and need to go back to step 3.bis and check the bootloader is unlocked.
+If it says Samsung at the top, then you had an error in the heimdall command and need to go back to step 3.bis and check the bootloader is unlocked.
 
-Important: you can navigate inside  recovery mode using volum up and down to move the cursor, and power button to select an option.
+Important: you can navigate inside  recovery mode using volume up and down to move the cursor, and power button to select an option.
 
-If ever you need adb, note that the recovery mode has an option to enable adb
-But you should not enable it if you do not need it since it can affect the sideload installation mode which is another adb mode
+If ever you need adb, note that the recovery mode has an option to enable adb, but you should not enable it if you do not need it since it can affect the sideload installation mode which is another adb mode
 
-wipe all data, it is safe
-then enter fastboot in the menu
-it takes a long time to boot it.
+- Wipe all data, it is safe.  
+- Then enter fastboot in the menu.  
+- It takes a long time to boot it.
+  
+Then use the fastboot command from Debian to flash all files (you may have more files downloaded from LineageOS's website)
 
-Then use the fastboot command from debian to flash all files (you may have more files downlowded from LineageOS's website)
+```none
+fastboot flash boot boot.img  
+fastboot flash dtbo dtbo.img  
+fastboot flash dtb dtb.img  
+fastboot flash super_empty super_empty.img  
+fastboot flash vbmeta vbmeta.img  
+```
 
-fastboot flash boot boot.img
-fastboot flash dtbo dtbo.img
-fastboot flash dtb dtb.img
-fastboot flash super_empty super_empty.img
-fastboot flash vbmeta vbmeta.img
-
-the super_empty may fail but it is not important
-and the recovery you do not need it yo ualready have it.
+The super_empty may fail, but it is not important
+and the recovery you do not need it you already have it.
 
 now reboot in recovery mode
 
-7. install programs
+<span>7.</span> Install programs
 
 be sure the gapps has the corresponding android version number.
 rename the lineageos zip in LINE.zip
@@ -172,11 +173,12 @@ TWRP, another recovery image, uses adb push to /sdcard, but TWRP does not work o
 With the recovery image from lineageOS, we use adb sideload
 
 You need to select in the recovery mode menu:
-Apply update
-then go to adb Sideload and in sub-menues
-you must go deep so that the sideload is activated
-when you run adb devices it should say sideload.
-adb devices can say unauthorized, recovery (if you do enable adb in the menu), or sideload
+
+Apply update  
+then go to adb Sideload and in sub-menus  
+you must go deep so that the sideload is activated   
+when you run adb devices it should say sideload.  
+adb devices can say unauthorized, recovery (if you do enable adb in the menu), or sideload  
 
 Now run sideload on the linage zip
 do not check to reboot
@@ -209,16 +211,16 @@ Setup LineageOS to make it user friendly
 
 I recommend moving one level up the text size just after the LineageOS installation is done and starts. it is on level 2, and I put in on 3.
 
-To copy data from another device, you may need to pair manually the device in the bluetooth menu (slide from top bar), and do it on both devices
+To copy data from another device, you may need to pair manually the device in the Bluetooth menu (slide from top bar), and do it on both devices
 On the source phone, open google app (installable in google play)
 And type set up my device in the search bar.
 To perform this operation from the destination device, you need to wait for a notification that says last step to set up device (slide top bar to see it in blue notification).
 
-You can install missing things like Google Photos from the Play store.
+You can install missing things like Google Photos from the Play Store.
 
 During the initial configuration, The fingerprint sensor may take 15 seconds to appear, just be patient on the black screen.
 
-I use English as a system language. For the keyboard, I use a French(querty) with autocorrection that give suggestsions of words for the accents. Android keyboard (AOSP) has 2 entries in the settings, one called manage allows you to pick a language. There can be multiple already set up. If you pick juste one, like French (Querty), it will be the only language for the keyboard, and also it appleis to the spelling correction.
+I use English as a system language. For the keyboard, I use a French (querty) with autocorrection that give suggestsions of words for the accents. Android keyboard (AOSP) has 2 entries in the settings, one called manage allows you to pick a language. There can be multiple already set up. If you pick just one, like French (Querty), it will be the only language for the keyboard, and also it applies to the spelling correction.
 
 -----------------------------------------------
 
@@ -238,7 +240,7 @@ one can set a device in root using "magisk" but it is not recommended to have ro
 NOTE:
 
 Better use the recovery.img from Lineage's website than to use TWRP.
-usual twrp on the internet that is more powerfull to perform the installation
+usual twrp on the internet that is more powerful to perform the installation
 However twrp has a problem with dynamic partitions
 https://twrp.me/site/update/2019/10/23/twrp-and-android-10.html
 
@@ -299,7 +301,7 @@ https://android.stackexchange.com/questions/143685/after-flashing-twrp-with-odin
 
 then in twrt wipe 3 places and then reboot again in twrp
 
-adb.exe is here: once Android stdio is installed and and SK isinstalled in SDK manager
+adb.exe is here: once Android stdio is installed and and SK is installed in SDK manager
 
 C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools
 
@@ -313,11 +315,11 @@ C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell 
 
 C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell rm /sdcard/lineage-18.1.zip
 
-do not forget to remove those zip files to free space after setting up LineageOS, you need to enable debug mode (7 taps on build number in about phone)
+Do not forget to remove those zip files to free space after setting up LineageOS, you need to enable debug mode (7 taps on build number in About phone)
 
 and then in develop options you need to enable USB debugging
 then the phone itself must allow always with a checkbox
 
 
-  [1]: https://i.sstatic.net/gYFECceI.jpg
-
+  [1]: https://i.sstatic.net/lGHaoOT9.png
+  
