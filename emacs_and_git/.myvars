@@ -112,7 +112,8 @@ function e_function() {
     arg=$1
     # Replace line numbers specified with <FILE>:n into the +n <FILE> emacs syntax
     args=`echo $arg | sed -E 's/(.*):([0-9]+)/+\2 \1/'`
-    emacsclient -c $args &
+    emacsclient -c -s /tmp/emacs1000/server $args &
+    #emacsclient -c $args &
     #eval "emacs_client $@ &"
     #eval "emacs $@"
 }

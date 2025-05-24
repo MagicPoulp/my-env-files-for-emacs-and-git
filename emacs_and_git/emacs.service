@@ -1,0 +1,20 @@
+#https://bbs.archlinux.org/viewtopic.php?id=278944
+[Unit]
+Description=Emacs text editor
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+[Service]
+User=thierry
+Group=thierry
+Type=forking
+ExecStart=/usr/bin/emacs --daemon
+ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+Restart=on-failure
+Environment="PATH=/usr/lib/ccache/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="EDITOR=nano -c"
+Environment="BROWSER=firefox"
+Environment="NO_AT_BRIDGE=1"
+
+[Install]
+WantedBy=default.target
