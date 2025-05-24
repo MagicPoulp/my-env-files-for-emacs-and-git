@@ -1,1 +1,4 @@
- time DEB_BUILD_OPTIONS=nocheck debuild -uc -us
+use source only and -t testing
+
+apt-get build-dep g++-multilib --source-only -t testing
+time DEB_BUILD_OPTIONS=nocheck debuild -uc -us
