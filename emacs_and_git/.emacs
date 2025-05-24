@@ -13,8 +13,9 @@
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   (quote
-    (typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
+   '(company dap-mode flycheck helm-lsp helm-xref js2-mode json-mode
+             lsp-mode lsp-treemacs projectile py-autopep8 scss-mode
+             typescript-mode yasnippet)))
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
@@ -27,10 +28,10 @@
 ; download manually color theme from:
 ; http://www.nongnu.org/color-theme/#sec5
 ; http://download.savannah.nongnu.org/releases/color-theme/
-;(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
-;(require 'color-theme)
-;(color-theme-initialize)
-;(eval-after-load "color-theme" '(color-theme-clarity))
+(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
+(require 'color-theme)
+(color-theme-initialize)
+(eval-after-load "color-theme" '(color-theme-clarity))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -124,12 +125,37 @@
 ;
  (require 'package) ;; You might already have this line
  (add-to-list 'package-archives
-;             '("melpa" . "https://melpa.org/packages/"))
+             '("melpa" . "https://melpa.org/packages/"))
 ; (when (< emacs-major-version 24)
 ;  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+;  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
 ; ALT + x list-packages
 ; CTRL + s less-css-mode
 ; click with the mouse on install
+
+;https://emacs-lsp.github.io/lsp-mode/tutorials/CPP-guide/
+(helm-mode)
+(require 'helm-xref)
+(define-key global-map [remap find-file] #'helm-find-files)
+(define-key global-map [remap execute-extended-command] #'helm-M-x)
+(define-key global-map [remap switch-to-buffer] #'helm-mini)
+
+(which-key-mode)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 1
+      lsp-idle-delay 0.1)  ;; clangd is fast
+
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (require 'dap-cpptools)
+  (yas-global-mode))
+
+(global-set-key (read-kbd-macro "C-0") 'lsp-clangd-find-other-file)
