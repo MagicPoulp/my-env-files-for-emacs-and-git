@@ -1,0 +1,12 @@
+[testing]
+description=Debian testing
+aliases=test
+type=directory
+directory=/chroot/testing
+users=thierry
+root-groups=root
+profile=desktop
+personality=linux
+preserve-environment=true
+setup.fstab=default/fstab
+
