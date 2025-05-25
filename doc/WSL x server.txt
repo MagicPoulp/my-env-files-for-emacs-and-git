@@ -1,0 +1,17 @@
+https://gist.github.com/alextsil/f8d861b8a2fc766c06aefc0c35c083ee#file-steps_gui_wsl2_xserver-txt
+Steps to setup the server-side on windows:
+
+- Download VcXsrv Windows X Server [https://sourceforge.net/projects/vcxsrv/].
+- Run VcXsrv following this [https://github.com/microsoft/WSL/issues/4106#issuecomment-502920377].
+- Go to windows firewall -> Allow an app through firewall -> click change settings -> select BOTH entries of "VcXsrv windows server" -> OK.
+- (Optional): Add inbound rules to un-expose the public X server: https://x410.dev/cookbook/wsl/protecting-x410-public-access-for-wsl2-via-windows-defender-firewall/
+
+
+At this point the server-side is ready. Now it's time to configure the client:
+
+- Open a terminal and find the IP of the windows host machine with this command: export DISPLAY=$(/sbin/ip route | awk '/default/ { print $3 }'):0 [https://github.com/microsoft/WSL/issues/4106#issuecomment-634778111].
+- run: echo $DISPLAY to see the IP.
+- run netcat to check if you've got connectivity: nc -v IP_FROM_PREVIOUS_STEP 6000 (make sure to remove the appended ":0" after the IP.
+- If you get Connection...succeeded! you are set.
+- Open your .bashrc and add the "export ..." command there in order to get it automatically every time you open a terminal. (Don't use static IP here because it's subject to change. Use the awk-ed export statement as is.)
+- Run an application and a window will pop-up on your host OS.
