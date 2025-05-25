@@ -9,13 +9,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil)
  '(cua-mode t nil (cua-base))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(company dap-mode flycheck helm-lsp helm-xref js2-mode json-mode
-             lsp-mode lsp-treemacs projectile py-autopep8 scss-mode
-             typescript-mode yasnippet)))
+   '(cmake-mode company dap-mode flycheck helm-lsp helm-xref js2-mode
+                json-mode lsp-mode lsp-treemacs projectile py-autopep8
+                scss-mode typescript-mode yasnippet)))
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
@@ -39,6 +40,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :foreground nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 158 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
+
+(set-face-attribute 'default nil :height 158)
 
 (defun my-frame-toggle ()
   "Maximize/Restore Emacs frame using 'wmctrl'."
