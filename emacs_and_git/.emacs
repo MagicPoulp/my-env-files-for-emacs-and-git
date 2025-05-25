@@ -161,6 +161,6 @@
   (require 'dap-cpptools)
   (yas-global-mode))
 
-(global-set-key (kbd "<S-f12>") 'lsp-clangd-find-other-file)
+(global-set-key (kbd "<f9>") 'lsp-clangd-find-other-file)
 (global-set-key (kbd "<f12>") 'xref-find-definitions)
-(global-set-key (kbd "<f9>") 'xref-go-back)
+(global-set-key (kbd "<S-f12>") 'xref-go-back)
