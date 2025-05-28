@@ -164,3 +164,29 @@
 (global-set-key (kbd "<f9>") 'lsp-clangd-find-other-file)
 (global-set-key (kbd "<f12>") 'xref-find-definitions)
 (global-set-key (kbd "<S-f12>") 'xref-go-back)
+
+(load "/usr/share/emacs/site-lisp/clang-format-19/clang-format.el")
+
+(use-package clang-format)
+(defun clang-format-save-hook()
+  "Create a buffer local save hook to apply `clang-format-buffer'"
+  ;; Only format if .clang-format is found
+  (when (locate-dominating-file "." ".clang-format")
+    (clang-format-buffer))
+  ;; Continue to save
+  nil)
+
+(define-minor-mode clang-format-on-save-mode
+  "Buffer-local mode to enable/disable automated clang format on save"
+  :lighter " ClangFormat"
+  (if clang-format-on-save-mode
+      (add-hook 'before-save-hook 'clang-format-save-hook nil t)
+    (remove-hook 'before-save-hook 'clang-format-save-hook t)))
+
+;; Create a globalized minor mode to
+;;   - Auto enable the above mode only for C/C++, or glsl in your case
+;;   - Be able to turn it off globally if needed
+(define-globalized-minor-mode clang-format-auto-enable-mode clang-format-on-save-mode
+  (lambda()(clang-format-on-save-mode t))
+  :predicate '(c-mode c++-mode c-or-c++-mode))
+(clang-format-auto-enable-mode t)
