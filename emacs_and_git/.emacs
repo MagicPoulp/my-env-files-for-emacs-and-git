@@ -14,8 +14,9 @@
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(cmake-mode company dap-mode flycheck helm-lsp helm-xref js2-mode
-                json-mode lsp-mode lsp-treemacs projectile py-autopep8
+   '(cmake-mode company dap-mode dockerfile-mode elixir-mode flycheck
+                helm-lsp helm-xref js2-mode json-mode lsp-mode
+                lsp-treemacs markdown-mode projectile py-autopep8
                 scss-mode typescript-mode yasnippet)))
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
@@ -190,3 +191,9 @@
   (lambda()(clang-format-on-save-mode t))
   :predicate '(c-mode c++-mode c-or-c++-mode))
 (clang-format-auto-enable-mode t)
+
+(setq load-path (cons  "/usr/lib/erlang/lib/tools-4.1.1/emacs"
+load-path))
+(setq erlang-root-dir "/usr/local/otp")
+(setq exec-path (cons "/usr/local/otp/bin" exec-path))
+(require 'erlang-start)
