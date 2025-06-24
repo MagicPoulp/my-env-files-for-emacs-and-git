@@ -18,6 +18,7 @@
                 helm-lsp helm-xref js2-mode json-mode lsp-mode
                 lsp-treemacs markdown-mode projectile py-autopep8
                 scss-mode typescript-mode yasnippet)))
+
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
@@ -153,7 +154,7 @@
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
-      company-idle-delay 0.0
+      company-idle-delay 60.0
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast
 
