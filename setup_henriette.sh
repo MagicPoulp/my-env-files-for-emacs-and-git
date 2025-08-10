@@ -9,7 +9,7 @@ git config --global push.default current
 git config --global remote.origin.push HEAD
 git config --global core.editor emacs
 git config --global user.name "Thierry Vilmart"
-git config --global user.email "thierry.vilmart@REPLACE.com"
+git config --global user.email "3144141+MagicPoulp@users.noreply.github.com"
 git config --global color.ui auto
 
 DIR1=`dirname "$(readlink -f "$0")"`
