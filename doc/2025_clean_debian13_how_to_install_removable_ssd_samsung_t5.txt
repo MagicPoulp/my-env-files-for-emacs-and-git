@@ -1,0 +1,43 @@
+
+To have a linux environment
+
+Start with e and nomodeset or use the recovery mode to run just the dd command
+dhclient may actiavate internet to wget a link with debian iso
+
+--> To make the removable media USB installer
+sudo fdisk -l
+dd /dev/zero /dev/sdb bs=512 count=1 status=progress
+dd /.../.iso /dev/sdb bs=512 status=progress; sync
+
+when stuck jsut wait a few minutes
+
+--> to intsall debian on SSD:
+
+boot the media, make new partitions on the ssd disk, do not daamge the real hard drive
+efi partition with bootable flag 300MB
+swap aprtition 10% of size or 4GB
+ext4 partition for debian
+
+at the end do not install grub, open a shell and do a manuel grub installation
+fdisk -l
+mkdir -p /mnt/linux
+mount /dev/sdb3 /mnt/linux
+ls to check
+cd /mnt/linux
+mount -t /proc proc/
+mount --rbind /dev dev/
+mount --rbind /sys sys/
+/mnt/linux/bin/chroot /mnt/linux
+nano /etc/apt/apt.sources to remove the cdromve first line
+apt-get update
+apt-get install grub2-common
+apt-get install grub-efi-amd64
+
+fdisk -l
+mkdir -p /mnt/efi
+mnt /dev/sdb1 /mnt/efi
+grub-install /dev/sdb --target=x86_64-efi --booloader-id=GRUB --efi-directory=/mnt/efi --removable
+update-grub
+
+
+then go back and properly finish the installation, without installing grub in the gui
