@@ -1,0 +1,36 @@
+https://assistance.orange.fr/mobile-tablette/tous-les-mobiles-et-tablettes/depanner/probleme-avec-un-service-d-orange-internet-sms-mms-mails-cloud-tv/mms/parametrer-ou-optimiser-votre-mobile-contacter-nos-experts_155928-353130
+
+https://assistance.orange.fr/mobile-tablette/tous-les-mobiles-et-tablettes/depanner/probleme-avec-un-service-d-orange-internet-sms-mms-mails-cloud-tv/mms/comment-verifier-le-parametrage-pour-l-envoi-des-mms-sur-votre-mobile-honor-sous-android-_274908-815810?nhnf=true
+
+1Balayez l'écran du bas vers le haut pour accéder aux applications.
+ 2Sélectionnez Paramètres.
+ 3Allez sur Connexions.
+ 4Sélectionnez Réseaux mobiles.
+ 5Choisissez Nom des points d'accès.
+ Allez sur Ajouter.
+ Saisissez les données de paramétrage.
+La suite des paramètres doit être renseignée comme suit :-
+
+ 
+Nom : Orange World
+APN : orange
+Proxy : Non défini
+Port : Non défini
+Nom d'utilisateur : orange
+Mot de passe : orange
+Serveur : Non défini
+MMSC : http://mms.orange.fr
+Proxy MMS : Non défini
+Port MMS : Non défini
+MCC : 208MNC : 01
+Type d'authentification : PAP
+Type d'APN : default,dun,supl,mms,xcap
+Protocole APN : IPv6
+Protocole d'itinérance APN : IPv4
+Activer/désactiver APN : case cochée
+Support : Non défini
+Type d'opérateur du réseau virtuel mobile : SPN
+Valeur de l'opérateur du réseau virtuel mobile : Orange FCes informations sont uniquement consultables. En cas d'impossibilité d'envoi, vous devez créer un point d'accès spécifique.
+ Appuyez sur l'icône options.
+ Sélectionnez Enregistrer.
+ Le nouveau profil MMS est ajouté
