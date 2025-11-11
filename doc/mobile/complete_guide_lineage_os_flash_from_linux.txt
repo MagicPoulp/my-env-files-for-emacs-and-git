@@ -108,7 +108,7 @@ Then if your reboot enough and wipe data then heimdall will have no error and ca
 
 If the command below results with a red line of error (only official binaries...) on the phone's screen, you miss the step 3. bis above.
 
-Now we erase teh Samsung default recovery, and we put the LineageOS one. heimdall is just needed in download mode for doing this. Later, all flashing of other files will be down in fastboot mode with the fastboot command.
+Now we erase the Samsung default recovery, and we put the LineageOS one. heimdall is just needed in download mode for doing this. Later, all flashing of other files will be down in fastboot mode with the fastboot command.
 
     heimdall flash --RECOVERY recovery.img --no-reboot
 
@@ -163,11 +163,19 @@ fastboot flash vbmeta vbmeta.img
 
 The super_empty may fail, but it is not important.
 
-And flashing the recovery is optional it you already have it from the heimdall command. But I like to make a fresh one with newr files.
+And flashing the recovery is optional it you already have it from the heimdall command. But I like to make a fresh one with newer files.
 
 now reboot in recovery mode
 
+### 6.bis Optional. Update the so-called blobs. update the official Samsung proprietary, closed-source drivers and firmware that LineageOS works with. There is still some proprietary stuff that LineageOS needs.
+
+If you do not do this, you will see out of date for vendor patches in lineageOS Settings -> in Security / Privacy -> in More security and privacy -> in Trust. Even if Samsung stopped releasing, it is good to have updated ones.
+
+To do this part, you need to install the Stock ROM from Samsung to get the newest drivers and firmware. Then you will need to install LineageOS again. To download the Stock ROM, you may use Bifrost (https://github.com/zacharee/SamloaderKotlin), or if you wnat something more official you can use Samsung Smart Switch.
+
 ### 7. Install programs
+
+now reboot in recovery mode (see the step 3.bis above)
 
 be sure the gapps has the corresponding android version number.
 rename the lineageos zip in LINE.zip
@@ -316,3 +324,4 @@ then the phone itself must allow always with a checkbox
 
 
   [1]: https://i.sstatic.net/lGHaoOT9.png
+
