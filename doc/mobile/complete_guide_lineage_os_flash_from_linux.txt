@@ -167,11 +167,106 @@ And flashing the recovery is optional it you already have it from the heimdall c
 
 now reboot in recovery mode
 
-### 6.bis Optional. Update the so-called blobs. update the official Samsung proprietary, closed-source drivers and firmware that LineageOS works with. There is still some proprietary stuff that LineageOS needs.
+### 6.bis Optional. Install vendor.img from the stock OEM official from Samsung. TH is very optional so you may move directly to point 7.
+
+Update the so-called blobs. update the official Samsung proprietary, closed-source drivers and firmware that LineageOS works with. There is still some proprietary stuff that LineageOS needs.
 
 If you do not do this, you will see out of date for vendor patches in lineageOS Settings -> in Security / Privacy -> in More security and privacy -> in Trust. Even if Samsung stopped releasing, it is good to have updated ones.
 
 To do this part, you need to install the Stock ROM from Samsung to get the newest drivers and firmware. Then you will need to install LineageOS again. To download the Stock ROM, you may use Bifrost (https://github.com/zacharee/SamloaderKotlin), or if you wnat something more official you can use Samsung Smart Switch.
+
+```none
+from a debian host
+
+  878  [2025-11-11 16:51:19] sudo mkdir -p  /srv/chroot/debian
+  879  [2025-11-11 16:51:22] sudo  debootstrap trixie /srv/chroot/debian http://deb.debian.org/debian
+  880  [2025-11-11 16:52:42] cd /srv/chroot/debian
+  885  [2025-11-11 16:54:33] mount -t proc /proc proc
+  886  [2025-11-11 16:54:41] sudo mount -t proc /proc proc
+  887  [2025-11-11 16:54:52] sudo mount --rbind /sys sys
+  888  [2025-11-11 16:55:27] sudo mount --rbind /dev /mnt/dev
+  889  [2025-11-11 16:55:32] sudo mount --rbind /dev dev
+  890  [2025-11-11 16:55:47] mount --bind /dev/pts dev/pts
+  891  [2025-11-11 16:55:54] sudo mount --bind /dev/pts dev/pts
+  892  [2025-11-11 16:59:49] mount --bind /tmp/.X11-unix tmp/.X11-unix
+  893  [2025-11-11 16:59:53] sudo mount --bind /tmp/.X11-unix tmp/.X11-unix
+  894  [2025-11-11 17:00:08] ls tmp/
+  895  [2025-11-11 17:00:29] ls /tmp/.X11-unix/
+  896  [2025-11-11 17:00:43] sudo mkdir tmp/X11-unix
+  897  [2025-11-11 17:00:46] sudo mount --bind /tmp/.X11-unix tmp/.X11-unix
+  898  [2025-11-11 17:01:12] rm -rf tmp/X11-unix/
+  899  [2025-11-11 17:01:16] sudo rm -rf tmp/X11-unix/
+  900  [2025-11-11 17:01:23] sudo mkdir tmp/.X11-unix
+  901  [2025-11-11 17:01:27] sudo mount --bind /tmp/.X11-unix tmp/.X11-unix
+  902  [2025-11-11 17:02:18] echo $DISPLAY
+  903  [2025-11-11 17:03:51] xhost +local:
+
+
+
+--
+and in the chroot
+
+   1  apt install wget
+    2  apt update
+    3  CPU=$(dpkg --print-architecture)
+    5  wget https://github.com/zacharee/SamloaderKotlin/releases/latest/download/bifrost_1.20.4_${CPU}.deb
+    6  mkdir WORK
+    7  mv bifrost_1.20.4_amd64.deb WORK/
+    8  cd WORK/
+   10  ls
+   11  dpkg -i bifrost_1.20.4_amd64.deb
+   13  apt install ./bifrost_1.20.4_amd64.deb
+   15  apt --fix-broken install
+   16  apt install ./bifrost_1.20.4_amd64.deb
+   26  apt update
+   27  apt install libglib2.0-bin
+   28  apt install libgtk-3-0
+   29  apt install default-jre
+   30  bifrost
+
+---
+
+in the settings about phone you may find your exact device model
+then you will be able to download the stock OEM in the form of a ZIP.
+we will just install the vendor.img in it. But a similar procedure can be used for all parts
+
+---------
+
+recovery mode and heimdall is required, you must not install vendor.img in fastboot. This is due to the dual partition system and the overriding.
+
+Reason (from Gemini):
+"Heimdall is an open-source tool that implements the proprietary flashing protocol used by Samsung's official flashing software, Odin.
+
+This protocol operates when the device is in Download Mode.
+
+Crucially, this low-level mode and its protocol are the only interfaces Samsung's hardware and bootloader expose for accessing and writing to certain critical partitions, including vendor, bootloader, modem, and in many cases, even the initial recovery partition.
+
+The bootloader itself controls the permissions and methods for writing to internal storage partitions. Samsung's bootloaders are programmed to accept commands for these low-level partitions only through their specific protocol (Heimdall/Odin) in Download Mode."
+
+---------
+rename the AP....tar.md5 in the zip file, tar -xf the file
+sudo apt install lz4
+lz4 -d vendor.img.lz4 allow to get vendor.img
+To flash using heimdall the vendor.img:
+enter the special download mode, then enter recovery mode, then enable adb in recovery mode, and the do adb reboot download on the debian linux.
+once in download mode run this
+sudo heimdall flash --VENDOR vendor.img --no-reboot
+IMPORTANT. when using power down and power to restartm immediately put the fingers for the recovery mode, or the flashing will be overriden.
+If you could enter recovery mode you succeeded. And the flashing of vendor.img worked
+
+It is normal that in settings of lineage os in security and privacy and more security options and in trust it wil lsay vendor out of date, because samesung stopped doing updates, and the one we flashed is old from 2023 but it is the latest.
+
+It is normal to have a build version mismatch between the vendor.img locally and the one from adb, as shown below. It seems that LineageOS forces this data to appear,but the vendor.img is still the good one.
+
+version from vendor.img after using simg2img (installable in debian bullseye in a chroot)
+sudo grep 'ro.vendor.build.version.incremental' vendor_mount/build.prop
+ro.vendor.build.version.incremental=G973FXXSGHWC1
+
+version from adb on the device:
+adb shell getprop | grep 'vendor.build.version.incremental'
+[ro.vendor.build.version.incremental]: [dbc0a2f32a]
+
+```
 
 ### 7. Install programs
 
@@ -324,4 +419,3 @@ then the phone itself must allow always with a checkbox
 
 
   [1]: https://i.sstatic.net/lGHaoOT9.png
-
