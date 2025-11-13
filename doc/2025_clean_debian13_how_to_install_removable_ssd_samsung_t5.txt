@@ -9,11 +9,11 @@ sudo fdisk -l
 dd /dev/zero /dev/sdb bs=512 count=1 status=progress
 dd /.../.iso /dev/sdb bs=512 status=progress; sync
 
-when stuck jsut wait a few minutes
+when stuck just wait a few minutes
 
 --> to intsall debian on SSD:
 
-boot the media, make new partitions on the ssd disk, do not daamge the real hard drive
+boot the media, make new partitions on the ssd disk, do not damage the real hard drive
 efi partition with bootable flag 300MB
 swap aprtition 10% of size or 4GB
 ext4 partition for debian
