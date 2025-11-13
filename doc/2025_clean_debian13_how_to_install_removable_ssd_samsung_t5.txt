@@ -36,7 +36,10 @@ apt-get install grub-efi-amd64
 fdisk -l
 mkdir -p /mnt/efi
 mnt /dev/sdb1 /mnt/efi
-grub-install /dev/sdb --target=x86_64-efi --booloader-id=GRUB --efi-directory=/mnt/efi --removable
+# if shim-signed is installed the BOOTX64.EFI default will be the shim for secure boot
+# to boot in the BIOS, secure boot should be active, but also Windows third party CA, often in security in the BIOS
+apt-get install shim-signed
+grub-install /dev/sdb --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/mnt/efi --removable
 update-grub
 
 
