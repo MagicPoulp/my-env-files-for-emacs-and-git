@@ -9,16 +9,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(blink-cursor-mode nil)
  '(cua-mode t nil (cua-base))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(cmake-mode company dap-mode dockerfile-mode elixir-mode flycheck
-                helm-lsp helm-xref js2-mode json-mode lsp-mode
-                lsp-treemacs markdown-mode projectile py-autopep8
-                scss-mode typescript-mode yasnippet)))
-
+   (quote
+    (typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
@@ -41,9 +37,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :foreground nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 158 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
-
-(set-face-attribute 'default nil :height 158)
+ '(default ((t (:inherit nil :stipple nil :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 158 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
 
 (defun my-frame-toggle ()
   "Maximize/Restore Emacs frame using 'wmctrl'."
@@ -130,71 +124,12 @@
 ;
  (require 'package) ;; You might already have this line
  (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+;             '("melpa" . "https://melpa.org/packages/"))
 ; (when (< emacs-major-version 24)
 ;  ;; For important compatibility libraries like cl-lib
-;  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
 ; ALT + x list-packages
 ; CTRL + s less-css-mode
 ; click with the mouse on install
-
-;https://emacs-lsp.github.io/lsp-mode/tutorials/CPP-guide/
-(helm-mode)
-(require 'helm-xref)
-(define-key global-map [remap find-file] #'helm-find-files)
-(define-key global-map [remap execute-extended-command] #'helm-M-x)
-(define-key global-map [remap switch-to-buffer] #'helm-mini)
-
-(which-key-mode)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-
-(setq gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
-      treemacs-space-between-root-nodes nil
-      company-idle-delay 60.0
-      company-minimum-prefix-length 1
-      lsp-idle-delay 0.1)  ;; clangd is fast
-
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (require 'dap-cpptools)
-  (yas-global-mode))
-
-(global-set-key (kbd "<f9>") 'lsp-clangd-find-other-file)
-(global-set-key (kbd "<f12>") 'xref-find-definitions)
-(global-set-key (kbd "<S-f12>") 'xref-go-back)
-
-(load "/usr/share/emacs/site-lisp/clang-format-19/clang-format.el")
-
-(use-package clang-format)
-(defun clang-format-save-hook()
-  "Create a buffer local save hook to apply `clang-format-buffer'"
-  ;; Only format if .clang-format is found
-  (when (locate-dominating-file "." ".clang-format")
-    (clang-format-buffer))
-  ;; Continue to save
-  nil)
-
-(define-minor-mode clang-format-on-save-mode
-  "Buffer-local mode to enable/disable automated clang format on save"
-  :lighter " ClangFormat"
-  (if clang-format-on-save-mode
-      (add-hook 'before-save-hook 'clang-format-save-hook nil t)
-    (remove-hook 'before-save-hook 'clang-format-save-hook t)))
-
-;; Create a globalized minor mode to
-;;   - Auto enable the above mode only for C/C++, or glsl in your case
-;;   - Be able to turn it off globally if needed
-(define-globalized-minor-mode clang-format-auto-enable-mode clang-format-on-save-mode
-  (lambda()(clang-format-on-save-mode t))
-  :predicate '(c-mode c++-mode c-or-c++-mode))
-(clang-format-auto-enable-mode t)
-
-(setq load-path (cons  "/usr/lib/erlang/lib/tools-4.1.1/emacs"
-load-path))
-(setq erlang-root-dir "/usr/local/otp")
-(setq exec-path (cons "/usr/local/otp/bin" exec-path))
-(require 'erlang-start)
