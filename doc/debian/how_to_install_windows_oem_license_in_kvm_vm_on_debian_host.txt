@@ -1,0 +1,54 @@
+
+
+# guide to install windows in kvm vm on debian host with OEM license shiped with computer
+
+It is legal to reuse the oem license because we are one the same computer
+
+be sure based on computer model what is the windows version of the OEM
+this command gives you your computer model
+sudo dmidecode -t system
+
+
+install qemu and kvm
+  190  [2025-11-16 11:13:47] sudo apt update
+  191  [2025-11-16 11:13:58] sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+  198  [2025-11-16 11:18:40] sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+  209  [2025-11-16 11:26:32] sudo apt install ovmf swtpm swtpm-tools
+
+download the right windows
+download virtio.iso
+
+trick for how to reuse the oem license
+
+creat a vm in virt-manager, and create a disk 128 GB is good.
+then remove it but keep the disk file and run this command
+sudo virsh -c qemu:///system define /home/user/Downloads/win11.xml
+sudo systemctl restart libvirtd
+
+# no need of slic on recent windows
+cat /sys/firmware/acpi/tables/MSDM > msdm.bin
+# Corrected SMBIOS extraction using xxd -r -p (no Perl, no warning)
+dmidecode -t 0 -u | grep $'^\t\t[^"]' | xargs -n1 | xxd -r -p > smbios_type_0.bin
+dmidecode -t 1 -u | grep $'^\t\t[^"]' | xargs -n1 | xxd -r -p > smbios_type_1.bin
+
+-------
+sudo mkdir -p
+/var/lib/libvirt/qemu/vm_assets
+
+sudo emacs /etc/apparmor.d/abstractions/libvirt-qemu
+
+at the end
+
+/var/lib/libvirt/qemu/vm_assets/* r
+
+sudo cp *.bin /var/lib/libvirt/qemu/vm_assets
+sudo chown -R libvirt-qemu:libvirt-qemu /var/lib/libvirt/qemu/vm_assets
+
+-----------
+INSTALL windows
+the start the vm
+the boot option must be on the windows install iso
+first driver is here
+E:\amd64\win11\viostor.inf
+
+for network driver later it is in NetKvm searh am64 win11
