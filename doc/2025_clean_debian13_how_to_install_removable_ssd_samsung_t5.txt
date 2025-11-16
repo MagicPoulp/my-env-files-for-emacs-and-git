@@ -13,21 +13,26 @@ when stuck just wait a few minutes
 
 --> to install debian on SSD:
 
-boot the media, make new partitions on the ssd disk, do not damage the real hard drive
+boot the media, make new partitions on the ssd disk, do not damage the real hard drive, and remove the 5% reserved space except on the logical hard disk at the end or the root / disk
+
 efi partition with bootable flag 512MB
 swap partition 10% of size or 4GB
 ext4 partition for debian
 
-at the end do not install grub, open a shell and do a manuel grub installation
+at the end of the debian installer do not install grub, open a shell and do a manuel grub installation
+export PATH=$PATH:/sbin
 fdisk -l
 mkdir -p /mnt/linux
 mount /dev/sdb3 /mnt/linux
+#or on an encrypted disk you can mount the logical disk in /dev/mapper/...
 ls to check
 cd /mnt/linux
 mount -t /proc proc/
+# or on an encypted disk:
+#mount -t proc /proc proc/
 mount --rbind /dev dev/
 mount --rbind /sys sys/
-/mnt/linux/bin/chroot /mnt/linux
+/mnt/linux/sbin/chroot /mnt/linux
 nano /etc/apt/apt.sources to remove the cdromve first line
 apt-get update
 apt-get install grub2-common
@@ -42,8 +47,8 @@ apt-get install shim-signed
 fdisk -l
 mkdir -p /mnt/efi
 mnt /dev/sdb1 /mnt/efi
-#grub-install /dev/sdb --target=x86_64-efi --booloader-id=GRUB --efi-directory=/mnt/efi --removable
 # --booloader-id=GRUB redundant and dangerous since --removable installs to the fallback place \EFI\BOOT\BOOTX64.EFI
+
 grub-install /dev/sdb --target=x86_64-efi --efi-directory=/mnt/efi --removable
 
 update-grub
@@ -53,7 +58,10 @@ then go back and properly finish the installation, without installing grub in th
 --> to install with disk encryption
 
 need an additional unencrypted /boot partition of 1GB for grub, and if well mounted grub will use it automatically
-then ecrypt the disk but not the /boot and add an LVM
+then encrypt the disk but not the /boot and add an LVM
+
+the /dev/sdb2 should be mounted on /boot after emptying the local /boot
+grub will automatically install in /boot
 
 --
 Manual Partitioning for Encryption (LUKS + LVM)
