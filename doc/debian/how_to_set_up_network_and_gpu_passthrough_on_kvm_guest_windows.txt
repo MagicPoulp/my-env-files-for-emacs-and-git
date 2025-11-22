@@ -96,3 +96,18 @@ modify this command to change the cpu use
 GRUB_CMDLINE_LINUX="quiet isolcpus=1-19 nohz_full=2-19 rcu_nocbs=1-19 kernelcore=0 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on"
 it is not perfect but still helps
 and put 19 cores in kvm
+
+----
+
+for audio
+
+Start typing: edit group policy
+Navigate to: Computer Configuration > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Device and Resource Redirection.
+
+Double-click Allow audio and video playback redirection.
+
+Set the policy to Enabled or Not Configured.
+
+Click OK and then reboot the remote machine
+in remmina rdp client settings in advanced there is a mode for audio and put it on local
+
