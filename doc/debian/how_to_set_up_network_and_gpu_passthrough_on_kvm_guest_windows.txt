@@ -1,0 +1,98 @@
+
+see the other file
+sudo virsh -c qemu:///system define /home/user/Downloads/win11.xml
+how_to_install_windows_oem_license_in_kvm_vm_on_debian_host.txt
+
+  440  [2025-11-22 10:40:08] sudo apt install bridge-utils
+  546  [2025-11-22 12:26:00] sudo apt-get install rfkill
+  603  [2025-11-22 13:04:46] sudo apt-get install htop
+
+this command can convert the qcow2.com made when creating a vm in kvm, later we want the faster raw format
+time sudo qemu-img convert -f qcow2 -O raw /var/lib/libvirt/images/win11.qcow2 /var/lib/libvirt/images/win11.raw
+
+
+the bridge does not work with wifi
+nmcli radio wifi off
+sudo rfkill block wifi
+
+we also need a network bridge for latency
+create a bridge br0
+
+sudo cat /etc/network/interfaces
+# /etc/network/interfaces
+
+# Include configuration files from /etc/network/interfaces.d/
+source /etc/network/interfaces.d/*
+
+# The loopback network interface (Standard)
+auto lo
+iface lo inet loopback
+
+# --- KVM BRIDGED NETWORK SETUP ---
+
+# 1. Physical Interface (The "Slave" port)
+# Configure the actual wired NIC (enp0s31f6) to be MANUALLY configured
+# so it can be attached to the bridge. It will NOT receive an IP address directly.
+auto enp0s31f6
+iface enp0s31f6 inet manual
+
+# 2. Bridge Interface (The new host connection)
+# The bridge (br0) will get the IP address via DHCP and connect your VM.
+auto br0
+iface br0 inet dhcp
+    bridge_ports enp0s31f6   # <--- CORRECTED INTERFACE NAME
+    bridge_stp off
+    bridge_maxwait 0
+
+# --- END KVM BRIDGED NETWORK SETUP ---
+
+
+systemctl restart network
+and NetworkManager
+
+---------------------
+
+echo "blacklist nouveau" | sudo tee -a /etc/modprobe.d/blacklist-nouveau.conf
+echo "blacklist nvidia" | sudo tee -a /etc/modprobe.d/blacklist-nouveau.conf
+
+sudo nano /etc/modules-load.d/vfio-pci.conf
+vfio
+vfio_iommu_type1
+vfio_pci
+
+sudo nano /etc/modprobe.d/vfio.conf
+options vfio-pci ids=10de:25b8
+
+and this id is associated with graphics card we may have 2 separated by a comma if audio has a separate id and not hidden behind the same
+
+this script is used to find the ids
+for d in /sys/kernel/iommu_groups/*/devices/*; do      n=${d#*/iommu_groups/*};      n=${n%%/*} ;     printf 'IOMMU Group %s ' "$n" ;     lspci -nns "${d##*/}"; done
+
+this command also
+lspci -nnk | grep NVID
+
+------------------------
+
+use the xml without passthrought to start windows activate remote desktopm activate a local user in use info
+then use remmina from apt to connect via RDP
+you get the ip in ipconfig on windows
+it must have same subnet as the bridge br0
+ip neigh show
+so you must restart windows with NIC configured on bridge in kvm
+
+make sure remote desktop works
+install the graphics driver
+stop the VM
+
+  723  [2025-11-22 16:06:52] sudo virsh list --all
+  724  [2025-11-22 16:07:11] -----------------------
+  725  [2025-11-22 16:07:17] sudo virsh domiflist win11
+then open here, ctrl + k to remove all lines and copy the xml for after the passthrough
+sudo EDITOR=nano virsh edit win11
+after this you cannot use the normal kvm only remote desktop works
+start the VM and connect via remote desktop reinstall the graphics driver
+
+modify this command to change the cpu use
+GRUB_CMDLINE_LINUX="quiet isolcpus=1-19 nohz_full=2-19 rcu_nocbs=1-19 kernelcore=0 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on"
+it is not perfect but still helps
+and put 19 cores in kvm
