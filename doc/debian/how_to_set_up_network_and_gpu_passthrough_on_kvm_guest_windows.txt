@@ -160,6 +160,8 @@ remove telemetry service, printer spool, firewall not dangerous, remove stuff in
 activate "extreme performance" using a poweshell fust list then /activate
 activate virtio baloon driver, in device manager there is an unkown PCI something. baloon is at top of iso in baloon dir it is for memory
 remove shared memoery in kvm
+there is a game mode for windowed game that can be disabled since not windowed
+and in remina we can reduce the color per pixel
 
 ---------
 final tuning
