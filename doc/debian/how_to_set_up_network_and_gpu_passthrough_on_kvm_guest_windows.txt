@@ -1,7 +1,5 @@
 in the windows things to allow in gedit in remote desktop there are 2 things one for audio and one for microphone, sure required for usb mic to work
 
-start options
--nospash -high -noipx
 
 
 
@@ -158,3 +156,21 @@ sudo sh -c 'echo 13312 > /proc/sys/vm/nr_hugepages'
 ---------
 
 in windows remove firewall, activate the baloon driver optimize for speed in battery and remove telemetry
+remove telemetry service, printer spool, firewall not dangerous, remove stuff in task manager startup,
+activate "extreme performance" using a poweshell fust list then /activate
+activate virtio baloon driver, in device manager there is an unkown PCI something. baloon is at top of iso in baloon dir it is for memory
+remove shared memoery in kvm
+
+---------
+final tuning
+dota start options
+-nospash -high -noipx
+i ahvea doubt for the -high maybe remove it
+
+due to 3s freeze i left 4 vcores to the host
+
+f means 4 cores in bits mask
+script changed with this
+echo F | sudo tee /proc/irq/default_smp_affinity
+this is the new command in grub
+GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll"
