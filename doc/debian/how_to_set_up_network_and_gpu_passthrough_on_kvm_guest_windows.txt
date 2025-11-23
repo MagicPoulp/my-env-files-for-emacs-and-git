@@ -1,3 +1,9 @@
+in the windows things to allow in gedit in remote desktop there are 2 things one for audio and one for microphone, sure required for usb mic to work
+
+start options
+-nospash -high -noipx
+
+
 
 see the other file
 sudo virsh -c qemu:///system define /home/user/Downloads/win11.xml
