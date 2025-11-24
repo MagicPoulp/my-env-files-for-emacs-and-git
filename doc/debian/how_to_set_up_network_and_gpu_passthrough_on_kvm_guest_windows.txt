@@ -176,3 +176,11 @@ script changed with this
 echo F | sudo tee /proc/irq/default_smp_affinity
 this is the new command in grub
 GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll"
+ 1136  [2025-11-24 05:14:45] sudo nano /etc/tmpfiles.d/10-looking-glass.conf
+ 1137  [2025-11-24 05:15:32] sudo systemd-tmpfiles --create /etc/tmpfiles.d/10-looking-glass.conf
+ 1138  [2025-11-24 05:16:33] looking-glass-client -f /dev/shm/looking-glass
+ 1168  [2025-11-24 05:34:13] ip neigh show
+ 1169  [2025-11-24 05:34:35] ip a show br0
+ 1171  [2025-11-24 05:36:51] sudo apt update
+ 1172  [2025-11-24 05:36:52] sudo apt install nmap arp-scan
+ 1174  [2025-11-24 05:37:08] sudo nmap -sn 192.168.1.1/24
