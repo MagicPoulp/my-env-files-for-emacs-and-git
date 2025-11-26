@@ -19,7 +19,7 @@ or other application using the libvirt API.
     <hugepages/>
   </memoryBacking>
   <vcpu placement='static'>16</vcpu>
-  <iothreads>1</iothreads>
+  <iothreads>8</iothreads>
   <cputune>
     <vcpupin vcpu='0' cpuset='4'/>
     <vcpupin vcpu='1' cpuset='5'/>

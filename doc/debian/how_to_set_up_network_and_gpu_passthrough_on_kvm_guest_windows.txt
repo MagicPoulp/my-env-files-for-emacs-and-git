@@ -197,6 +197,7 @@ f /dev/shm/looking-glass 0660 user kvm -
 looking glass run with success:
 sudo chmod 666 /dev/shm/looking-glass
 looking-glass-client win:size=1920x1080 -s -f /dev/shm/looking-glass
+looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
 
 -------------
 
