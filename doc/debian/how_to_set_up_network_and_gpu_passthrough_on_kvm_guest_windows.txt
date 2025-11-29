@@ -219,3 +219,5 @@ scream -i br0
 
 and in windows sound the Scream speak must be picked
 
+scream -i br0 && sudo virsh start win11 && sleep 10 && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+
