@@ -1,7 +1,4 @@
-in the windows things to allow in gedit in remote desktop there are 2 things one for audio and one for microphone, sure required for usb mic to work
-
-
-
+In the windows things to allow in gedit in remote desktop there are 2 things one for audio and one for microphone, sure required for usb mic to work
 
 see the other file
 sudo virsh -c qemu:///system define /home/user/Downloads/win11.xml
@@ -13,7 +10,6 @@ how_to_install_windows_oem_license_in_kvm_vm_on_debian_host.txt
 
 this command can convert the qcow2.com made when creating a vm in kvm, later we want the faster raw format
 time sudo qemu-img convert -f qcow2 -O raw /var/lib/libvirt/images/win11.qcow2 /var/lib/libvirt/images/win11.raw
-
 
 the bridge does not work with wifi
 nmcli radio wifi off
@@ -215,9 +211,13 @@ l
  1427  [2025-11-26 20:14:22] make
  1428  [2025-11-26 20:14:24] ll
 
+to fix the sound with scream
+deactivate windows settings/sound the normal speaker to just have Scream
+in control panel (not the settings windows), hardware and sound in sound you can disable the standard speaker
+and in the communications tab click on do nothing
+
 scream -i br0
 
 and in windows sound the Scream speak must be picked
 
 scream -i br0 && sudo virsh start win11 && sleep 10 && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
-
