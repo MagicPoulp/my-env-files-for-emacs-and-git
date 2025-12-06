@@ -29,7 +29,7 @@ or other application using the libvirt API.
     <vcpupin vcpu='5' cpuset='13'/>
     <vcpupin vcpu='6' cpuset='14'/>
     <vcpupin vcpu='7' cpuset='15'/>
-    <emulatorpin cpuset='16-17'/>
+    <emulatorpin cpuset='16-19'/>
     <iothreadpin iothread='1' cpuset='4'/>
   </cputune>
   <os firmware='efi'>
@@ -86,7 +86,7 @@ or other application using the libvirt API.
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='none' io='native' discard='unmap' iothread='1'/>
+      <driver name='qemu' type='raw' cache='none' io='native' discard='unmap' iothread='1' queues='4'/>
       <source file='/var/lib/libvirt/images/win11.raw'/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
@@ -181,7 +181,6 @@ or other application using the libvirt API.
     <tpm model='tpm-tis'>
       <backend type='emulator' version='2.0'/>
     </tpm>
-    <audio id='1' type='none'/>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
         <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
