@@ -221,3 +221,23 @@ scream -i br0
 and in windows sound the Scream speak must be picked
 
 scream -i br0 && sudo virsh start win11 && sleep 10 && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+
+-----
+
+Additional steps to trigger the irq affinity for network changes and when the VM start
+
+ 2009  [2025-12-06 14:59:13] sudo touch /etc/NetworkManager/dispatcher.d/99-irq-repin
+ 2010  [2025-12-06 14:59:42] less irq-pin.sh 
+ 2011  [2025-12-06 14:59:48] e irq-pin.sh 
+ 2012  [2025-12-06 15:00:09] sudo cp irq-pin.sh /etc/NetworkManager/dispatcher.d/99-irq-repin
+ 2013  [2025-12-06 15:01:17] sudo systemctl restart NetworkManager
+ 2014  [2025-12-06 15:03:01] sudo ls /etc/libvirt/hooks/qemu.d/win11/
+ 2015  [2025-12-06 15:03:03] sudo ls /etc/libvirt/hooks/qemu.d/
+ 2016  [2025-12-06 15:03:06] sudo ls /etc/libvirt/hooks/
+ 2017  [2025-12-06 15:05:54] sudo mkdir -p /etc/libvirt/hooks/qemu
+ 2018  [2025-12-06 15:05:57] sudo mkdir -p /etc/libvirt/hooks/qemu.d
+ 2019  [2025-12-06 15:06:04] sudo mkdir -p /etc/libvirt/hooks/qemu.d/win11/prepare/begin
+ 2020  [2025-12-06 15:06:04] sudo mkdir -p /etc/libvirt/hooks/qemu.d/win11/release/end
+ 2021  [2025-12-06 15:06:13] less irq-pin.sh 
+ 2022  [2025-12-06 15:06:39] sudo cp irq-pin.sh /etc/libvirt/hooks/qemu.d/win11/release/begin
+ 
