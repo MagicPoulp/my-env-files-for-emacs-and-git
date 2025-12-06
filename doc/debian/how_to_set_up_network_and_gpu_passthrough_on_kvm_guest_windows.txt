@@ -241,3 +241,8 @@ Additional steps to trigger the irq affinity for network changes and when the VM
  2021  [2025-12-06 15:06:13] less irq-pin.sh 
  2022  [2025-12-06 15:06:39] sudo cp irq-pin.sh /etc/libvirt/hooks/qemu.d/win11/release/begin
  
+
+final setup see irq-pin.sh and script1.sh
+4 cpus for kernel and emulator
+1 cpu for iothread
+3 cpus for keyboard and mouse and controller
