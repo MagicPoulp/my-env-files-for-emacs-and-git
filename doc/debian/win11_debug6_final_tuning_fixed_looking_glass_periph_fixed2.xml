@@ -18,7 +18,7 @@ or other application using the libvirt API.
   <memoryBacking>
     <hugepages/>
   </memoryBacking>
-  <vcpu placement='static'>12</vcpu>
+  <vcpu placement='static'>8</vcpu>
   <iothreads>1</iothreads>
   <cputune>
     <vcpupin vcpu='0' cpuset='8'/>
@@ -29,11 +29,7 @@ or other application using the libvirt API.
     <vcpupin vcpu='5' cpuset='13'/>
     <vcpupin vcpu='6' cpuset='14'/>
     <vcpupin vcpu='7' cpuset='15'/>
-    <vcpupin vcpu='8' cpuset='16'/>
-    <vcpupin vcpu='9' cpuset='17'/>
-    <vcpupin vcpu='10' cpuset='18'/>
-    <vcpupin vcpu='11' cpuset='19'/>
-    <emulatorpin cpuset='0-3'/>
+    <emulatorpin cpuset='16-17'/>
     <iothreadpin iothread='1' cpuset='4'/>
   </cputune>
   <os firmware='efi'>
