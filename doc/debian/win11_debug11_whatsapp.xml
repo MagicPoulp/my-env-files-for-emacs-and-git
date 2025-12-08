@@ -19,7 +19,7 @@ or other application using the libvirt API.
     <hugepages/>
   </memoryBacking>
   <vcpu placement='static'>16</vcpu>
-  <iothreads>4</iothreads>
+  <iothreads>1</iothreads>
   <cputune>
     <vcpupin vcpu='0' cpuset='4'/>
     <vcpupin vcpu='1' cpuset='5'/>
@@ -38,10 +38,7 @@ or other application using the libvirt API.
     <vcpupin vcpu='14' cpuset='18'/>
     <vcpupin vcpu='15' cpuset='19'/>
     <emulatorpin cpuset='0-3'/>
-    <iothreadpin iothread='1' cpuset='0-3'/>
-    <iothreadpin iothread='2' cpuset='0-3'/>
-    <iothreadpin iothread='3' cpuset='0-3'/>
-    <iothreadpin iothread='4' cpuset='0-3'/>
+    <iothreadpin iothread='1' cpuset='4'/>
   </cputune>
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.0'>hvm</type>
