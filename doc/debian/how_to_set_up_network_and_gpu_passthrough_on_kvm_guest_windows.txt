@@ -329,7 +329,8 @@ sudo tcpdump -i screambr0 udp port 4010 and dst 192.168.254.1 -nn
 to make the sound play (the u is for unicast):
 scream -u -i screambr0
 
-If stuttering, add -b 50 to add a buffer to the price of latency
+If stuttering, add -t 100 (default 50ms) to add a buffer to the price of latency
+scream -u -i screambr0 -t 100
 
 to show status and static IP we have set:
 ip a show screambr0
@@ -428,3 +429,22 @@ avoid to destroy too much a starting windows or it enters reset mode. Best is to
 
 final file with this Scream UDP:
 win11_debug6_final_tuning_fixed_looking_glass_periph_fixed3.xml
+
+ 2365  [2025-12-12 21:31:23] ls /usr/bin/qemu-system-x86_64
+ 2366  [2025-12-12 21:32:36] sudo apt update
+ 2367  [2025-12-12 21:32:37] sudo apt install libcap2-bin
+ 2368  [2025-12-12 21:32:47] # 2. Locate the QEMU binary used by libvirt
+ 2369  [2025-12-12 21:32:47] # This path might vary slightly, but this is the standard location:
+ 2370  [2025-12-12 21:32:47] QEMU_PATH="/usr/bin/qemu-system-x86_64"
+ 2371  [2025-12-12 21:32:47] # 3. Grant the CAP_SYS_NICE capability to the QEMU binary
+ 2372  [2025-12-12 21:32:47] # The '+ep' flags mean 'effective' and 'permitted'
+ 2373  [2025-12-12 21:32:47] sudo setcap cap_sys_nice+ep "${QEMU_PATH}"
+ 2374  [2025-12-12 21:32:47] # 4. Verify the change
+ 2375  [2025-12-12 21:32:47] sudo getcap "${QEMU_PATH}"
+ 2376  [2025-12-12 21:32:47] # Output should look something like:
+ 2377  [2025-12-12 21:32:47] # /usr/bin/qemu-system-x86_64 = cap_sys_nice+ep
+ 2378  [2025-12-12 21:33:00] sudo getcap "${QEMU_PATH}"
+
+new command to have the good RR scheduler
+sudo ~/tmp/start_win11.sh  && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+
