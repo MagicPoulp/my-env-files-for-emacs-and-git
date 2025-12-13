@@ -87,7 +87,8 @@ stop the VM
   723  [2025-11-22 16:06:52] sudo virsh list --all
   724  [2025-11-22 16:07:11] -----------------------
   725  [2025-11-22 16:07:17] sudo virsh domiflist win11
-then open here, ctrl + k to remove all lines and copy the xml for after the passthrough
+then open here with this nano command on virsh, ctrl + k to remove all lines and copy the xml for after the passthrough
+the best is to have an emacs editor and copy from it. empty the virsh editor using CTRL+K
 sudo EDITOR=nano virsh edit win11
 after this you cannot use the normal kvm only remote desktop works
 start the VM and connect via remote desktop reinstall the graphics driver
@@ -251,4 +252,179 @@ final setup see irq-pin.sh and script1.sh
 8 for windows since too many requires synchronization
 --------------------
 
-since audio in network takes resoruces, need 4 dedicated cpus for emulator to handle it
+THIS is WRONG: since audio in network takes ressources, need 4 dedicated cpus for emulator to handle it
+
+SOLUTION SCREAM ON UDP ON SECOND ISOLATED BRIDGE
+
+Scream was saturating and handled in the emulator threads together with the network causing disconnections.
+
+Solution that worked: a new dedicated screambr0 bridge, and a new tuning via unicast UDP. all details below
+
+New interfaces file.
+
+user@Host-001:~/tmp$ cat /etc/network/interfaces
+# /etc/network/interfaces
+
+# Include configuration files from /etc/network/interfaces.d/
+source /etc/network/interfaces.d/*
+
+# The loopback network interface (Standard)
+auto lo
+iface lo inet loopback
+
+# --- KVM BRIDGED NETWORK SETUP ---
+
+# 1. Physical Interface (The "Slave" port)
+# Configure the actual wired NIC (enp0s31f6) to be MANUALLY configured
+# so it can be attached to the bridge. It will NOT receive an IP address directly.
+auto enp0s31f6
+iface enp0s31f6 inet manual
+
+# 2. Bridge Interface (The new host connection)
+# The bridge (br0) will get the IP address via DHCP and connect your VM.
+auto br0
+iface br0 inet dhcp
+    bridge_ports enp0s31f6   # <--- CORRECTED INTERFACE NAME
+    bridge_stp off
+    bridge_maxwait 0
+
+# Add this block to /etc/network/interfaces
+# /etc/network/interfaces
+
+# ... (lo, enp0s31f6, and br0 blocks remain the same) ...
+
+# --- ISOLATED SCREAM AUDIO BRIDGE (screambr0) ---
+
+# Use the bridge type explicitly, without relying on bridge_ports.
+# This tells ifup that this is a bridge device it needs to create.
+
+auto screambr0
+iface screambr0 inet static
+    address 192.168.254.1
+    netmask 255.255.255.0
+
+    # 1. CLEANUP (prevents "File exists" error)
+    # Deletes the device if it exists from a previous failure.
+    pre-up ip link del screambr0 || true
+
+    # 2. CREATE DEVICE (Prevents "Cannot find device" error)
+    # This explicitly creates the bridge device itself.
+    pre-up ip link add screambr0 type bridge
+
+    # 3. CONFIGURE DEVICE
+    # The IP address is handled by the "iface screambr0 inet static" block above,
+    # but some systems require it to be manually set. We will remove the redundant
+    # 'up ip addr add' command to simplify, as the 'iface' line should handle it.
+
+    # 4. CLEANUP ON SHUTDOWN
+    post-down ip link del screambr0
+
+# --- END KVM BRIDGED NETWORK SETUP ---
+
+-----------------------------
+
+to debug the bridge
+sudo tcpdump -i screambr0 udp port 4010 and dst 192.168.254.1 -nn
+
+to make the sound play (the u is for unicast):
+scream -u -i screambr0
+
+If stuttering, add -b 50 to add a buffer to the price of latency
+
+to show status and static IP we have set:
+ip a show screambr0
+
+apt install net-tools
+sudo netstat -tulnp | grep 4010
+
+to allow the port:
+sudo ufw allow in on screambr0 proto udp to any port 4010
+
+in Windows powershell, we can try to send a simple UDP packet in the powershell using a function from internetl
+https://gist.github.com/PeteGoo/21a5ab7636786670e47c
+ 	function Send-UdpDatagram
+{
+      Param ([string] $EndPoint,
+      [int] $Port,
+      [string] $Message)
+
+      $IP = [System.Net.Dns]::GetHostAddresses($EndPoint)
+      $Address = [System.Net.IPAddress]::Parse($IP)
+      $EndPoints = New-Object System.Net.IPEndPoint($Address, $Port)
+      $Socket = New-Object System.Net.Sockets.UDPClient
+      $EncodedText = [Text.Encoding]::ASCII.GetBytes($Message)
+      $SendMessage = $Socket.Send($EncodedText, $EncodedText.Length, $EndPoints)
+      $Socket.Close()
+}
+Usage.ps1
+Send-UdpDatagram -EndPoint "127.0.0.1" -Port 8125 -Message "TEST_UDP_SENT"
+
+------------------
+KVM
+
+now we have 2 interfaces, and at the top we have set 2 iothreads, but only iothread="1" is pinned to a vcpu
+    <interface type='bridge'>
+      <mac address='52:54:00:43:3d:22'/>
+      <source bridge='br0'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+    </interface>
+    <interface type='bridge'>
+      <mac address='52:54:00:11:22:33'/>
+      <source bridge='screambr0'/>
+      <model type='virtio'/>
+      <driver name='vhost' txmode='iothread' ioeventfd="on"/>
+      <target dev='vnetScream'/>
+      <alias name='scream-net'/>
+      <address type='pci' domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
+    </interface>
+
+-------------------------------
+
+In windows,
+find the new adapter in control panel / network
+change adapter settings, in IPv4 double click and set an IP in same subnet as the IP we have set
+and put as gateway the bridge IP
+example:
+IP/mask/gateway
+192.168.254.10
+255.255.255.0
+192.168.254.1
+
+then you should be able to ping that gateway IP from windows
+
+in advanced, remove all the offloading stuff, try to disable a maximum of properties since they are not needed in a VM
+
+In audio, make sure Scream is the only audio device.
+now in regedit, we need to change the Scream parameters for Unicast UDP and set the IP and port
+
+check well the IP and port
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Scream
+Add strings IP and IPAddress, value "192.168.254.1"
+
+create Key Options (like a folder)
+HKEY_LOCAL_MACHINE\SOFTWARE\Scream\Options
+Type            DWORD (REG_DWORD)	0 (Decimal)  ----> 0 Unicast, 1 multicast
+IP              String (REG_SZ)	        192.168.254.1
+IPAdress        String (REG_SZ)	        192.168.254.1
+Unicast	        DWORD (REG_DWORD)	1 (Decimal)
+IP_ADDRESS	String (REG_SZ)	        192.168.254.1
+UDP_PORT	DWORD (REG_DWORD)	4010 (Decimal)
+UnicastIPv4     String (REG_SZ)	        192.168.254.1
+UnicastPort     DWORD (REG_DWORD)	4010 (Decimal)
+MULTICAST	DWORD (REG_DWORD)	0
+
+change the Scream audio settings to use 16 bits 48000Hz (DVD). it is standard for most applicaiton and avoids saturation
+
+it is in control panel/audio
+
+the iothread is used even if not pinned.
+
+REBOOT MACHINE
+when playing a sound the network adapter should show traffic sent in properties
+
+avoid to destroy too much a starting windows or it enters reset mode. Best is to reboot the host to have a clean hardware GPU state.
+
+final file with this Scream UDP:
+win11_debug6_final_tuning_fixed_looking_glass_periph_fixed3.xml
