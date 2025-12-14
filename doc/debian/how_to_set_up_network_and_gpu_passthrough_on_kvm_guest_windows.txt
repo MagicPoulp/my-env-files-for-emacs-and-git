@@ -94,9 +94,14 @@ after this you cannot use the normal kvm only remote desktop works
 start the VM and connect via remote desktop reinstall the graphics driver
 
 modify this command to change the cpu use
-GRUB_CMDLINE_LINUX="quiet isolcpus=1-19 nohz_full=2-19 rcu_nocbs=1-19 kernelcore=0 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on"
+you must not repeat quiet
+GRUB_CMDLINE_LINUX="isolcpus=1-19 nohz_full=2-19 rcu_nocbs=1-19 kernelcore=0 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on"
 it is not perfect but still helps
 and put 19 cores in kvm
+
+after tuning, this is much better saving 4 cores for the kernel and OS:
+FINAL grub command:
+GRUB_CMDLINE_LINUX="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll nohz=on
 
 ----
 
@@ -455,4 +460,63 @@ last tuning. 6 cpus is enough and no lag
 the screambr0, the network and emulator share the same pool so i increased it.
 core 4 is unassigned
 iothread for disk is on core 19 near the emulator pins for speedup they must be near
+
+
+in the file 4, i make sure the scream goes on a good iothread and not on emulator threads
+in the file 6 in increase the CPUS
+
+--------------------------
+
+--> how to add IO polling the most powerful speedup that wait 10us the end wihtout interrupts
+
+ 2921  [2025-12-15 21:18:40] sudo chmod 660 /var/lib/libvirt/images/win11.raw
+ 2922  [2025-12-15 21:18:53] ll -ld /var/lib/libvirt/images/win11.raw
+ 2923  [2025-12-15 21:19:10] ll /var/lib/libvirt/images/win11.raw
+ 2924  [2025-12-15 21:19:47] sudo chmod 750 /var/lib/libvirt/images
+ 2925  [2025-12-15 21:19:52] ll -ld /var/lib/libvirt/images/win11.raw
+ 2926  [2025-12-15 21:20:03] ll -ld /var/lib/libvirt/images
+ 2927  [2025-12-15 21:20:06] ll -ld /var/lib/libvirt/images/win11.raw
+ 2928  [2025-12-15 21:20:10] sudo ll -ld /var/lib/libvirt/images/win11.raw
+ 2929  [2025-12-15 21:20:15] sudo ls -ld /var/lib/libvirt/images/win11.raw
+ 2930  [2025-12-15 21:21:06] sudo chown libvirt-qemu:libvirt-qemu /var/lib/libvirt/images
+ 2931  [2025-12-15 21:21:11] sudo virsh start win11
+ 2932  [2025-12-15 21:21:53] sudo chown -R libvirt-qemu:libvirt-qemu /var/lib/libvirt/images
+ 2933  [2025-12-15 21:21:55] sudo virsh start win11
+ 2934  [2025-12-15 21:22:16] sudo virsh pool-refresh default
+ 2935  [2025-12-15 21:22:18] sudo virsh start win11
+ 2936  [2025-12-15 21:22:40] sudo aa-complain /etc/apparmor.d/usr.lib.libvirt.libvirt-qemu
+ 2937  [2025-12-15 21:23:43] sudo apt install apparmor
+ 2938  [2025-12-15 21:23:48] sudo apt install apparmor-utils
+ 2939  [2025-12-15 21:23:53] sudo aa-complain /etc/apparmor.d/usr.lib.libvirt.libvirt-qemu
+ 2940  [2025-12-15 21:24:20] ls /etc/apparmor.d/libvirt/
+ 2941  [2025-12-15 21:25:19] sudo aa-complain /etc/apparmor.d/libvirt/libvirt-f7e10f4c-31a9-11b2-a85c-de224bfb41bc
+
+sudo virsh undefine win11 --nvram
+sudo virsh -c qemu:///system define /home/user/Downloads/win11.xml
+
+sudo setcap cap_net_admin,cap_net_raw=eip /usr/lib/qemu/qemu-bridge-helper
+
+1. Change ownership to the libvirt-qemu user/group
+sudo chown libvirt-qemu:kvm /var/lib/libvirt/images/win11.raw
+# 2. Set file permissions to ensure the owner (libvirt-qemu) can read/write
+sudo chmod 660 /var/lib/libvirt/images/win11.raw
+
+echo "<network><name>screamnet</name><bridge name='screambr0'/><forward mode='bridge'/></network>" > /tmp/screamnet.x
+ml
+ # Define the network in Libvirt
+ sudo virsh net-define /tmp/screamnet.xml
+ sudo virsh net-start screamnet
+ sudo virsh net-autostart screamnet
+
+
+sudo nano /etc/security/limits.conf
+@kvm soft memlock unlimited
+@kvm hard memlock unlimited
+reboot
+
+strangely we need 4 more hugepages
+echo 13316 | sudo tee /proc/sys/vm/nr_hugepages
+
+
+GRUB_CMDLINE_LINUX="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll nohz=on
 
