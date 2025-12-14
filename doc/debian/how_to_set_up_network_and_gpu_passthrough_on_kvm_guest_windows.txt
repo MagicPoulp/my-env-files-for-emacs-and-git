@@ -446,5 +446,13 @@ win11_debug6_final_tuning_fixed_looking_glass_periph_fixed3.xml
  2378  [2025-12-12 21:33:00] sudo getcap "${QEMU_PATH}"
 
 new command to have the good RR scheduler
-sudo ~/tmp/start_win11.sh  && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+sudo ~/tmp/start_win11.sh  && sleep 20 && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+
+---
+
+start in RR with start_win11.sh
+last tuning. 6 cpus is enough and no lag
+the screambr0, the network and emulator share the same pool so i increased it.
+core 4 is unassigned
+iothread for disk is on core 19 near the emulator pins for speedup they must be near
 
