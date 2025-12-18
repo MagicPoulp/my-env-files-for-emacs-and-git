@@ -539,5 +539,7 @@ sudo chmod 660 /dev/shm/looking-glass
 win11_debug6_final_tuning_fixed_looking_glass_periph_fixed8.xml
 has io_uring and is very powerful, and it makes looking glass much harder to login in Windows
 that is why scream0 is removed from it to stabilize it. Since no dedicated thread.
-
-
+--------------
+debug123.xml had gpu passthrough disabled and allows to reconnect via remmina remote desktop
+and it has a scsi controller but a virtio-blk disk
+this allows the installation of the scsi driver on it. And the 6.xml allows to acces the virtio .iso drive to copy a driver
