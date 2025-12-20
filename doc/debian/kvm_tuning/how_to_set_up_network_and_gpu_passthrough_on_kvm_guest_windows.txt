@@ -582,3 +582,7 @@ adapter=0
 output=0
 ; Only capture changed regions to save CPU/Bandwidth
 trackDamage=yes
+
+
+note: some people use monlight + sunshine. it is faster for video but does not have same desktop experience
+and the audio uses more CPU and network than Scream udp unicast
