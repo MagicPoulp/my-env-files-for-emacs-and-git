@@ -598,3 +598,4 @@ output=DISPLAY3
 note: some people use monlight + sunshine. it is faster for video but does not have same desktop experience
 and the audio uses more CPU and network than Scream udp unicast
 
+IMPORTANT: the windows service for Looking glass should be automatic and not delayed start or it shows empty window for a while
