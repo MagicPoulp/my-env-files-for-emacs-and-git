@@ -582,7 +582,15 @@ adapter=0
 output=0
 ; Only capture changed regions to save CPU/Bandwidth
 trackDamage=yes
+---------------
+
+NOTE: if the log in C:\ProgramData\looking glass something
+says cound not use DISPLAY3
+it means we must change the config file with output=3, proven to work and indexing of output starts at 1 NOT ZERO as tested
+1 for DISPLAY1
+2 for DISPLAY2
 
 
 note: some people use monlight + sunshine. it is faster for video but does not have same desktop experience
 and the audio uses more CPU and network than Scream udp unicast
+
