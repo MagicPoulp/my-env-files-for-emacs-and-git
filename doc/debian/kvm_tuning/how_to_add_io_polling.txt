@@ -20,6 +20,7 @@ reboot
 
 install sysstat
 mpstat -P ALL 1
+mpstat -P 19 1
 
 see the files xml 7 and 8 they have polling and one has io_uring
 install linux-perf
