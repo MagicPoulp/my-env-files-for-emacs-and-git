@@ -1,0 +1,9 @@
+from the red hat virtio ISO there is a folder guest agent, install it and reboot
+
+we run a command the nwe wait for the ourput directly or from a second command with a PID
+sudo virsh qemu-agent-command win11 '{"execute":"guest-ping"}'
+sudo virsh qemu-agent-command win11 '{"execute": "guest-exec", "arguments": { "path": "cmd.exe", "arg": ["/c", "hostname"], "capture-output": true }}'
+sudo virsh qemu-agent-command win11 '{"execute": "guest-exec-status", "arguments": { "pid": 1228 }}'
+echo "VFYxDQo=" | base64 -d
+
+
