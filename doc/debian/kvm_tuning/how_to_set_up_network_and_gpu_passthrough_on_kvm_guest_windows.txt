@@ -590,6 +590,10 @@ it means we must change the config file with output=3, proven to work and indexi
 1 for DISPLAY1
 2 for DISPLAY2
 
+NOTE for DXGI it is indexes
+For d12 it works one must put the full string
+adapter=NVIDIA RTX A2000 Laptop GPU
+output=DISPLAY3
 
 note: some people use monlight + sunshine. it is faster for video but does not have same desktop experience
 and the audio uses more CPU and network than Scream udp unicast
