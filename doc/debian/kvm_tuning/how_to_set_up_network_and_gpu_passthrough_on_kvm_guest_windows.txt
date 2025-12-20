@@ -547,3 +547,38 @@ that is why scream0 is removed from it to stabilize it. Since no dedicated threa
 -debug123.xml had gpu passthrough disabled and allows to reconnect via remmina remote desktop
 -and it has a scsi controller but a virtio-blk disk
 -this allows the installation of the scsi driver on it. And the 6.xml allows to acces the virtio .iso drive to copy a driver
+
+
+---------------------
+
+IMPORTANT: chnaged to scsi in the 7_ 7b and 7c and 8 xml
+the looking glass to be awoken require sa first temporary RDP session
+
+moreover, one must change in sleep mode on windows to make sure the screen is never stopped
+
+moreover,
+this needs ot be fixed in the vdd_settings.xml of the virtual display driver
+<gpu>
+        <friendlyname>NVIDIA GeForce RTX A2000</friendlyname>
+    </gpu>
+    
+    <options>
+        <HardwareCursor>true</HardwareCursor>
+        <RefreshRateFloat>true</RefreshRateFloat>
+        <MaintainMonitorCount>true</MaintainMonitorCount>
+    </options>
+
+moreover, one needs  simple config.ini in the looking glass program in Program Files fold
+this is what I have that works, and confirmed to work in the logs
+
+[app]
+; Forces the use of the DX12 capture interface (standard for B7)
+capture=DXGI
+
+[dxgi]
+adapter=0
+; If you have multiple 'monitors' (QXL and Virtual), you may need
+; to specify which one to capture. '0' is usually the main one.
+output=0
+; Only capture changed regions to save CPU/Bandwidth
+trackDamage=yes
