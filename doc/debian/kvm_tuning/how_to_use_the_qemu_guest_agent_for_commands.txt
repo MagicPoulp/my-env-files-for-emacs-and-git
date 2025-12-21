@@ -1,3 +1,11 @@
+in devices
+
+<channel type='unix'>
+  <target type='virtio' name='org.qemu.guest_agent.0'/>
+  <address type='virtio-serial' controller='0' bus='0' port='1'/>
+</channel>
+
+
 from the red hat virtio ISO there is a folder guest agent, install it and reboot
 
 we run a command the nwe wait for the ourput directly or from a second command with a PID

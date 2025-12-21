@@ -165,23 +165,17 @@ or other application using the libvirt API.
       <backend type='emulator' version='2.0'/>
     </tpm>
     <audio id='1' type='none'/>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
-    </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>
       <source>
-        <vendor id='0x046d'/>
-        <product id='0x085c'/>
+        <vendor id='0x13d3'/>
+        <product id='0x56fb'/>
       </source>
       <address type='usb' bus='0' port='1'/>
     </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>
       <source>
-        <vendor id='0x0909'/>
-        <product id='0x0051'/>
+        <vendor id='0x046d'/>
+        <product id='0xc093'/>
       </source>
       <address type='usb' bus='0' port='2'/>
     </hostdev>
@@ -192,12 +186,11 @@ or other application using the libvirt API.
       </source>
       <address type='usb' bus='0' port='3'/>
     </hostdev>
-    <hostdev mode='subsystem' type='usb' managed='yes'>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <vendor id='0x046d'/>
-        <product id='0xc093'/>
+        <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
       </source>
-      <address type='usb' bus='0' port='4'/>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
