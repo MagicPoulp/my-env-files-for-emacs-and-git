@@ -180,7 +180,11 @@ this is the new command in grub
 GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll"
 
 
-looking-glass was built from source in a chroot since it is in debian unstable, a fontfox- something package package had to be installed manually and removed from a config filem it just had a b0 extension.
+looking-glass was built from source in a chroot since it is in debian unstable, a fontfox- something package package had to be installed manually and removed from a config file it just had a b0 extension.
+
+# Inside your chroot you need this or the copy paste may be missing
+apt update
+apt install libspice-client-glib-2.0-dev libspice-protocol-dev nettle-dev libx11-dev libxfixes-dev
 
  1136  [2025-11-24 05:14:45] sudo nano /etc/tmpfiles.d/10-looking-glass.conf
  1137  [2025-11-24 05:15:32] sudo systemd-tmpfiles --create /etc/tmpfiles.d/10-looking-glass.conf
