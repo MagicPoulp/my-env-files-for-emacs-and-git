@@ -1,0 +1,8 @@
+with lsusb find well the ids
+
+then dont specify address itworks automatically
+if windows does not detect it , you need to go in remote desktop and install the windows driver manually
+there should be in device manager for mice a fallback PS/2, select it then go in view by connecion
+searh and you l lfind the model with an interrogation mark
+right click to intsall drriver and search automatically
+

@@ -100,7 +100,7 @@ or other application using the libvirt API.
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </controller>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
-      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x7' function='0x0'/>
     </controller>
     <controller type='pci' index='0' model='pcie-root'/>
     <controller type='pci' index='1' model='pcie-root-port'>
@@ -166,8 +166,6 @@ or other application using the libvirt API.
       <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
-    <input type='mouse' bus='ps2'/>
-    <input type='keyboard' bus='ps2'/>
     <tpm model='tpm-tis'>
       <backend type='emulator' version='2.0'/>
     </tpm>
