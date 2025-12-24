@@ -201,7 +201,7 @@ then 2 .deb files to install
 
  1136  [2025-11-24 05:14:45] sudo nano /etc/tmpfiles.d/10-looking-glass.conf
  1137  [2025-11-24 05:15:32] sudo systemd-tmpfiles --create /etc/tmpfiles.d/10-looking-glass.conf
-avec ceci dans le .conf
+put this in the .conf
 # Type Path Mode UID GID Age Argument
 f /dev/shm/looking-glass 0660 user kvm -
 
@@ -651,4 +651,37 @@ Type powercfg /list and press Enter. This shows all plans and their unique IDs (
 If Ultimate Performance is active (marked with an asterisk *), switch to another first:
 
     powercfg /setactive [GUID of Balanced or High Performance]
+
+---------------------
+How to fix shared folder.
+We do not use <driver type='virtiofs'/> and WinFsp as it requires a dangerous WinFsp .exe in windows
+We use smb as a network drive. And we will not need new stuff in the KVM XML
+
+make sure the spice guest tools are installed
+either remove the windows firewall or create rules
+In the left pane, click Advanced settings, and in the console tree, click Inbound Rules.
+Under Inbound Rules, locate the rules File and Printer Sharing (NB-Session-In) and File and Printer Sharing (SMB-In).
+For each rule, right-click the rule, and then click Enable Rule.
+
+sudo mkdir /opt/shared
+sudo chown user:user -R /otp/shared
+sudo chmod 777 /opt/shared
+
+sudo apt-get update
+sudo apt-get install simba
+sudo nano /etc/samba/smb.conf
+
+add this at the end:
+[shared]
+   path = /opt/shared
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = user
+
+sudo smbpasswd -a user
+IP_HOST from ip addr show br0
+this user and pass will be needed in windows in map network drive \\IP_HOST\shared
+sudo systemctl restart smbd
+
 
