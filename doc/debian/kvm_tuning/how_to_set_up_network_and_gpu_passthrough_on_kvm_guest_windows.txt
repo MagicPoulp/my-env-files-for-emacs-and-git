@@ -632,3 +632,17 @@ then SPICE VD agent must be in windows service
 
 sudo virsh start win11 && sleep 20 && looking-glass-client win:size=1920x1080 win:fullScreen -s -c SPICE -f /dev/shm/looking-glass spice:enable=true
 
+-------------------
+
+final tuning:
+on windows
+remove the auto screen stop in the power options
+
+set hihg performance mode
+Right-click the Start button and select Terminal (Admin) or Command Prompt (Admin).
+
+Type powercfg /list and press Enter. This shows all plans and their unique IDs (GUIDs).
+
+If Ultimate Performance is active (marked with an asterisk *), switch to another first:
+
+    powercfg /setactive [GUID of Balanced or High Performance]
