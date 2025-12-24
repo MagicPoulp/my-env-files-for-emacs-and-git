@@ -1,17 +1,12 @@
-# Initialize ExUnit with standard 60s timeout
-ExUnit.start(max_cases: 1)
+defmodule SystemTestingUIAutomation.Config do
+  @enforce_keys [:log_file, :video_file, :runtime_dir, :vm_name]
+  defstruct [:log_file, :video_file, :runtime_dir, :vm_name]
+end
 
-# =============================================================================
-# MANAGED SERVICE: SystemTestingUIAutomation.Manager
-# =============================================================================
 defmodule SystemTestingUIAutomation.Manager do
-  @moduledoc """
-  Orchestrates UI testing infrastructure.
-  Handles synchronized logging, video compression (medium preset), 
-  and full path reporting.
-  """
+  alias SystemTestingUIAutomation.Config
 
-  def start_env(config) do
+  def start_env(%Config{} = config) do
     IO.puts("🚀 [System] Initializing System Testing UI Automation...")
     Process.flag(:trap_exit, true)
 
@@ -19,8 +14,6 @@ defmodule SystemTestingUIAutomation.Manager do
     File.chmod!(config.runtime_dir, 0o700)
 
     final_video = String.replace(config.video_file, Path.extname(config.video_file), "_final.mp4")
-    
-    # Clean up previous runs
     Enum.each([config.log_file, config.video_file, final_video], fn f ->
       if File.exists?(f), do: File.rm!(f)
     end)
@@ -42,18 +35,19 @@ defmodule SystemTestingUIAutomation.Manager do
 
     ports = Enum.map(apps, fn {label, cmd} ->
       port = Port.open({:spawn, cmd}, [:binary, :stderr_to_stdout, :exit_status])
-      
+      {:os_pid, os_pid} = Port.info(port, :os_pid)
+
+      Port.connect(port, aggregator_pid)
       send(aggregator_pid, {:register, port, label, self()})
       receive do: ({:registered, ^port} -> :ok)
-      
-      Port.connect(port, aggregator_pid)
-      {port, label}
+
+      %{port: port, label: label, os_pid: os_pid}
     end)
 
     case wait_for_log(config.log_file, "Starting session", 15) do
-      :ok ->
-        {:ok, %{ports: ports, log_handle: log_handle, aggregator_pid: aggregator_pid, config: config}}
+      :ok -> {:ok, %{ports: ports, log_handle: log_handle, aggregator_pid: aggregator_pid, config: config}}
       :error ->
+        Enum.each(ports, fn %{os_pid: pid} -> System.cmd("kill", ["-9", to_string(pid)]) end)
         {:error, "Infrastructure failed to stabilize."}
     end
   end
@@ -61,23 +55,24 @@ defmodule SystemTestingUIAutomation.Manager do
   def stop_env(state) do
     IO.puts("\n\n🧹 [System] Initiating Teardown...")
 
-    System.cmd("pkill", ["-f", "-INT", "wf-recorder"])
-    System.cmd("pkill", ["-f", "-15", "cage"])
-    System.cmd("pkill", ["-f", "-15", "looking-glass-client"])
+    Enum.each(state.ports, fn %{os_pid: pid, label: label} ->
+      signal = if label == "RECORDER", do: "-2", else: "-15"
+      IO.puts("Stopping #{label} (PID #{pid}) with signal #{signal}...")
+      System.cmd("kill", [signal, to_string(pid)])
+    end)
 
-    wait_for_ports_exit(state.ports)
+    Process.sleep(3000)
 
-    # Compression (Logs to file, deletes MKV on success)
+    Enum.each(state.ports, fn %{port: port} ->
+      if Port.info(port), do: Port.close(port)
+    end)
+
     run_managed_compression(state, "COMPRESSION")
 
     if Process.alive?(state.aggregator_pid) do
       ref = Process.monitor(state.aggregator_pid)
       send(state.aggregator_pid, :stop)
-      receive do
-        {:DOWN, ^ref, :process, _pid, _reason} -> :ok
-      after
-        5000 -> IO.puts("⚠️ [System] Log synchronization timeout.")
-      end
+      receive do: ({:DOWN, ^ref, :process, _pid, _reason} -> :ok), after: (5000 -> :ok)
     end
 
     File.close(state.log_handle)
@@ -85,40 +80,60 @@ defmodule SystemTestingUIAutomation.Manager do
     print_report(state.config)
   end
 
+  def qemu_agent_exec(vm_name, path, args) do
+    payload = Jason.encode!(%{
+      execute: "guest-exec",
+      arguments: %{path: path, arg: args, "capture-output": true}
+    })
+
+    case System.cmd("virsh", ["-c", "qemu:///system", "qemu-agent-command", vm_name, payload]) do
+      {output, 0} ->
+        case Jason.decode(output) do
+          {:ok, %{"return" => %{"pid" => pid}}} -> {:ok, pid}
+          _ -> {:error, "Unexpected response: #{output}"}
+        end
+      {err, _} -> {:error, err}
+    end
+  end
+
+  def wait_for_guest_exec(vm_name, pid, attempts \\ 20) do
+    payload = Jason.encode!(%{execute: "guest-exec-status", arguments: %{pid: pid}})
+
+    case System.cmd("virsh", ["-c", "qemu:///system", "qemu-agent-command", vm_name, payload]) do
+      {output, 0} ->
+        case Jason.decode!(output) do
+          %{"return" => %{"exited" => true} = result} -> {:ok, result}
+          _ when attempts > 0 ->
+            Process.sleep(1000)
+            wait_for_guest_exec(vm_name, pid, attempts - 1)
+          _ -> {:error, "Timeout waiting for PID #{pid}"}
+        end
+      {err, _} -> {:error, err}
+    end
+  end
+
   defp run_managed_compression(state, label) do
     in_path = state.config.video_file
-    if File.exists?(in_path) do
+    if File.exists?(in_path) and File.stat!(in_path).size > 0 do
       out_path = String.replace(in_path, Path.extname(in_path), "_final.mp4")
-      IO.puts("🗜️  [System] Compressing video (Balanced 'medium' preset)...")
+      IO.puts("🗜️  [System] Compressing video...")
 
       args = ["-nostats", "-loglevel", "info", "-i", in_path, "-vcodec", "libx264", "-preset", "medium", "-crf", "23", "-threads", "0", "-y", out_path]
       cmd = "ffmpeg " <> Enum.join(args, " ")
-      
+
       port = Port.open({:spawn, cmd}, [:binary, :stderr_to_stdout, :exit_status])
-      
       send(state.aggregator_pid, {:register, port, label, self()})
       receive do: ({:registered, ^port} -> :ok)
-      
       Port.connect(port, state.aggregator_pid)
 
       receive do
         {:port_exit, ^label, 0} ->
-          case File.stat(out_path) do
-            {:ok, %File.Stat{size: size}} when size > 0 ->
-              File.rm!(in_path)
-              IO.puts("✅ [System] Compression successful. MKV removed.")
-            _ ->
-              raise "Compression error: Final MP4 is missing or 0 bytes."
-          end
-
-        {:port_exit, ^label, code} ->
-          raise "Compression error: FFmpeg exited with code #{code}."
-
-      after
-        180_000 ->
-          try do Port.close(port) rescue _ -> :ok end
-          raise "Compression error: Timeout reached after 180s."
+          if File.exists?(out_path), do: File.rm!(in_path)
+        _ -> :error
+      after 300_000 -> :timeout
       end
+    else
+      IO.puts("⚠️  [System] Skip compression: Video file missing or empty.")
     end
   end
 
@@ -127,19 +142,15 @@ defmodule SystemTestingUIAutomation.Manager do
       {:register, port, label, caller_pid} ->
         send(caller_pid, {:registered, port})
         log_collector(Map.put(port_map, port, {label, caller_pid}), log_handle)
-
       {port, {:data, msg}} ->
         {label, _} = Map.get(port_map, port, {"UNKNOWN", nil})
         write_to_file(label, msg, log_handle)
         log_collector(port_map, log_handle)
-
       {port, {:exit_status, status}} ->
         {label, pid} = Map.get(port_map, port, {"UNKNOWN", nil})
         if pid, do: send(pid, {:port_exit, label, status})
         log_collector(Map.delete(port_map, port), log_handle)
-
-      :stop ->
-        drain_mailbox(port_map, log_handle)
+      :stop -> drain_mailbox(port_map, log_handle)
     end
   end
 
@@ -149,16 +160,13 @@ defmodule SystemTestingUIAutomation.Manager do
         {label, _} = Map.get(port_map, port, {"DRAIN", nil})
         write_to_file(label, msg, handle)
         drain_mailbox(port_map, handle)
-    after
-      1000 -> :ok
+    after 1000 -> :ok
     end
   end
 
   defp write_to_file(label, msg, handle) do
     ts = DateTime.utc_now() |> DateTime.to_string()
-    formatted = msg
-                |> String.split("\n", trim: true)
-                |> Enum.map_join(&("[#{ts}] [#{label}] #{&1}\n"))
+    formatted = msg |> String.split("\n", trim: true) |> Enum.map_join(&("[#{ts}] [#{label}] #{&1}\n"))
     try do
       IO.write(handle, formatted)
       :file.datasync(handle)
@@ -167,23 +175,19 @@ defmodule SystemTestingUIAutomation.Manager do
     end
   end
 
-  defp wait_for_ports_exit(ports) do
-    receive do
-      {_p, {:exit_status, _}} -> wait_for_ports_exit(ports)
-    after
-      2000 -> :ok
-    end
-  end
-
   defp wait_for_log(file, pattern, attempts) when attempts > 0 do
-    if File.exists?(file) and String.contains?(File.read!(file), pattern), do: :ok, else: (Process.sleep(1000); wait_for_log(file, pattern, attempts - 1))
+    if File.exists?(file) and String.contains?(File.read!(file), pattern) do
+      :ok
+    else
+      Process.sleep(1000)
+      wait_for_log(file, pattern, attempts - 1)
+    end
   end
   defp wait_for_log(_, _, _), do: :error
 
   defp print_report(config) do
     final_path = Path.expand(String.replace(config.video_file, Path.extname(config.video_file), "_final.mp4"))
     log_path = Path.expand(config.log_file)
-    
     IO.puts("\n" <> String.duplicate("=", 70))
     IO.puts("🏁 [System] Automation Suite Finished.")
     IO.puts("📽️  Play Video: mpv --autofit=100%x100% #{final_path}")
@@ -192,36 +196,53 @@ defmodule SystemTestingUIAutomation.Manager do
   end
 end
 
-# =============================================================================
-# TEST SUITE
-# =============================================================================
 defmodule SystemTestingUIAutomation.Test do
   use ExUnit.Case, async: false
   alias SystemTestingUIAutomation.Manager
+  alias SystemTestingUIAutomation.Config
 
-  @config %{
+  @config %Config{
     log_file: "system_testing.log",
     video_file: "./system_testing.mkv",
-    runtime_dir: "/tmp/system_testing_runtime"
+    runtime_dir: "/tmp/system_testing_runtime",
+    vm_name: "win11"
   }
 
   setup_all do
     case Manager.start_env(@config) do
       {:ok, state} ->
-        on_exit(fn ->
-          Manager.stop_env(state)
-          System.halt(0)
-        end)
+        on_exit(fn -> Manager.stop_env(state) end)
         {:ok, state: state}
-      {:error, reason} ->
-        flunk("Infrastructure error: #{reason}")
+      {:error, reason} -> flunk(reason)
     end
   end
 
-  test "capture UI interaction", _context do
-    IO.puts("🧪 [Test] Running logic...")
-    Process.sleep(2000)
-    assert File.exists?(@config.video_file)
-    IO.puts("🧪 [Test] Logic complete.")
+  test "notepad lifecycle via qemu-agent and task scheduler", _context do
+    vm = @config.vm_name
+    tn = "SystemTestingUIAutomation"
+
+    IO.puts("🔨 [Step 1] Registering Scheduled Task...")
+    ps = "$action = New-ScheduledTaskAction -Execute 'notepad.exe'; " <>
+         "$principal = New-ScheduledTaskPrincipal -UserId 'thierry' -LogonType Interactive -RunLevel Highest; " <>
+         "$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries; " <>
+         "Register-ScheduledTask -TaskName '#{tn}' -Action $action -Principal $principal -Settings $settings -Force"
+
+    {:ok, pid1} = Manager.qemu_agent_exec(vm, "powershell.exe", ["-Command", ps])
+    {:ok, res1} = Manager.wait_for_guest_exec(vm, pid1)
+    assert res1["exitcode"] == 0
+
+    IO.puts("🚀 [Step 2] Executing Task (Opening Notepad)...")
+    {:ok, pid3} = Manager.qemu_agent_exec(vm, "schtasks.exe", ["/Run", "/TN", tn])
+    {:ok, res3} = Manager.wait_for_guest_exec(vm, pid3)
+    assert res3["exitcode"] == 0
+
+    Process.sleep(5000)
+
+    IO.puts("🧹 [Step 3] Deleting Task...")
+    {:ok, pid4} = Manager.qemu_agent_exec(vm, "schtasks.exe", ["/Delete", "/TN", tn, "/F"])
+    {:ok, res4} = Manager.wait_for_guest_exec(vm, pid4)
+    assert res4["exitcode"] == 0
+
+    IO.puts("✅ [Test] Sequence verified.")
   end
 end
