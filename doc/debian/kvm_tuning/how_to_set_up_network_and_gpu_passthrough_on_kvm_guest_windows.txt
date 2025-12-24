@@ -439,6 +439,11 @@ UDP_PORT	DWORD (REG_DWORD)	4010 (Decimal)
 UnicastIPv4     String (REG_SZ)	        192.168.254.1
 UnicastPort     DWORD (REG_DWORD)	4010 (Decimal)
 MULTICAST	DWORD (REG_DWORD)	0
+SilenceThreshold	DWORD (REG_DWORD)	20
+
+this command can inspect audio via udp traffic that the SilenceThreshold value 20 decimal DWORD works
+sudo tcpdump -i screambr0 udp port 4010 and dst 192.168.254.1 -nn
+
 
 change the Scream audio settings to use 16 bits 48000Hz (DVD). it is standard for most applicaiton and avoids saturation
 
@@ -646,3 +651,4 @@ Type powercfg /list and press Enter. This shows all plans and their unique IDs (
 If Ultimate Performance is active (marked with an asterisk *), switch to another first:
 
     powercfg /setactive [GUID of Balanced or High Performance]
+
