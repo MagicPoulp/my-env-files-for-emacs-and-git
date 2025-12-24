@@ -65,3 +65,9 @@ virsh -c qemu:///system qemu-agent-command win11 '{' \
 '}' \
 '}'
 
+--> How to automate the UI:
+sudo apt update && sudo apt install wf-recorder cage
+
+run ui_automation_recording.sh
+
+
