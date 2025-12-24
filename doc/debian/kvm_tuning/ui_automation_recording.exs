@@ -1,131 +1,100 @@
 # Initialize ExUnit
 ExUnit.start(max_cases: 1)
 
-defmodule UIAutomationTest do
-  use ExUnit.Case, async: false
+# =============================================================================
+# MANAGED SERVICE: UIAutomation.Manager
+# =============================================================================
+defmodule UIAutomation.Manager do
+  @moduledoc "Manages the lifecycle of the Wayland sandbox and recording."
 
-  # --- CONFIGURATION ---
-  @log_file "automation_suite.log"
-  # Switched to MKV for "crash-proof" recording
-  @video_file "./qga_test_output.mkv"
-  @runtime_dir "/tmp/wayland-run"
+  def start_env(config) do
+    IO.puts("🚀 [Service] Starting Managed Environment...")
 
-  # --- FIXTURES ---
-  setup_all do
-    File.mkdir_p!(@runtime_dir)
-    File.chmod!(@runtime_dir, 0o700)
-    if File.exists?(@log_file), do: File.rm!(@log_file)
+    # 1. Setup Sandbox
+    File.mkdir_p!(config.runtime_dir)
+    File.chmod!(config.runtime_dir, 0o700)
+    if File.exists?(config.log_file), do: File.rm!(config.log_file)
 
     System.put_env([
-      {"XDG_RUNTIME_DIR", @runtime_dir},
+      {"XDG_RUNTIME_DIR", config.runtime_dir},
       {"WLR_BACKENDS", "headless"},
       {"WLR_LIBINPUT_NO_DEVICES", "1"},
       {"WAYLAND_DISPLAY", "wayland-0"}
     ])
 
-    IO.puts("🚀 Initializing Suite Fixture...")
-
+    # 2. Start Processes
     apps = [
       {"COMPOSITOR", "cage -s -- env -u WAYLAND_DISPLAY looking-glass-client win:size=1920x1080 win:fullScreen=yes -s -f /dev/shm/looking-glass"},
-      {"RECORDER", "wf-recorder -f #{@video_file}"}
+      {"RECORDER", "wf-recorder -f #{config.video_file}"}
     ]
 
     ports = Enum.map(apps, fn {label, cmd} ->
-      port = Port.open({:spawn, cmd}, [:binary, :stderr_to_stdout])
+      port = Port.open({:spawn, cmd}, [:binary, :stderr_to_stdout, :exit_status])
       {port, label}
     end)
 
-    log_handle = File.open!(@log_file, [:append, :delayed_write])
-    spawn_link(fn -> log_collector(ports, log_handle) end)
+    # 3. Handle Logging
+    log_handle = File.open!(config.log_file, [:append, :utf8])
+    aggregator_pid = spawn_link(fn -> log_collector(ports, log_handle) end)
+    Enum.each(ports, fn {port, _} -> Port.connect(port, aggregator_pid) end)
 
-    # Wait for Looking Glass to be "Ready"
-    wait_for_log("Starting session", 15)
-
-    on_exit(fn ->
-      cleanup(ports, log_handle)
-    end)
-
-    {:ok, ports: ports}
-  end
-
-  # --- TESTS ---
-
-  test "verify guest agent is responsive", _context do
-    IO.puts("🧪 Running: Guest Agent Check")
-    Process.sleep(5000) # Increased sleep to ensure data is captured
-    assert File.exists?(@video_file)
-  end
-
-  # --- CLEANUP & ROBUST TERMINATION ---
-
-  defp cleanup(ports, log_handle) do
-    IO.puts("\n🧹 Initiating graceful shutdown...")
-
-    # 1. Send SIGINT to recorder
-    System.cmd("pkill", ["-f", "-INT", "wf-recorder"])
-
-    # 2. Watchdog: Poll OS for max 10 seconds
-    case wait_for_process_exit("wf-recorder", 20) do
+    # 4. Wait for readiness
+    case wait_for_log(config.log_file, "Starting session", 15) do
       :ok ->
-        IO.puts("\n✅ Recorder finalized successfully.")
-      :timeout ->
-        IO.puts("\n⚠️ Recorder timed out. Forcing termination...")
-        System.cmd("pkill", ["-f", "-9", "wf-recorder"])
+        {:ok, %{ports: ports, log_handle: log_handle, aggregator_pid: aggregator_pid, config: config}}
+      :error ->
+        {:error, "Environment failed to become ready."}
+    end
+  end
+
+  def stop_env(state) do
+    IO.puts("\n\n🧹 [Service] Initiating Managed Shutdown...")
+
+    # 1. Stop Recorder gracefully
+    System.cmd("pkill", ["-f", "-INT", "wf-recorder"])
+    wait_for_exit("wf-recorder", 20)
+
+    # 2. Stop Log Collector and wait for flush (Prevents :terminated error)
+    ref = Process.monitor(state.aggregator_pid)
+    send(state.aggregator_pid, :stop)
+
+    receive do
+      {:DOWN, ^ref, :process, _pid, _reason} ->
+        IO.puts("📝 [Service] Logs synchronized and flushed.")
+    after
+      2000 -> IO.puts("⚠️ [Service] Log collector shutdown timeout.")
     end
 
-    # 3. Close Erlang Port bridges
-    Enum.each(ports, fn {port, _} ->
-      try do Port.close(port) rescue _ -> :ok end
-    end)
-
-    # 4. Force kill UI components
+    # 3. Close Ports & Kill lingering processes
+    Enum.each(state.ports, fn {port, _} -> try do Port.close(port) rescue _ -> :ok end end)
     System.cmd("pkill", ["-f", "-9", "cage"])
     System.cmd("pkill", ["-f", "-9", "looking-glass-client"])
 
-    File.close(log_handle)
-    
-    # 5. Final validation: Check if video has size
-    check_video_file()
+    File.close(state.log_handle)
+    verify_video(state.config.video_file)
 
-    IO.puts("🏁 Teardown complete. Returning to shell.")
-    System.halt(0)
+    # --- FINAL PRESENTATION ---
+    IO.puts("\n" <> String.duplicate("=", 60))
+    IO.puts("🏁 [Service] Teardown complete.")
+    IO.puts("📽️  Video saved to: #{Path.expand(state.config.video_file)}")
+    IO.puts("\nTo view the recording, run:")
+    IO.puts("\e[1;32mmpv --autofit=100%x100% #{state.config.video_file}\e[0m")
+    IO.puts(String.duplicate("=", 60))
   end
 
-  defp check_video_file do
-    case File.stat(@video_file) do
-      {:ok, %{size: size}} when size > 0 ->
-        IO.puts("📽️ Video saved: #{@video_file} (#{div(size, 1024)} KB)")
-      _ ->
-        IO.puts("❌ Error: Video file is empty or missing!")
-    end
-  end
-
-  defp wait_for_process_exit(name, attempts) when attempts > 0 do
-    {out, _} = System.cmd("pgrep", ["-f", name])
-    if out == "" do
-      :ok
-    else
-      IO.write(".")
-      Process.sleep(500)
-      wait_for_process_exit(name, attempts - 1)
-    end
-  end
-  defp wait_for_process_exit(_, _), do: :timeout
-
-  # --- HELPERS ---
+  # --- Internal Service Helpers ---
 
   defp log_collector(ports, log_handle) do
     receive do
+      :stop ->
+        :ok # Stop recursion
       {port, {:data, msg}} ->
-        label = case List.keyfind(ports, port, 0) do
-          {_, l} -> l
-          nil -> "???"
-        end
+        label = case List.keyfind(ports, port, 0) do {_, l} -> l; _ -> "???" end
         timestamp = DateTime.utc_now() |> DateTime.to_string()
         formatted = msg
-        |> String.split("\n", trim: true)
-        |> Enum.map(fn line -> "[#{timestamp}] [#{label}] #{line}\n" end)
-        |> Enum.join("")
+                    |> String.split("\n", trim: true)
+                    |> Enum.map(&("[#{timestamp}] [#{label}] #{&1}\n"))
+                    |> Enum.join("")
         IO.write(log_handle, formatted)
         log_collector(ports, log_handle)
       _ ->
@@ -133,20 +102,67 @@ defmodule UIAutomationTest do
     end
   end
 
-  defp wait_for_log(pattern, seconds_left) when seconds_left > 0 do
-    case File.read(@log_file) do
-      {:ok, content} ->
-        if String.contains?(content, pattern) do
-          IO.puts("✅ Environment Ready.")
-        else
-          Process.sleep(1000)
-          wait_for_log(pattern, seconds_left - 1)
-        end
-      {:error, _} ->
-        Process.sleep(1000)
-        wait_for_log(pattern, seconds_left - 1)
+  defp wait_for_log(file, pattern, attempts) when attempts > 0 do
+    if File.exists?(file) and String.contains?(File.read!(file), pattern) do
+      IO.puts("✅ [Service] Readiness confirmed.")
+      :ok
+    else
+      Process.sleep(1000)
+      wait_for_log(file, pattern, attempts - 1)
     end
   end
-  defp wait_for_log(_, _), do: IO.puts("⚠️ Startup timeout.")
+  defp wait_for_log(_, _, _), do: :error
+
+  defp wait_for_exit(name, attempts) when attempts > 0 do
+    {out, _} = System.cmd("pgrep", ["-f", name])
+    if out == "" do :ok else
+      IO.write(".")
+      Process.sleep(500)
+      wait_for_exit(name, attempts - 1)
+    end
+  end
+  defp wait_for_exit(_, _), do: :timeout
+
+  defp verify_video(path) do
+    case File.stat(path) do
+      {:ok, %{size: s}} when s > 0 ->
+        IO.puts("📽️ [Service] Video verified: #{div(s, 1024)} KB")
+      _ ->
+        IO.puts("❌ [Service] Video check failed!")
+    end
+  end
 end
 
+# =============================================================================
+# TEST SUITE
+# =============================================================================
+defmodule GuestAgentTest do
+  use ExUnit.Case, async: false
+  alias UIAutomation.Manager
+
+  @config %{
+    log_file: "test_run.log",
+    video_file: "./test_run_video.mkv",
+    runtime_dir: "/tmp/ui_automation_sandbox"
+  }
+
+  setup_all do
+    case Manager.start_env(@config) do
+      {:ok, service_state} ->
+        on_exit(fn ->
+          Manager.stop_env(service_state)
+          System.halt(0)
+        end)
+        {:ok, state: service_state}
+      {:error, reason} ->
+        flunk("Failed to start automation environment: #{reason}")
+    end
+  end
+
+  test "verify guest agent is responsive", _context do
+    IO.puts("🧪 [Test] Running: QGA Ping Check")
+    # Simulate automation work
+    Process.sleep(5000)
+    assert File.exists?(@config.video_file)
+  end
+end
