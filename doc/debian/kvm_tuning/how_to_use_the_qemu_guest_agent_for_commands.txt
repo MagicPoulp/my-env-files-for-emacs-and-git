@@ -66,8 +66,15 @@ virsh -c qemu:///system qemu-agent-command win11 '{' \
 '}'
 
 --> How to automate the UI:
-sudo apt update && sudo apt install wf-recorder cage
+sudo apt update && sudo apt install wf-recorder cage elixir
 
-run ui_automation_recording.sh
+elixir ui_automation_recording.exs
 
+to run the video, format mkv prevents corruption from interruption
+
+# Install mpv
+sudo apt update && sudo apt install mpv -y
+
+# Play the video
+mpv ./qga_test_output.mkv
 
