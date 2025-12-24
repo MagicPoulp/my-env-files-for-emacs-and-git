@@ -616,3 +616,19 @@ note: some people use monlight + sunshine. it is faster for video but does not h
 and the audio uses more CPU and network than Scream udp unicast
 
 IMPORTANT: the windows service for Looking glass should be automatic and not delayed start or it shows empty window for a while
+
+
+------------------------
+
+--> how to fix the copy paste
+
+see the 12.xml that worked
+no extra options for building looking glass just make sure all packages are there
+
+this extra option is required in looking glass
+good identical version of looking glass must be on host and client
+then SPICE VD agent must be in windows service
+-c SPICE spice:enable=true
+
+sudo virsh start win11 && sleep 20 && looking-glass-client win:size=1920x1080 win:fullScreen -s -c SPICE -f /dev/shm/looking-glass spice:enable=true
+
