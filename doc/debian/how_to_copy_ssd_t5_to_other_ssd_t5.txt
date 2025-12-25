@@ -1,0 +1,8 @@
+form a live CD debian intaller run the graphical intsall mode
+configure the keyboard, and stop at dis kconfig where it asks the password. use CTRL+ALT +F" to enter a shell
+in it use /sbin/fdisk -l to see the disks
+then use this to copy
+/bin/dd if=/dev/sda of=/dev/sdb bs=4096 conv=noerror
+
+we do not put progress or sync or a larger bloc size to maximize compatibilty. But after the command is complete, we should wait for the sync
+
