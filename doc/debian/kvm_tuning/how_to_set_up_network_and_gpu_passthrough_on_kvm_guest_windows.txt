@@ -683,8 +683,32 @@ add this at the end:
 
 sudo smbpasswd -a user
 IP_HOST from ip addr show br0
+IT MUST BE THE IP under br0 if you are using USB tethering
 this user and pass will be needed in windows in map network drive \\IP_HOST\shared
-sudo systemctl restart smbd
+
+sudo systemctl restart smbd nmbd
+
+IMPORTANT: when using USB tethering, the real interface is in br0
+so weneed to extra stuff in this file. IMPORTANT not to have the semi column at start of line, and important to put br0
+sudo nano /etc/samba/smb.conf
+
+#### Networking ####
+
+# The specific set of interfaces / networks to bind to
+# This can be either the interface name or an IP address/netmask;
+# interface names are normally preferred
+   interfaces = 127.0.0.0/8 br0
+
+# Only bind to the named interfaces and/or networks; you must use the
+# 'interfaces' option above to use this.
+# It is recommended that you enable this feature if your Samba machine is
+# not protected by a firewall or is a firewall itself.  However, this
+# option cannot handle dynamic or non-broadcast interfaces correctly.
+   bind interfaces only = yes
+
+--------------------------------
+then
+sudo systemctl restart smbd nmbd
 
 --------------------------------
 USB tethering works well see the configuration for it in the separate file
