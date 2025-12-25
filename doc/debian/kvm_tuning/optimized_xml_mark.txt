@@ -1,0 +1,5 @@
+the optimized xml is
+win11_debug6_final_tuning_fixed_looking_glass_periph_fixed9.xml
+
+and the debug123 is just to debug stuff
+

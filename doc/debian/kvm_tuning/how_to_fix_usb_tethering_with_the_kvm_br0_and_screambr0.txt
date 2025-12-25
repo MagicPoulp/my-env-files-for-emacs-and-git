@@ -1,0 +1,96 @@
+NOTE: you cannot connect both USB tethering and ethernet at the same time. The wifi is preferably turned off.
+We do not support wifi because it has incompatibilities with wifi for security reasons
+
+use a good quality Usb to usb c cable between phone and computer's normal USB
+
+after changing the interfaces file restart these 2 services, and do it again if moving fro musb tethering to ethernet.
+
+sudo systemctl restart networking
+sudo systemctl restart NetworkManager
+
+to test internet install curl and then run this
+curl -m 3 -I www.lemonde.fr
+
+and here is the /etc/network/interfaces file
+
+# /etc/network/interfaces
+
+# Include configuration files from /etc/network/interfaces.d/
+source /etc/network/interfaces.d/*
+
+# The loopback network interface (Standard)
+auto lo
+iface lo inet loopback
+
+# --- KVM BRIDGED NETWORK SETUP ---
+
+# 1. Physical Interface (The "Slave" port)
+# Configure the actual wired NIC (enp0s31f6) to be MANUALLY configured
+# so it can be attached to the bridge. It will NOT receive an IP address directly.
+auto enp0s31f6
+iface enp0s31f6 inet manual
+
+# 2. Bridge Interface (The new host connection)
+# The bridge (br0) will get the IP address via DHCP and connect your VM.
+auto br0
+iface br0 inet dhcp
+    bridge_ports enp0s31f6   # <--- CORRECTED INTERFACE NAME
+    bridge_stp off
+    bridge_maxwait 0
+    # Allow the bridge to accept the phone even if ethernet is gone
+    bridge_waitport 0
+    # Tells dhclient to go to the background immediately if no answer
+    # Use these 'options' to tell dhclient not to hang the boot/restart
+    # This is the "proper" way to background dhclient in Debian
+    post-up dhclient -nw br0
+    # Shortens the DHCP wait time to 5 seconds
+    pre-up echo "timeout 5;" > /etc/dhcp/dhclient.conf
+    # 0 forwarding delay
+    bridge_fd 0
+    # Force the bridge up even if no ports are active yet
+    up ip link set br0 up
+
+# --- THE PHONE USB tethering ---
+allow-hotplug enx02387e7d080f
+iface enx02387e7d080f inet manual
+    # 1. Plug the phone into the bridge (Properly using the phone's name)
+    up ip link set $IFACE master br0
+    # 2. Ensure phone interface is physically up
+    up ip link set $IFACE up
+    # 3. Wake up the bridge in case it went down from a disconnect
+    up ip link set br0 up
+    # 4. Refresh the bridge's IP since the 'cable' just changed
+    up dhclient -nw br0
+
+# Add this block to /etc/network/interfaces
+# /etc/network/interfaces
+
+# ... (lo, enp0s31f6, and br0 blocks remain the same) ...
+
+# --- ISOLATED SCREAM AUDIO BRIDGE (screambr0) ---
+
+# Use the bridge type explicitly, without relying on bridge_ports.
+# This tells ifup that this is a bridge device it needs to create.
+
+auto screambr0
+iface screambr0 inet static
+    address 192.168.254.1
+    netmask 255.255.255.0
+    
+    # 1. CLEANUP (prevents "File exists" error)
+    # Deletes the device if it exists from a previous failure.
+    pre-up ip link del screambr0 || true
+    
+    # 2. CREATE DEVICE (Prevents "Cannot find device" error)
+    # This explicitly creates the bridge device itself.
+    pre-up ip link add screambr0 type bridge
+    
+    # 3. CONFIGURE DEVICE
+    # The IP address is handled by the "iface screambr0 inet static" block above,
+    # but some systems require it to be manually set. We will remove the redundant
+    # 'up ip addr add' command to simplify, as the 'iface' line should handle it.
+    
+    # 4. CLEANUP ON SHUTDOWN
+    post-down ip link del screambr0
+
+# --- END KVM BRIDGED NETWORK SETUP ---

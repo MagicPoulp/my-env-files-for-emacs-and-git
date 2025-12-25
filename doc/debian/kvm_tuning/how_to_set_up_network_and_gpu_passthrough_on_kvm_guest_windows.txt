@@ -18,6 +18,8 @@ sudo rfkill block wifi
 we also need a network bridge for latency
 create a bridge br0
 
+
+note: the interfaces file is simple below but there is an advanced version that allows also the screambr0 udp audio and the usb tethering
 sudo cat /etc/network/interfaces
 # /etc/network/interfaces
 
@@ -684,4 +686,7 @@ IP_HOST from ip addr show br0
 this user and pass will be needed in windows in map network drive \\IP_HOST\shared
 sudo systemctl restart smbd
 
+--------------------------------
+USB tethering works well see the configuration for it in the separate file
+how_to_fix_usb_tethering_with_the_kvm_br0_and_screambr0.txt
 
