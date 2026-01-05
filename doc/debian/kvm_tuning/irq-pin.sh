@@ -5,7 +5,6 @@
 # /etc/libvirt/hooks/qemu.d/win11/prepare/begin/
 
 # the 0,1,2,3 are for kernel
-#keyboard, mouse, usb hub are for CPU 5
 
 # CPU 4 is for keyboard and mouse
 
