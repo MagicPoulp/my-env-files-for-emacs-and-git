@@ -13,8 +13,9 @@
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   (quote
-    (typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
+   '(dockerfile-mode go-mode js2-mode json-mode markdown-mode neotree
+                     py-autopep8 rust-mode scss-mode swagg treemacs
+                     typescript-mode yaml-mode)))
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
@@ -133,3 +134,17 @@
 ; ALT + x list-packages
 ; CTRL + s less-css-mode
 ; click with the mouse on install
+(require 'swagg)
+
+(defun my/swagger-browser-preview ()
+  "Open the local swagger-ui-watcher page."
+  (interactive)
+  ;; This assumes you have started 'swagger-ui-watcher' in a terminal
+  (browse-url "http://127.0.0.1:8000"))
+
+(global-set-key (kbd "C-c C-p") 'my/swagger-browser-preview)
+
+;; Add this to your init.el
+(require 'treemacs)
+(global-set-key (kbd "C-x t") 'treemacs)
+
