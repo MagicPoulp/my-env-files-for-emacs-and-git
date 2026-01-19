@@ -148,3 +148,62 @@
 (require 'treemacs)
 (global-set-key (kbd "C-x t") 'treemacs)
 
+
+(use-package treemacs
+  :ensure t
+  :bind
+  (:map global-map
+        ("C-x d" . treemacs-select-window)
+        ("M-0"   . treemacs-select-window))
+  :config
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-project-follow-mode t)
+  (add-hook 'window-setup-hook 'treemacs))
+
+;go install golang.org/x/tools/gopls@latest
+;install in package-list-packages: yasnippert, company, go-mode
+
+;; --- 1. PATH SETUP ---
+;; This ensures Emacs can find 'gopls' installed in your ~/go/bin
+(setenv "PATH" (concat (expand-file-name "~/go/bin") path-separator (getenv "PATH")))
+(add-to-list 'exec-path (expand-file-name "~/go/bin"))
+
+;; --- 2. COMPLETION ENGINE (Company Mode) ---
+(use-package company
+  :ensure t
+  :init
+  (global-company-mode)
+  :config
+  (setq company-idle-delay 0.05            ; Show menu almost instantly
+        company-minimum-prefix-length 1   ; Show menu after 1 character
+        company-tooltip-align-annotations t)
+  ;; This connects Company to Eglot's LSP data
+  (setq company-backends '((company-capf :with company-yasnippet))))
+
+;; --- 3. GO MODE & LSP (Eglot) ---
+(use-package go-mode
+  :ensure t
+  :mode "\\.go\\'"
+  :hook ((go-mode . eglot-ensure)
+         ;; Auto-format on save
+         (before-save . eglot-format-buffer)
+         ;; Auto-organize imports on save
+         (before-save . (lambda ()
+                          (when (derived-mode-p 'go-mode)
+                            (ignore-errors 
+                              (eglot-code-action-organize-imports 1)))))))
+
+;; --- 4. EGLOT SETTINGS ---
+(with-eval-after-load 'eglot
+  ;; This prevents the "No code actions" messages from flooding the mini-buffer
+  (setq eglot-report-progress nil)
+  ;; This ensures Eglot knows where gopls is
+  (add-to-list 'eglot-server-programs '(go-mode . ("gopls"))))
+
+;; --- 5. OPTIONAL: SNIPPETS (Highly Recommended) ---
+;; This allows you to jump between function arguments with Tab
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
