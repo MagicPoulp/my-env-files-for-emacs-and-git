@@ -153,7 +153,7 @@
   :ensure t
   :bind
   (:map global-map
-        ("C-x d" . treemacs-select-window)
+;        ("C-x d" . treemacs-select-window)
         ("M-0"   . treemacs-select-window))
   :config
   (treemacs-follow-mode t)
@@ -182,28 +182,40 @@
   (setq company-backends '((company-capf :with company-yasnippet))))
 
 ;; --- 3. GO MODE & LSP (Eglot) ---
+(setq gofmt-args '("-s"))
+
+(defun my-go-mode-before-save-hook ()
+  "Function to run before saving Go files."
+  ;; Check if we are in go-mode OR go-ts-mode (for Emacs 29+)
+  (when (or (derived-mode-p 'go-mode) 
+            (derived-mode-p 'go-ts-mode))
+    (message "SAVE HOOK TRIGGERED!")
+    (gofmt-before-save) ; This handles the -s simplify flag
+    (ignore-errors (eglot-format-buffer))
+    (ignore-errors (eglot-code-action-organize-imports 1))))
+
+;; ADD THIS OUTSIDE OF USE-PACKAGE
+;; This ensures the hook exists the moment Emacs starts
+(add-hook 'before-save-hook #'my-go-mode-before-save-hook)
+
 (use-package go-mode
   :ensure t
   :mode "\\.go\\'"
-  :hook ((go-mode . eglot-ensure)
-         ;; Auto-format on save
-         (before-save . eglot-format-buffer)
-         ;; Auto-organize imports on save
-         (before-save . (lambda ()
-                          (when (derived-mode-p 'go-mode)
-                            (ignore-errors 
-                              (eglot-code-action-organize-imports 1)))))))
+  :hook (go-mode . eglot-ensure))
 
 ;; --- 4. EGLOT SETTINGS ---
 (with-eval-after-load 'eglot
-  ;; This prevents the "No code actions" messages from flooding the mini-buffer
   (setq eglot-report-progress nil)
-  ;; This ensures Eglot knows where gopls is
   (add-to-list 'eglot-server-programs '(go-mode . ("gopls"))))
 
-;; --- 5. OPTIONAL: SNIPPETS (Highly Recommended) ---
-;; This allows you to jump between function arguments with Tab
+;; --- 5. YASNIPPET ---
 (use-package yasnippet
   :ensure t
   :config
   (yas-global-mode 1))
+
+(setq create-lockfiles nil)
+(setq auto-save-file-name-transforms
+      `((".*" ,(temporary-file-directory) t)))
+
+(add-hook 'before-save-hook (lambda () (message "SAVE HOOK TRIGGERED!")) nil t)
