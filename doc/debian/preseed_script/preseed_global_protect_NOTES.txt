@@ -1,0 +1,64 @@
+to change later and not on a VM
+d-i partman-crypto/erase_data boolean false
+
+note: the script is not intended for a VM long term so open-vm-tools open-vm-tools-desktop are not included
+--> use temporary firewall rules. Use the NAT network card and add the checksum and url as is explaind below.
+
+----------
+
+http://localhost:8000/preseed.cfg
+IP is 192.168.200.1 and works if VM is in NAT network. NAT gives internet access.
+
+PS C:\Users\SESA780079\Downloads\Virtual Machines\preseed> cd .\script\
+PS C:\Users\SESA780079\Downloads\Virtual Machines\preseed\script> python3 -m http.server 8000
+PS C:\Users\SESA780079\Downloads\Virtual Machines\preseed\script> python3 -m http.server 8000 --bind 0.0.0.0
+MUST have --bind 0.0.0.0
+
+----------------------------
+In the VMware boot screen of Debian
+
+Highlight Advanced options > Automated install.
+
+Press TAB (or e in UEFI) to edit the boot parameters.
+
+it worked but one must type e when selecting automated install
+
+Append the path to your preseed file. If using a local web server:
+auto=true priority=critical checksum=REPLACE url=http://192.168.200.1:8000/preseed.cfg
+checksum=d2842258460c71e2a10d35f687fe31d9 url=http://192.168.243.1:8000/preseed.cfg
+
+
+(Get-FileHash .\preseed.cfg -Algorithm MD5).Hash.ToLower()
+Copy the Hash (a long string of letters and numbers).
+
+SUMMARY of how it worked (shown by the request received by the http server,)
+
+-------------------------------------
+
+fix global protect
+
+copy with Firefox the chain certificate of gp.schneider-electric.com and install it
+sudo mv gp-schneider-electric-com-chain.pem /usr/local/share/ca-certificates/schneider/
+sudo update-ca-certificates
+
+sudo apt update
+sudo apt install gp-saml-gui
+export PATH=$PATH:/usr/sbin
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+gp-saml-gui --portal gp.schneider-electric.com --clientos=Windows --allow-insecure-crypto
+
+echo PXi92W5qiQ2N+tJCwBPyir5X0o1TaqKZ/VTkMj9/VGhu6p7zYd18tVHNb47nG9BmYHDwtg== | \
+sudo openconnect --protocol=gp \
+--useragent='PAN GlobalProtect' \
+--allow-insecure-crypto \
+--user='SESA780079@eur.gad.schneider-electric.com' \
+--os=win \
+--usergroup=portal:prelogin-cookie \
+--passwd-on-stdin gp.schneider-electric.com
+
+final that works:
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+sudo -E  gp-saml-gui --no-verify --gateway --clientos=Windows --allow-insecure-crypto --sudo-openconnect europe-g1.gp.schneider-electric.com -- --allow-insecure-crypto --useragent='PAN GlobalProtect'
+
+
+
