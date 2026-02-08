@@ -1,8 +1,9 @@
-to change later and not on a VM
+IMPORTANT, at login screen, one must do CTRL+ALT+F2 to change the password
+to change later and not on a VM, put true
 d-i partman-crypto/erase_data boolean false
 
 note: the script is not intended for a VM long term so open-vm-tools open-vm-tools-desktop are not included
---> use temporary firewall rules. Use the NAT network card and add the checksum and url as is explaind below.
+--> use temporary firewall rules. Use the NAT network card and add the checksum and url as is explained below.
 
 ----------
 
@@ -14,6 +15,7 @@ python3 -m http.server 8000
 
 python can be installed from the Windows store
 
+
 ----------------------------
 In the VMware boot screen of Debian
 
@@ -24,8 +26,8 @@ Press TAB (or e in UEFI) to edit the boot parameters.
 it worked but one must type e when selecting automated install
 
 Append the path to your preseed file. If using a local web server:
-auto=true priority=critical checksum=REPLACE url=http://192.168.200.1:8000/preseed.cfg
-checksum=fc74e8131a086f7c617292ff36158b9d url=http://192.168.243.1:8000/preseed.cfg
+add this after critical:
+checksum=6544430681fad7eae534dfa73e3ab669 url=http://192.168.243.1:8000/preseed.cfg
 
 then press F10
 
@@ -33,7 +35,7 @@ the SHA is created like this:
 (Get-FileHash .\preseed.cfg -Algorithm MD5).Hash.ToLower()
 Copy the Hash (a long string of letters and numbers).
 
-SUMMARY of how it worked (shown by the request received by the http server,)
+that it worked is shown by the request received by the http server
 
 -------------------------------------
 
