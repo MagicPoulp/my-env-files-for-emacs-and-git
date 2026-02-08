@@ -9,10 +9,10 @@ note: the script is not intended for a VM long term so open-vm-tools open-vm-too
 http://localhost:8000/preseed.cfg
 IP is 192.168.200.1 and works if VM is in NAT network. NAT gives internet access.
 
-PS C:\Users\SESA780079\Downloads\Virtual Machines\preseed> cd .\script\
-PS C:\Users\SESA780079\Downloads\Virtual Machines\preseed\script> python3 -m http.server 8000
-PS C:\Users\SESA780079\Downloads\Virtual Machines\preseed\script> python3 -m http.server 8000 --bind 0.0.0.0
-MUST have --bind 0.0.0.0
+cd "C:\Users\SESA780079\Downloads\Virtual Machines\preseed\preseed_script>"
+python3 -m http.server 8000
+
+python can be installed from the Windows store
 
 ----------------------------
 In the VMware boot screen of Debian
@@ -25,9 +25,11 @@ it worked but one must type e when selecting automated install
 
 Append the path to your preseed file. If using a local web server:
 auto=true priority=critical checksum=REPLACE url=http://192.168.200.1:8000/preseed.cfg
-checksum=d2842258460c71e2a10d35f687fe31d9 url=http://192.168.243.1:8000/preseed.cfg
+checksum=fc74e8131a086f7c617292ff36158b9d url=http://192.168.243.1:8000/preseed.cfg
 
+then press F10
 
+the SHA is created like this:
 (Get-FileHash .\preseed.cfg -Algorithm MD5).Hash.ToLower()
 Copy the Hash (a long string of letters and numbers).
 
