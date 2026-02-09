@@ -27,7 +27,7 @@ it worked but one must type e when selecting automated install
 
 Append the path to your preseed file. If using a local web server:
 add this after critical:
-checksum=6544430681fad7eae534dfa73e3ab669 url=http://192.168.243.1:8000/preseed.cfg
+checksum=1952a37aeed4b4bab1dc7a2aeec96d60 url=http://192.168.243.1:8000/preseed.cfg
 
 then press F10
 
