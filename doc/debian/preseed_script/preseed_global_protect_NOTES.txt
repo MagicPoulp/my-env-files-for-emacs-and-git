@@ -38,7 +38,92 @@ Copy the Hash (a long string of letters and numbers).
 that it worked is shown by the request received by the http server
 
 -------------------------------------
+# Fix the USB stick
 
+in gparted
+2 partitions one ext4 one in FAT32 to copy files
+
+Select gpt and click Apply. (This is essential for modern UEFI systems).
+
+2. Create the Two Partitions
+Partition 1 (The Installer):
+
+Right-click the unallocated space and select New.
+
+Size: 2000 MiB (2GB is plenty for a NetInst).
+
+File system: fat32.
+
+Label: DEBIAN_BOOT.
+
+Partition 2 (The Data):
+
+Right-click the remaining space and select New.
+
+File system: fat32 (or ext4 if you prefer).
+
+Label: INSTDATA.
+
+3. Set the Boot Flag esp on partition 1
+
+----------------------------------------------------
+copy the .iso with the debian installer
+
+sudo mkdir -p /mnt/debian_iso
+sudo mount -o loop /path/to/your/debian-netinst.iso /mnt/debian_iso
+sudo mkdir -p /mnt/usb_boot
+sudo mount /dev/sdc1 /mnt/usb_boot
+sudo cp -a /mnt/iso/. /mnt/usb_boot/
+---------------------
+install grub
+
+# Install the necessary binaries on your host system
+sudo apt install grub-efi-amd64-bin shim-signed
+
+# Install GRUB to the USB (Partition 1)
+sudo grub-install --target=x86_64-efi \
+             --efi-directory=/media/user/DEBIAN_BOOT \
+             --boot-directory=/media/user/DEBIAN_BOOT/boot \
+             --removable --uefi-secure-boot
+
+3. The Magic: /boot/grub/grub.cfg
+GRUB itself won't know to start the Debian installer unless you tell it what to do. You need to create a text file at /boot/grub/grub.cfg on that USB stick.
+
+This configuration is what "triggers" the installer and passes your preseed file location. It looks like this:
+
+set timeout=5
+set default=0
+
+menuentry "Install Debian (Automated)" {
+    linux /install.amd/vmlinuz auto=true priority=critical preseed/file=/hd-media/sdc2/preseed.cfg --- quiet
+    initrd /install.amd/initrd.gz
+}
+
+----------------------------------------------------------------------------------------
+menuentry "Automated Debian Install" {
+    # Specify the path to the kernel and ramdisk (copied from the ISO)
+    set linux_path="/install.amd/vmlinuz"
+    set initrd_path="/install.amd/initrd.gz"
+
+    linux $linux_path auto=true priority=critical preseed/file=/hd-media/sdb2/preseed.cfg --- quiet
+    initrd $initrd_path
+}
+
+4. The File Structure Check
+After running the command or copying from the ISO, your Partition 1 (DEBIAN_BOOT) should look like this:
+
+Plaintext
+/ (Root of Partition 1)
+├── EFI/
+│   └── BOOT/
+│       ├── BOOTX64.EFI  <-- This is the Shim (signed)
+│       ├── grubx64.efi  <-- This is GRUB (signed)
+│       └── mmx64.efi    <-- MokManager (for managing keys)
+├── boot/
+│   └── grub/
+│       └── grub.cfg     <-- YOUR custom config file
+└── install.amd/         <-- Kernel and Initrd from the ISO
+-------------------------------------
 fix global protect
 
 copy with Firefox the chain certificate of gp.schneider-electric.com and install it
