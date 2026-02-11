@@ -74,6 +74,11 @@ sudo mount -o loop /path/to/your/debian-netinst.iso /mnt/debian_iso
 sudo mkdir -p /mnt/usb_boot
 sudo mount /dev/sdc1 /mnt/usb_boot
 sudo cp -a /mnt/iso/. /mnt/usb_boot/
+IMPORTANT copy the preseed.cfg to /mnt/usb_boot/
+
+sudo apt install rsync
+sudo rsync -rvLt --exclude='debian' /mnt/debian_iso/ /mnt/usb_boot/
+
 ---------------------
 install grub
 
@@ -91,22 +96,17 @@ GRUB itself won't know to start the Debian installer unless you tell it what to 
 
 This configuration is what "triggers" the installer and passes your preseed file location. It looks like this:
 
-set timeout=5
+set timeout=3
 set default=0
 
-menuentry "Install Debian (Automated)" {
-    linux /install.amd/vmlinuz auto=true priority=critical preseed/file=/hd-media/sdc2/preseed.cfg --- quiet
+menuentry "Standard Debian Install" {
+    search --no-floppy --label ESP --set=root
+
+    linux /install.amd/vmlinuz auto=true priority=critical \
+    preseed/file=/cdrom/preseed.cfg \
+    --- quiet
+
     initrd /install.amd/initrd.gz
-}
-
-----------------------------------------------------------------------------------------
-menuentry "Automated Debian Install" {
-    # Specify the path to the kernel and ramdisk (copied from the ISO)
-    set linux_path="/install.amd/vmlinuz"
-    set initrd_path="/install.amd/initrd.gz"
-
-    linux $linux_path auto=true priority=critical preseed/file=/hd-media/sdb2/preseed.cfg --- quiet
-    initrd $initrd_path
 }
 
 4. The File Structure Check
@@ -123,7 +123,9 @@ Plaintext
 │   └── grub/
 │       └── grub.cfg     <-- YOUR custom config file
 └── install.amd/         <-- Kernel and Initrd from the ISO
+
 -------------------------------------
+
 fix global protect
 
 copy with Firefox the chain certificate of gp.schneider-electric.com and install it
