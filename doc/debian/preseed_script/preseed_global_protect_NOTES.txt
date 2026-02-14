@@ -89,7 +89,7 @@ DEBIAN_BOOT=/mnt/usb_boot
 sudo grub-install --target=x86_64-efi \
              --efi-directory=$DEBIAN_BOOT \
              --boot-directory=$DEBIAN_BOOT/boot \
-             --removable --uefi-secure-boot
+             --removable --uefi-secure-boot --no-nvram
 
 3. The Magic: /boot/grub/grub.cfg
 GRUB itself won't know to start the Debian installer unless you tell it what to do. You need to create a text file at /boot/grub/grub.cfg on that USB stick.
