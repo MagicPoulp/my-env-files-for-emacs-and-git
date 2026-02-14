@@ -73,11 +73,10 @@ sudo mkdir -p /mnt/debian_iso
 sudo mount -o loop /path/to/your/debian-netinst.iso /mnt/debian_iso
 sudo mkdir -p /mnt/usb_boot
 sudo mount /dev/sdc1 /mnt/usb_boot
-sudo cp -a /mnt/iso/. /mnt/usb_boot/
-IMPORTANT copy the preseed.cfg to /mnt/usb_boot/
 
 sudo apt install rsync
 sudo rsync -rvLt --exclude='debian' /mnt/debian_iso/ /mnt/usb_boot/
+IMPORTANT copy the preseed.cfg to /mnt/usb_boot/
 
 ---------------------
 install grub
@@ -86,9 +85,10 @@ install grub
 sudo apt install grub-efi-amd64-bin shim-signed
 
 # Install GRUB to the USB (Partition 1)
+DEBIAN_BOOT=/mnt/usb_boot
 sudo grub-install --target=x86_64-efi \
-             --efi-directory=/media/user/DEBIAN_BOOT \
-             --boot-directory=/media/user/DEBIAN_BOOT/boot \
+             --efi-directory=$DEBIAN_BOOT \
+             --boot-directory=$DEBIAN_BOOT/boot \
              --removable --uefi-secure-boot
 
 3. The Magic: /boot/grub/grub.cfg
@@ -150,6 +150,4 @@ sudo openconnect --protocol=gp \
 final that works:
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 sudo -E  gp-saml-gui --no-verify --gateway --clientos=Windows --allow-insecure-crypto --sudo-openconnect europe-g1.gp.schneider-electric.com -- --allow-insecure-crypto --useragent='PAN GlobalProtect'
-
-
 
