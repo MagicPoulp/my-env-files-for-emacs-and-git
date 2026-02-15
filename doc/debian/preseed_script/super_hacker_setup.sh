@@ -3,6 +3,11 @@
 set -e
 
 # --------------------------------------------------------
+# Set time zone
+
+timedatectl set-timezone Europe/Paris
+
+# --------------------------------------------------------
 # Setup Num lock (System-wide Override)
 
 # 1. Hardware Level (udev)
@@ -92,4 +97,5 @@ nft -f "$NFT_CONF"
 # 5. Ensure nftables starts on boot
 systemctl enable nftables
 
-echo "SUCCES: The firwall is configured for Desktop use and to allow a VM."
+echo "SUCCES: The firewall is configured for Desktop use and to allow a VM."
+# --------------------------------------------------------
