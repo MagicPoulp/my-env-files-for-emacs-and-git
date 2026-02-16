@@ -1,3 +1,5 @@
+# For install in a VM zith preseed file in a Windows webserver
+
 IMPORTANT, at login screen, one must do CTRL+ALT+F2 to change the password
 to change later and not on a VM, put true
 d-i partman-crypto/erase_data boolean false
@@ -38,7 +40,7 @@ Copy the Hash (a long string of letters and numbers).
 that it worked is shown by the request received by the http server
 
 -------------------------------------
-# Fix the USB stick
+# Fix the USB stickm to install on a real driver
 
 in gparted
 2 partitions one ext4 one in FAT32 to copy files
@@ -126,28 +128,25 @@ Plaintext
 
 -------------------------------------
 
-fix global protect
+fix global protect VPN on Debian Linux
 
 copy with Firefox the chain certificate of gp.schneider-electric.com and install it
-sudo mv gp-schneider-electric-com-chain.pem /usr/local/share/ca-certificates/schneider/
+sudo mv gp-schneider-electric-com-chain.pem gp-schneider-electric-com-chain.crt
+sudo mv gp-schneider-electric-com-chain.crt /usr/local/share/ca-certificates/schneider/
+sudo chmod 644 /usr/local/share/ca-certificates/schneider/*
 sudo update-ca-certificates
 
 sudo apt update
 sudo apt install gp-saml-gui
-export PATH=$PATH:/usr/sbin
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-gp-saml-gui --portal gp.schneider-electric.com --clientos=Windows --allow-insecure-crypto
+#final that works: (keep the cientos Windows)
 
-echo PXi92W5qiQ2N+tJCwBPyir5X0o1TaqKZ/VTkMj9/VGhu6p7zYd18tVHNb47nG9BmYHDwtg== | \
-sudo openconnect --protocol=gp \
---useragent='PAN GlobalProtect' \
---allow-insecure-crypto \
---user='SESA780079@eur.gad.schneider-electric.com' \
---os=win \
---usergroup=portal:prelogin-cookie \
---passwd-on-stdin gp.schneider-electric.com
-
-final that works:
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+export PATH=$PATH:/usr/sbin && \
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt && \
 sudo -E  gp-saml-gui --no-verify --gateway --clientos=Windows --allow-insecure-crypto --sudo-openconnect europe-g1.gp.schneider-electric.com -- --allow-insecure-crypto --useragent='PAN GlobalProtect'
 
+confluence.se.com will work
+artifactory will work
+Outlook365 will work
+
+Note: Teams works in Firefox by using a user agent switcher to Windows
+https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search
