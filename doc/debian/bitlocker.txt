@@ -1,0 +1,8 @@
+sudo mkdir /mnt/bitlocker_container
+sudo mkdir /mnt/bitlocker
+sudo dislocker -V /dev/nvme1n1p3 -p -- /mnt/bitlocker_container
+type key (from powershell "manage-bde -protectors -get C:")
+
+sudo mount -o loop /mnt/bitlocker_container/dislocker-file /mnt/bitlocker
+sudo ls /mnt/bitlocker
+sudo apt install dislocker
