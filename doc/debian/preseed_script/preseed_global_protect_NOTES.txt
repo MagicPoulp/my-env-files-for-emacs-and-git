@@ -1,4 +1,4 @@
-# For install in a VM zith preseed file in a Windows webserver
+# To install in a VM with a preseed file in a Windows webserver
 
 IMPORTANT, at login screen, one must do CTRL+ALT+F2 to change the password
 to change later and not on a VM, put true
