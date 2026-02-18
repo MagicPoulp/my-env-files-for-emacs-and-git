@@ -1,0 +1,57 @@
+# Existing USB stick
+
+To modify an existing ISO on a USB stick, one just needs to mount and to add 2 files
+/preseed.cfg
+/boot/grub/grub.cf
+
+sudo mkdir -p /mnt/usb_boot
+sudo fdisk -l
+sudo mount /dev/sda1 /mnt/usb_boot
+
+# New USB stick
+
+The USB stick must be formated FAT32, with a GPT table, and with the boot esp flag
+
+not sda1, but sda in below
+sudo fdisk -l
+sudo dd if=/path/to/your/image.iso of=/dev/sdX bs=4M status=progress
+sudo sync
+
+# to create a .ISO to be be used for isntalling a VM or for flashing a USB sticks, here is how
+
+sudo mkdir -p /mnt/debian_iso
+sudo mount -o loop /home/user/Downloads/debian-13.3.0-amd64-netinst.iso /mnt/debian_iso/
+sudo mkdir /opt/iso_workspace
+sudo rsync /mnt/debian_iso/ /opt/iso_workspace
+sudo rsync -ahPHAXx --delete /mnt/debian_iso/ /opt/iso_workspace
+
+cd /opt/iso_workspace/
+cp ~/Downloads/grub.cfg boot/grub/grub.cfg
+# set the right language for the keyboard in the preseed file
+sudo cp ~/Downloads/preseed.cfg .
+
+sudo apt update
+sudo apt install isolinux syslinux-common xorriso
+
+xorriso -as mkisofs -r -V "Modified Debian" \
+  -J -joliet-long -cache-inodes \
+  -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin \
+  -b isolinux/isolinux.bin -c isolinux/boot.cat \
+  -no-emul-boot -boot-load-size 4 -boot-info-table \
+  -eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot \
+  -isohybrid-gpt-basdat \
+  -o /home/user/Downloads/custom-debian-13.3.0-amd64-netinst.iso /opt/iso_workspace
+
+-----------------------
+
+virt-install \
+  --name debian13-vm \
+  --ram 2048 \
+  --vcpus 2 \
+  --disk path=/var/lib/libvirt/images/debian-vm.qcow2,size=20 \
+  --os-variant debian12 \
+  --network network=default \
+  --graphics vnc \
+  --cdrom /home/user/Downloads/custom-debian-13.3.0-amd64-netinst.iso \
+  --noautoconsole
+
