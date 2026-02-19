@@ -17,7 +17,7 @@ sudo fdisk -l
 sudo dd if=/path/to/your/image.iso of=/dev/sdX bs=4M status=progress
 sudo sync
 
-# to create a .ISO to be be used for isntalling a VM or for flashing a USB sticks, here is how
+# to create a .ISO to be be used for installing a VM or for flashing a USB sticks, here is how
 
 sudo mkdir -p /mnt/debian_iso
 sudo mount -o loop /home/user/Downloads/debian-13.3.0-amd64-netinst.iso /mnt/debian_iso/
@@ -28,6 +28,7 @@ sudo rsync -ahPHAXx --delete /mnt/debian_iso/ /opt/iso_workspace
 cd /opt/iso_workspace/
 cp ~/Downloads/grub.cfg boot/grub/grub.cfg
 # set the right language for the keyboard in the preseed file
+# Note we have put 512MB for /boot because 300MB was not enough to install a second kernel
 sudo cp ~/Downloads/preseed.cfg .
 
 sudo apt update
@@ -43,15 +44,66 @@ xorriso -as mkisofs -r -V "Modified Debian" \
   -o /home/user/Downloads/custom-debian-13.3.0-amd64-netinst.iso /opt/iso_workspace
 
 -----------------------
+sudo usermod -aG libvirt-qemu $USER
+sudo usermod -aG libvirt $USER
+sudo usermod -aG kvm $USER
+#logout and relogin
+sudo cp /home/user/Downloads/custom-debian-13.3.0-amd64-netinst.iso /var/lib/libvirt/images/
+sudo chown libvirt-qemu:libvirt-qemu -R /var/lib/libvirt/images
 
+# 1. Start the network right now
+sudo virsh net-start default
+
+# 2. Make sure it starts automatically on every reboot
+sudo virsh net-autostart default
+sudo virsh net-list --all
+
+virsh vol-list images
+virsh pool-refresh images
+
+# the ///system is mandatory to have a performance network
 virt-install \
+  --connect qemu:///system \
   --name debian13-vm \
-  --ram 2048 \
+  --boot uefi \
+  --ram 1024 \
   --vcpus 2 \
-  --disk path=/var/lib/libvirt/images/debian-vm.qcow2,size=20 \
-  --os-variant debian12 \
-  --network network=default \
+  --disk path=/var/lib/libvirt/images/debian-vm.qcow2,size=20,bus=virtio \
+  --os-variant debian13 \
+  --network network=default,model=virtio \
   --graphics vnc \
-  --cdrom /home/user/Downloads/custom-debian-13.3.0-amd64-netinst.iso \
+  --cdrom /var/lib/libvirt/images/custom-debian-13.3.0-amd64-netinst.iso \
   --noautoconsole
 
+# note spice and this extra line could enable the copy paste
+# --channel spicevmc,target_type=virtio,name=com.redhat.spice.0 \
+
+# not tried yet, this could work directly on an official .ISO
+virt-install \
+  --connect qemu:///system \
+  --name debian13-vm \
+  --boot uefi \
+  --ram 1024 \
+  --vcpus 2 \
+  --disk path=/var/lib/libvirt/images/debian-vm.qcow2,size=20,bus=virtio \
+  --os-variant debian13 \
+  --network network=default,model=virtio \
+  --graphics vnc \
+  --location /var/lib/libvirt/images/debian-13-netinst.iso \
+  --initrd-inject /path/to/your/preseed.cfg \
+  --extra-args "auto=true priority=critical file=/preseed.cfg" \
+  --noautoconsole
+
+virsh list --all
+# if you want to to remove
+#sudo virsh destroy debian13-vm --nvram
+#sudo virsh undefine debian13-vm
+#sudo rm -f /var/lib/libvirt/images/debian-vm.qcow2
+
+# open in a window
+sudo apt update && sudo apt install virt-viewer
+virt-viewer --connect qemu:///system --wait debian13-vm
+
+# after installation
+virsh --connect qemu:///system list --all
+virsh --connect qemu:///system start debian13-vm

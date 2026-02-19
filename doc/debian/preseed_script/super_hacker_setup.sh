@@ -69,6 +69,9 @@ table inet filter {
         ct state invalid drop
 
         # NOTE: SSH, HTTP, and Ping (ICMP) are implicitly dropped
+
+        # Allow DHCP/DNS from VMs
+        iifname "virbr0" accept
     }
 
     chain forward {
@@ -77,8 +80,8 @@ table inet filter {
         # Allow VM/Container traffic to reach the internet
         ct state established,related accept
 
-        # Change "virbr*" to your specific bridge if different
-        iifname "virbr*" accept
+        # Change "virbr0" to your specific bridge
+        iifname "virbr0" accept
     }
 
     chain output {
@@ -110,7 +113,7 @@ echo "--> grub is configured to use isolcpus for using VMs."
 # --------------------------------------------------------
 # make a pinning file for interrups
 
-cat <<'EOF' > pin_irq.sh
+cat <<'EOF' > pin-irq.sh
 #!/bin/sh
 
 # see in /proc/interrupts
@@ -161,15 +164,15 @@ done
 echo "IRQ affinity reset complete."
 EOF
 
-chmod +x pin_irq.sh
+chmod +x pin-irq.sh
 apt update
 apt-get install -y qemu-system libvirt-daemon-system libvirt-clients virtinst bridge-utils
 
 # install the pinning file for when the network changes and when a VM starts
-cp pin_irq.sh /etc/NetworkManager/dispatcher.d/99-irq-repin
+cp pin-irq.sh /etc/NetworkManager/dispatcher.d/99-irq-repin
 mkdir -p /etc/libvirt/hooks/qemu.d/win11/prepare/begin
 mkdir -p /etc/libvirt/hooks/qemu.d/win11/release/end
-cp irq-pin.sh /etc/libvirt/hooks/qemu.d/win11/release/begin
+cp pin-irq.sh /etc/libvirt/hooks/qemu.d/win11/release/begin
 
 echo "IRQ pinning is set in NetworkManager's dispatcher and in kvm"
 
