@@ -1,0 +1,714 @@
+In the windows things to allow in gedit in remote desktop there are 2 things one for audio and one for microphone, sure required for usb mic to work
+
+see the other file
+sudo virsh -c qemu:///system define /home/user/Downloads/win11.xml
+how_to_install_windows_oem_license_in_kvm_vm_on_debian_host.txt
+
+  440  [2025-11-22 10:40:08] sudo apt install bridge-utils
+  546  [2025-11-22 12:26:00] sudo apt-get install rfkill
+  603  [2025-11-22 13:04:46] sudo apt-get install htop
+
+this command can convert the qcow2.com made when creating a vm in kvm, later we want the faster raw format
+time sudo qemu-img convert -f qcow2 -O raw /var/lib/libvirt/images/win11.qcow2 /var/lib/libvirt/images/win11.raw
+
+the bridge does not work with wifi
+nmcli radio wifi off
+sudo rfkill block wifi
+
+we also need a network bridge for latency
+create a bridge br0
+
+
+note: the interfaces file is simple below but there is an advanced version that allows also the screambr0 udp audio and the usb tethering
+sudo cat /etc/network/interfaces
+# /etc/network/interfaces
+
+# Include configuration files from /etc/network/interfaces.d/
+source /etc/network/interfaces.d/*
+
+# The loopback network interface (Standard)
+auto lo
+iface lo inet loopback
+
+# --- KVM BRIDGED NETWORK SETUP ---
+
+# 1. Physical Interface (The "Slave" port)
+# Configure the actual wired NIC (enp0s31f6) to be MANUALLY configured
+# so it can be attached to the bridge. It will NOT receive an IP address directly.
+auto enp0s31f6
+iface enp0s31f6 inet manual
+
+# 2. Bridge Interface (The new host connection)
+# The bridge (br0) will get the IP address via DHCP and connect your VM.
+auto br0
+iface br0 inet dhcp
+    bridge_ports enp0s31f6   # <--- CORRECTED INTERFACE NAME
+    bridge_stp off
+    bridge_maxwait 0
+
+# --- END KVM BRIDGED NETWORK SETUP ---
+
+
+systemctl restart network
+and NetworkManager
+
+---------------------
+
+echo "blacklist nouveau" | sudo tee -a /etc/modprobe.d/blacklist-nouveau.conf
+echo "blacklist nvidia" | sudo tee -a /etc/modprobe.d/blacklist-nouveau.conf
+
+sudo nano /etc/modules-load.d/vfio-pci.conf
+vfio
+vfio_iommu_type1
+vfio_pci
+
+sudo nano /etc/modprobe.d/vfio.conf
+options vfio-pci ids=10de:25b8
+
+and this id is associated with graphics card we may have 2 separated by a comma if audio has a separate id and not hidden behind the same
+
+this script is used to find the ids
+for d in /sys/kernel/iommu_groups/*/devices/*; do      n=${d#*/iommu_groups/*};      n=${n%%/*} ;     printf 'IOMMU Group %s ' "$n" ;     lspci -nns "${d##*/}"; done
+
+this command also
+lspci -nnk | grep NVID
+
+------------------------
+
+use the xml without passthrought to start windows activate remote desktopm activate a local user in use info
+then use remmina from apt to connect via RDP
+you get the ip in ipconfig on windows
+it must have same subnet as the bridge br0
+ip neigh show
+so you must restart windows with NIC configured on bridge in kvm
+
+make sure remote desktop works
+install the graphics driver
+stop the VM
+
+  723  [2025-11-22 16:06:52] sudo virsh list --all
+  724  [2025-11-22 16:07:11] -----------------------
+  725  [2025-11-22 16:07:17] sudo virsh domiflist win11
+then open here with this nano command on virsh, ctrl + k to remove all lines and copy the xml for after the passthrough
+the best is to have an emacs editor and copy from it. empty the virsh editor using CTRL+K
+sudo EDITOR=nano virsh edit win11
+after this you cannot use the normal kvm only remote desktop works
+start the VM and connect via remote desktop reinstall the graphics driver
+
+modify this command to change the cpu use
+you must not repeat quiet
+GRUB_CMDLINE_LINUX="isolcpus=1-19 nohz_full=2-19 rcu_nocbs=1-19 kernelcore=0 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on"
+it is not perfect but still helps
+and put 19 cores in kvm
+
+after tuning, this is much better saving 4 cores for the kernel and OS:
+FINAL grub command:
+GRUB_CMDLINE_LINUX="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll nohz=on
+
+----
+
+for audio
+
+Start typing: edit group policy
+Navigate to: Computer Configuration > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Device and Resource Redirection.
+
+Double-click Allow audio and video playback redirection.
+
+Set the policy to Enabled or Not Configured.
+
+Click OK and then reboot the remote machine
+in remmina rdp client settings in advanced there is a mode for audio and put it on local
+
+-----------
+
+for kvm hugepages
+it must be added in the xml
+<memoryBacking>
+  <hugepages/>
+</memoryBacking>
+
+And the memory in GiB must be the exact !! (or vm start error) multiplication of number of pages times size of page
+
+sudo cat /etc/sysctl.conf
+# Reserve 13312 hugepages (13312 * 2 MiB = 26 GiB)
+vm.nr_hugepages = 13312
+
+
+-------------------
+and you need to run this script from a file after each boot
+#!/bin/sh
+
+# Set CPU affinity to '1' (which is the bitmask for CPU 0)
+# The IRQ numbers are: 183 to 189
+
+# Loop through the IRQs and set their affinity to CPU 0
+for irq in 183 184 185 186 187 188 189; do
+    if [ -f "/proc/irq/$irq/smp_affinity" ]; then
+        echo 1 > /proc/irq/$irq/smp_affinity
+    fi
+done
+
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+
+nmcli radio wifi off
+sudo rfkill block wifi
+
+# This command applies the hugepage setting immediately
+sudo sh -c 'echo 13312 > /proc/sys/vm/nr_hugepages'
+
+---------
+
+in windows remove firewall, activate the baloon driver optimize for speed in battery and remove telemetry
+remove telemetry service, printer spool, firewall not dangerous, remove stuff in task manager startup,
+activate "extreme performance" using a poweshell fust list then /activate
+activate virtio baloon driver, in device manager there is an unkown PCI something. baloon is at top of iso in baloon dir it is for memory
+remove shared memoery in kvm
+there is a game mode for windowed game that can be disabled since not windowed
+and in remina we can reduce the color per pixel
+
+---------
+final tuning
+start options
+
+due to 3s freeze i left 4 vcores to the host
+
+f means 4 cores in bits mask
+script changed with this
+echo F | sudo tee /proc/irq/default_smp_affinity
+this is the new command in grub
+GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll"
+
+
+looking-glass was built from source in a chroot since it is in debian unstable, a fontfox- something package package had to be installed manually and removed from a config file it just had a b0 extension.
+
+see command debootstrap in debian to install a chroot
+
+/srv/chroot/trixie$ sudo mount -t proc /proc proc/
+sudo mount --rbind /sys sys/
+sudo mount --rbind /dev dev/
+
+# Inside your chroot you need this or the copy paste may be missing
+apt update
+apt install libspice-client-glib-2.0-dev libspice-protocol-dev nettle-dev libx11-dev libxfixes-dev
+
+apt source fontforge-nox=20230101~dfsg-4
+apt source looking-glass-client -t unstable
+
+
+BUILD2/looking-glass-0+b7+ds1# dpkg-buildpackage -b -uc -us
+then 2 .deb files to install
+
+ 1136  [2025-11-24 05:14:45] sudo nano /etc/tmpfiles.d/10-looking-glass.conf
+ 1137  [2025-11-24 05:15:32] sudo systemd-tmpfiles --create /etc/tmpfiles.d/10-looking-glass.conf
+put this in the .conf
+# Type Path Mode UID GID Age Argument
+f /dev/shm/looking-glass 0660 user kvm -
+
+1138  [2025-11-24 05:16:33] looking-glass-client -f /dev/shm/looking-glass
+ 1168  [2025-11-24 05:34:13] ip neigh show
+ 1169  [2025-11-24 05:34:35] ip a show br0
+ 1171  [2025-11-24 05:36:51] sudo apt update
+ 1172  [2025-11-24 05:36:52] sudo apt install nmap arp-scan
+ 1174  [2025-11-24 05:37:08] sudo nmap -sn 192.168.1.1/24
+
+
+looking glass run with success:
+sudo chmod 666 /dev/shm/looking-glass
+looking-glass-client win:size=1920x1080 -s -f /dev/shm/looking-glass
+looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+
+
+NOTE: one will need virtual display adapter, and multi monitor tool to be able set the primary monitor, maybe also on windows put the extend screen to 1 in the display settings
+-------------
+
+how to fix the sound forwarding since the screen is put on debian as a mirror we get sound from debian in the socket
+install github duncantrax/scream on windows using the windows 11 tricks
+compile the source on linux there is CMakelists use smake to build
+sudo apt install git cmake build-essential libpulse-dev libasound2-dev
+
+l
+ 1421  [2025-11-26 20:13:41] sudo apt install libjack-dev libsoxr-dev libpcap-dev
+ 1422  [2025-11-26 20:14:02] rl *
+ 1423  [2025-11-26 20:14:05] rm -rf *
+ 1424  [2025-11-26 20:14:06] reset
+ 1432  [2025-11-26 20:16:13] cmake .. -DASIO=OFF -DPULSEAUDIO=ON -DPACKET_CAPTURER=ON -DSHMEM=ON
+ 1427  [2025-11-26 20:14:22] make
+ 1428  [2025-11-26 20:14:24] ll
+
+to fix the sound with scream
+deactivate windows settings/sound the normal speaker to just have Scream
+in control panel (not the settings windows), hardware and sound in sound you can disable the standard speaker
+and in the communications tab click on do nothing
+
+scream -i br0
+
+and in windows sound the Scream speak must be picked
+
+scream -i br0 && sudo virsh start win11 && sleep 10 && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+
+-----
+
+Additional steps to trigger the irq affinity for network changes and when the VM start
+we set affinity to 0,1,2,3 with mask F for kernel interrupts
+But we do exceptions for keybaord and mouse using irq-pin.sh
+
+ 2009  [2025-12-06 14:59:13] sudo touch /etc/NetworkManager/dispatcher.d/99-irq-repin
+ 2010  [2025-12-06 14:59:42] less irq-pin.sh
+ 2011  [2025-12-06 14:59:48] e irq-pin.sh
+ 2012  [2025-12-06 15:00:09] sudo cp irq-pin.sh /etc/NetworkManager/dispatcher.d/99-irq-repin
+ 2013  [2025-12-06 15:01:17] sudo systemctl restart NetworkManager
+ 2014  [2025-12-06 15:03:01] sudo ls /etc/libvirt/hooks/qemu.d/win11/
+ 2015  [2025-12-06 15:03:03] sudo ls /etc/libvirt/hooks/qemu.d/
+ 2016  [2025-12-06 15:03:06] sudo ls /etc/libvirt/hooks/
+ 2017  [2025-12-06 15:05:54] sudo mkdir -p /etc/libvirt/hooks/qemu
+ 2018  [2025-12-06 15:05:57] sudo mkdir -p /etc/libvirt/hooks/qemu.d
+ 2019  [2025-12-06 15:06:04] sudo mkdir -p /etc/libvirt/hooks/qemu.d/win11/prepare/begin
+ 2020  [2025-12-06 15:06:04] sudo mkdir -p /etc/libvirt/hooks/qemu.d/win11/release/end
+ 2021  [2025-12-06 15:06:13] less irq-pin.sh
+ 2022  [2025-12-06 15:06:39] sudo cp irq-pin.sh /etc/libvirt/hooks/qemu.d/win11/release/begin
+
+
+final setup see irq-pin.sh and script1.sh
+4 cpus for kernel, 4 for emulator and scream network audio
+1 cpu for iothread
+3 cpus for keyboard and mouse and controller
+8 for windows since too many requires synchronization
+--------------------
+
+THIS is WRONG: since audio in network takes ressources, need 4 dedicated cpus for emulator to handle it
+
+SOLUTION SCREAM ON UDP ON SECOND ISOLATED BRIDGE
+
+Scream was saturating and handled in the emulator threads together with the network causing disconnections.
+
+Solution that worked: a new dedicated screambr0 bridge, and a new tuning via unicast UDP. all details below
+
+New interfaces file.
+
+user@Host-001:~/tmp$ cat /etc/network/interfaces
+# /etc/network/interfaces
+
+# Include configuration files from /etc/network/interfaces.d/
+source /etc/network/interfaces.d/*
+
+# The loopback network interface (Standard)
+auto lo
+iface lo inet loopback
+
+# --- KVM BRIDGED NETWORK SETUP ---
+
+# 1. Physical Interface (The "Slave" port)
+# Configure the actual wired NIC (enp0s31f6) to be MANUALLY configured
+# so it can be attached to the bridge. It will NOT receive an IP address directly.
+auto enp0s31f6
+iface enp0s31f6 inet manual
+
+# 2. Bridge Interface (The new host connection)
+# The bridge (br0) will get the IP address via DHCP and connect your VM.
+auto br0
+iface br0 inet dhcp
+    bridge_ports enp0s31f6   # <--- CORRECTED INTERFACE NAME
+    bridge_stp off
+    bridge_maxwait 0
+
+# Add this block to /etc/network/interfaces
+# /etc/network/interfaces
+
+# ... (lo, enp0s31f6, and br0 blocks remain the same) ...
+
+# --- ISOLATED SCREAM AUDIO BRIDGE (screambr0) ---
+
+# Use the bridge type explicitly, without relying on bridge_ports.
+# This tells ifup that this is a bridge device it needs to create.
+
+auto screambr0
+iface screambr0 inet static
+    address 192.168.254.1
+    netmask 255.255.255.0
+
+    # 1. CLEANUP (prevents "File exists" error)
+    # Deletes the device if it exists from a previous failure.
+    pre-up ip link del screambr0 || true
+
+    # 2. CREATE DEVICE (Prevents "Cannot find device" error)
+    # This explicitly creates the bridge device itself.
+    pre-up ip link add screambr0 type bridge
+
+    # 3. CONFIGURE DEVICE
+    # The IP address is handled by the "iface screambr0 inet static" block above,
+    # but some systems require it to be manually set. We will remove the redundant
+    # 'up ip addr add' command to simplify, as the 'iface' line should handle it.
+
+    # 4. CLEANUP ON SHUTDOWN
+    post-down ip link del screambr0
+
+# --- END KVM BRIDGED NETWORK SETUP ---
+
+-----------------------------
+
+to debug the bridge
+sudo tcpdump -i screambr0 udp port 4010 and dst 192.168.254.1 -nn
+
+to make the sound play (the u is for unicast):
+scream -u -i screambr0
+
+If stuttering, add -t 100 (default 50ms) to add a buffer to the price of latency
+scream -u -i screambr0 -t 100
+
+to show status and static IP we have set:
+ip a show screambr0
+
+apt install net-tools
+sudo netstat -tulnp | grep 4010
+
+to allow the port:
+sudo ufw allow in on screambr0 proto udp to any port 4010
+
+in Windows powershell, we can try to send a simple UDP packet in the powershell using a function from internetl
+https://gist.github.com/PeteGoo/21a5ab7636786670e47c
+ 	function Send-UdpDatagram
+{
+      Param ([string] $EndPoint,
+      [int] $Port,
+      [string] $Message)
+
+      $IP = [System.Net.Dns]::GetHostAddresses($EndPoint)
+      $Address = [System.Net.IPAddress]::Parse($IP)
+      $EndPoints = New-Object System.Net.IPEndPoint($Address, $Port)
+      $Socket = New-Object System.Net.Sockets.UDPClient
+      $EncodedText = [Text.Encoding]::ASCII.GetBytes($Message)
+      $SendMessage = $Socket.Send($EncodedText, $EncodedText.Length, $EndPoints)
+      $Socket.Close()
+}
+Usage.ps1
+Send-UdpDatagram -EndPoint "127.0.0.1" -Port 8125 -Message "TEST_UDP_SENT"
+
+------------------
+KVM
+
+now we have 2 interfaces, and at the top we have set 2 iothreads, but only iothread="1" is pinned to a vcpu
+    <interface type='bridge'>
+      <mac address='52:54:00:43:3d:22'/>
+      <source bridge='br0'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+    </interface>
+    <interface type='bridge'>
+      <mac address='52:54:00:11:22:33'/>
+      <source bridge='screambr0'/>
+      <model type='virtio'/>
+      <driver name='vhost' txmode='iothread' ioeventfd="on"/>
+      <target dev='vnetScream'/>
+      <alias name='scream-net'/>
+      <address type='pci' domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
+    </interface>
+
+-------------------------------
+
+In windows,
+find the new adapter in control panel / network
+change adapter settings, in IPv4 double click and set an IP in same subnet as the IP we have set
+and put as gateway the bridge IP
+example:
+IP/mask/gateway
+192.168.254.10
+255.255.255.0
+192.168.254.1
+
+then you should be able to ping that gateway IP from windows
+
+in advanced, remove all the offloading stuff, try to disable a maximum of properties since they are not needed in a VM
+
+In audio, make sure Scream is the only audio device.
+now in regedit, we need to change the Scream parameters for Unicast UDP and set the IP and port
+
+check well the IP and port
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Scream
+Add strings IP and IPAddress, value "192.168.254.1"
+
+create Key Options (like a folder)
+HKEY_LOCAL_MACHINE\SOFTWARE\Scream\Options
+Type            DWORD (REG_DWORD)	0 (Decimal)  ----> 0 Unicast, 1 multicast
+IP              String (REG_SZ)	        192.168.254.1
+IPAdress        String (REG_SZ)	        192.168.254.1
+Unicast	        DWORD (REG_DWORD)	1 (Decimal)
+IP_ADDRESS	String (REG_SZ)	        192.168.254.1
+UDP_PORT	DWORD (REG_DWORD)	4010 (Decimal)
+UnicastIPv4     String (REG_SZ)	        192.168.254.1
+UnicastPort     DWORD (REG_DWORD)	4010 (Decimal)
+MULTICAST	DWORD (REG_DWORD)	0
+SilenceThreshold	DWORD (REG_DWORD)	20
+
+this command can inspect audio via udp traffic that the SilenceThreshold value 20 decimal DWORD works
+sudo tcpdump -i screambr0 udp port 4010 and dst 192.168.254.1 -nn
+
+
+change the Scream audio settings to use 16 bits 48000Hz (DVD). it is standard for most applicaiton and avoids saturation
+
+it is in control panel/audio
+
+the iothread is used even if not pinned.
+
+REBOOT MACHINE
+when playing a sound the network adapter should show traffic sent in properties
+
+avoid to destroy too much a starting windows or it enters reset mode. Best is to reboot the host to have a clean hardware GPU state.
+
+final file with this Scream UDP:
+win11_debug6_final_tuning_fixed_looking_glass_periph_fixed3.xml
+
+ 2365  [2025-12-12 21:31:23] ls /usr/bin/qemu-system-x86_64
+ 2366  [2025-12-12 21:32:36] sudo apt update
+ 2367  [2025-12-12 21:32:37] sudo apt install libcap2-bin
+ 2368  [2025-12-12 21:32:47] # 2. Locate the QEMU binary used by libvirt
+ 2369  [2025-12-12 21:32:47] # This path might vary slightly, but this is the standard location:
+ 2370  [2025-12-12 21:32:47] QEMU_PATH="/usr/bin/qemu-system-x86_64"
+ 2371  [2025-12-12 21:32:47] # 3. Grant the CAP_SYS_NICE capability to the QEMU binary
+ 2372  [2025-12-12 21:32:47] # The '+ep' flags mean 'effective' and 'permitted'
+ 2373  [2025-12-12 21:32:47] sudo setcap cap_sys_nice+ep "${QEMU_PATH}"
+ 2374  [2025-12-12 21:32:47] # 4. Verify the change
+ 2375  [2025-12-12 21:32:47] sudo getcap "${QEMU_PATH}"
+ 2376  [2025-12-12 21:32:47] # Output should look something like:
+ 2377  [2025-12-12 21:32:47] # /usr/bin/qemu-system-x86_64 = cap_sys_nice+ep
+ 2378  [2025-12-12 21:33:00] sudo getcap "${QEMU_PATH}"
+
+new command to have the good RR scheduler
+sudo ~/tmp/start_win11.sh  && sleep 20 && looking-glass-client win:size=1920x1080 win:fullScreen -s -f /dev/shm/looking-glass
+
+---
+
+start in RR with start_win11.sh
+last tuning. 6 cpus is enough and no lag
+the screambr0, the network and emulator share the same pool so i increased it.
+core 4 is unassigned
+iothread for disk is on core 19 near the emulator pins for speedup they must be near
+
+
+in the file 4, i make sure the scream goes on a good iothread and not on emulator threads
+in the file 6 in increase the CPUS
+
+--------------------------
+
+--> how to add IO polling the most powerful speedup that wait 10us the end wihtout interrupts
+
+ 2921  [2025-12-15 21:18:40] sudo chmod 660 /var/lib/libvirt/images/win11.raw
+ 2922  [2025-12-15 21:18:53] ll -ld /var/lib/libvirt/images/win11.raw
+ 2923  [2025-12-15 21:19:10] ll /var/lib/libvirt/images/win11.raw
+ 2924  [2025-12-15 21:19:47] sudo chmod 750 /var/lib/libvirt/images
+ 2925  [2025-12-15 21:19:52] ll -ld /var/lib/libvirt/images/win11.raw
+ 2926  [2025-12-15 21:20:03] ll -ld /var/lib/libvirt/images
+ 2927  [2025-12-15 21:20:06] ll -ld /var/lib/libvirt/images/win11.raw
+ 2928  [2025-12-15 21:20:10] sudo ll -ld /var/lib/libvirt/images/win11.raw
+ 2929  [2025-12-15 21:20:15] sudo ls -ld /var/lib/libvirt/images/win11.raw
+ 2930  [2025-12-15 21:21:06] sudo chown libvirt-qemu:libvirt-qemu /var/lib/libvirt/images
+ 2931  [2025-12-15 21:21:11] sudo virsh start win11
+ 2932  [2025-12-15 21:21:53] sudo chown -R libvirt-qemu:libvirt-qemu /var/lib/libvirt/images
+ 2933  [2025-12-15 21:21:55] sudo virsh start win11
+ 2934  [2025-12-15 21:22:16] sudo virsh pool-refresh default
+ 2935  [2025-12-15 21:22:18] sudo virsh start win11
+ 2936  [2025-12-15 21:22:40] sudo aa-complain /etc/apparmor.d/usr.lib.libvirt.libvirt-qemu
+ 2937  [2025-12-15 21:23:43] sudo apt install apparmor
+ 2938  [2025-12-15 21:23:48] sudo apt install apparmor-utils
+ 2939  [2025-12-15 21:23:53] sudo aa-complain /etc/apparmor.d/usr.lib.libvirt.libvirt-qemu
+ 2940  [2025-12-15 21:24:20] ls /etc/apparmor.d/libvirt/
+ 2941  [2025-12-15 21:25:19] sudo aa-complain /etc/apparmor.d/libvirt/libvirt-f7e10f4c-31a9-11b2-a85c-de224bfb41bc
+
+sudo virsh undefine win11 --nvram
+sudo virsh -c qemu:///system define /home/user/Downloads/win11.xml
+
+sudo setcap cap_net_admin,cap_net_raw=eip /usr/lib/qemu/qemu-bridge-helper
+
+1. Change ownership to the libvirt-qemu user/group
+sudo chown libvirt-qemu:kvm /var/lib/libvirt/images/win11.raw
+# 2. Set file permissions to ensure the owner (libvirt-qemu) can read/write
+sudo chmod 660 /var/lib/libvirt/images/win11.raw
+
+echo "<network><name>screamnet</name><bridge name='screambr0'/><forward mode='bridge'/></network>" > /tmp/screamnet.x
+ml
+ # Define the network in Libvirt
+ sudo virsh net-define /tmp/screamnet.xml
+ sudo virsh net-start screamnet
+ sudo virsh net-autostart screamnet
+
+
+sudo nano /etc/security/limits.conf
+@kvm soft memlock unlimited
+@kvm hard memlock unlimited
+reboot
+
+strangely we need 4 more hugepages
+echo 13316 | sudo tee /proc/sys/vm/nr_hugepages
+
+
+GRUB_CMDLINE_LINUX="isolcpus=4-19 nohz_full=4-19 rcu_nocbs=4-19 processor.max_cstate=0 intel_idle.max_cstate=0 intel_iommu=on audit=0 threadirqs rcu_nocb_poll nohz=on
+
+--------------
+
+changed of looking glass to 64MB to make it more stable
+# 2. Delete the old shared memory file
+sudo rm -f /dev/shm/looking-glass
+
+# 3. Create a fresh file with EXACTLY the size in your XML (32MB)
+# If your XML says 32M, use 32M here.
+sudo truncate -s 64M /dev/shm/looking-glass
+
+# 4. Set permissions so your user can read/write to it
+# Replace 'user' with your actual linux username
+sudo chown user:kvm /dev/shm/looking-glass
+sudo chmod 660 /dev/shm/looking-glass
+
+----------------
+win11_debug6_final_tuning_fixed_looking_glass_periph_fixed8.xml
+has io_uring and is very powerful, and it makes looking glass much harder to login in Windows
+that is why scream0 is removed from it to stabilize it. Since no dedicated thread.
+
+
+---------------
+-debug123.xml had gpu passthrough disabled and allows to reconnect via remmina remote desktop
+-and it has a scsi controller but a virtio-blk disk
+-this allows the installation of the scsi driver on it. And the 6.xml allows to acces the virtio .iso drive to copy a driver
+
+
+---------------------
+
+IMPORTANT: chnaged to scsi in the 7_ 7b and 7c and 8 xml
+the looking glass to be awoken require sa first temporary RDP session
+
+moreover, one must change in sleep mode on windows to make sure the screen is never stopped
+
+moreover,
+this needs ot be fixed in the vdd_settings.xml of the virtual display driver
+<gpu>
+        <friendlyname>NVIDIA GeForce RTX A2000</friendlyname>
+    </gpu>
+    
+    <options>
+        <HardwareCursor>true</HardwareCursor>
+        <RefreshRateFloat>true</RefreshRateFloat>
+        <MaintainMonitorCount>true</MaintainMonitorCount>
+    </options>
+
+moreover, one needs  simple config.ini in the looking glass program in Program Files fold
+this is what I have that works, and confirmed to work in the logs
+
+[app]
+; Forces the use of the DX12 capture interface (standard for B7)
+capture=DXGI
+
+[dxgi]
+adapter=0
+; If you have multiple 'monitors' (QXL and Virtual), you may need
+; to specify which one to capture. '0' is usually the main one.
+output=0
+; Only capture changed regions to save CPU/Bandwidth
+trackDamage=yes
+---------------
+
+NOTE: if the log in C:\ProgramData\looking glass something
+says cound not use DISPLAY3
+it means we must change the config file with output=3, proven to work and indexing of output starts at 1 NOT ZERO as tested
+1 for DISPLAY1
+2 for DISPLAY2
+
+NOTE for DXGI it is indexes
+For d12 it works one must put the full string
+adapter=NVIDIA RTX A2000 Laptop GPU
+output=DISPLAY3
+
+note: some people use monlight + sunshine. it is faster for video but does not have same desktop experience
+and the audio uses more CPU and network than Scream udp unicast
+
+IMPORTANT: the windows service for Looking glass should be automatic and not delayed start or it shows empty window for a while
+
+
+------------------------
+
+--> how to fix the copy paste
+
+see the 12.xml that worked
+no extra options for building looking glass just make sure all packages are there
+
+this extra option is required in looking glass
+good identical version of looking glass must be on host and client
+then SPICE VD agent must be in windows service
+-c SPICE spice:enable=true
+
+sudo virsh start win11 && sleep 20 && looking-glass-client win:size=1920x1080 win:fullScreen -s -c SPICE -f /dev/shm/looking-glass spice:enable=true
+
+-------------------
+
+final tuning:
+on windows
+remove the auto screen stop in the power options
+
+set hihg performance mode
+Right-click the Start button and select Terminal (Admin) or Command Prompt (Admin).
+
+Type powercfg /list and press Enter. This shows all plans and their unique IDs (GUIDs).
+
+If Ultimate Performance is active (marked with an asterisk *), switch to another first:
+
+    powercfg /setactive [GUID of Balanced or High Performance]
+
+---------------------
+How to fix shared folder.
+We do not use <driver type='virtiofs'/> and WinFsp as it requires a dangerous WinFsp .exe in windows
+We use smb as a network drive. And we will not need new stuff in the KVM XML
+
+make sure the spice guest tools are installed
+either remove the windows firewall or create rules
+In the left pane, click Advanced settings, and in the console tree, click Inbound Rules.
+Under Inbound Rules, locate the rules File and Printer Sharing (NB-Session-In) and File and Printer Sharing (SMB-In).
+For each rule, right-click the rule, and then click Enable Rule.
+
+sudo mkdir /opt/shared
+sudo chown user:user -R /otp/shared
+sudo chmod 777 /opt/shared
+
+sudo apt-get update
+sudo apt-get install simba
+sudo nano /etc/samba/smb.conf
+
+add this at the end:
+[shared]
+   path = /opt/shared
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = user
+
+sudo smbpasswd -a user
+IP_HOST from ip addr show br0
+IT MUST BE THE IP under br0 if you are using USB tethering
+this user and pass will be needed in windows in map network drive \\IP_HOST\shared
+
+sudo systemctl restart smbd nmbd
+
+IMPORTANT: when using USB tethering, the real interface is in br0
+so weneed to extra stuff in this file. IMPORTANT not to have the semi column at start of line, and important to put br0
+sudo nano /etc/samba/smb.conf
+
+#### Networking ####
+
+# The specific set of interfaces / networks to bind to
+# This can be either the interface name or an IP address/netmask;
+# interface names are normally preferred
+   interfaces = 127.0.0.0/8 br0
+
+# Only bind to the named interfaces and/or networks; you must use the
+# 'interfaces' option above to use this.
+# It is recommended that you enable this feature if your Samba machine is
+# not protected by a firewall or is a firewall itself.  However, this
+# option cannot handle dynamic or non-broadcast interfaces correctly.
+   bind interfaces only = yes
+
+--------------------------------
+then
+sudo systemctl restart smbd nmbd
+
+--------------------------------
+USB tethering works well see the configuration for it in the separate file
+how_to_fix_usb_tethering_with_the_kvm_br0_and_screambr0.txt
+

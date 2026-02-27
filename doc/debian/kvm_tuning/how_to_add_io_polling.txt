@@ -1,0 +1,28 @@
+sudo setcap cap_net_admin,cap_net_raw=eip /usr/lib/qemu/qemu-bridge-helper
+
+1. Change ownership to the libvirt-qemu user/group
+sudo chown libvirt-qemu:kvm /var/lib/libvirt/images/win11.raw
+# 2. Set file permissions to ensure the owner (libvirt-qemu) can read/write
+sudo chmod 660 /var/lib/libvirt/images/win11.raw
+
+unsure of this
+echo "<network><name>screamnet</name><bridge name='screambr0'/><forward mode='bridge'/></network>" > /tmp/screamnet.xml
+ # Define the network in Libvirt
+ sudo virsh net-define /tmp/screamnet.xml
+ sudo virsh net-start screamnet
+ sudo virsh net-autostart screamnet
+
+
+sudo nano /etc/security/limits.conf
+@kvm soft memlock unlimited
+@kvm hard memlock unlimited
+reboot
+
+install sysstat
+mpstat -P ALL 1
+mpstat -P 19 1
+
+see the files xml 7 and 8 they have polling and one has io_uring
+install linux-perf
+see in perf the aio_poll which proves all that we have polling
+sudo perf top -C 19

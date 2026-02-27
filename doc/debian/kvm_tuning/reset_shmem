@@ -1,0 +1,12 @@
+# 2. Delete the old shared memory file
+sudo rm -f /dev/shm/looking-glass
+
+# 3. Create a fresh file with EXACTLY the size in your XML (32MB)
+# If your XML says 32M, use 32M here.
+sudo truncate -s 64M /dev/shm/looking-glass
+
+# 4. Set permissions so your user can read/write to it
+# Replace 'user' with your actual linux username
+sudo chown user:kvm /dev/shm/looking-glass
+sudo chmod 660 /dev/shm/looking-glass
+

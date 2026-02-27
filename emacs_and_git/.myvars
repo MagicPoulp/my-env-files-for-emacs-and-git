@@ -110,10 +110,13 @@ function gcom_function {
 function e_function() {
     local args=()
     arg=$1
+    if ! pgrep -f "emacs --daemon" > /dev/null; then
+        emacs --daemon 2> /dev/null
+    fi
     # Replace line numbers specified with <FILE>:n into the +n <FILE> emacs syntax
     args=`echo $arg | sed -E 's/(.*):([0-9]+)/+\2 \1/'`
-    emacsclient -c -s /tmp/emacs1000/server $args &
-    #emacsclient -c $args &
+    #emacsclient -c -s /tmp/emacs1000/server $args &
+    emacsclient -c $args &
     #eval "emacs_client $@ &"
     #eval "emacs $@"
 }
@@ -140,3 +143,8 @@ export MOLTENVK_PATH=/Users/thierryvilmart/repos/MoltenVK
 export JAVA_HOME=/Applications/Android\ Studio.app/Contents//jbr/Contents/Home
 export PATH=$PATH:$HOME/Library/Android/sdk/platform-tools
 export PATH=$PATH:$HOME/Development/bin
+export PATH=$PATH:$HOME/golang/go/bin
+export PATH=$PATH:$HOME/go/bin
+
+export DOTNET_ROOT=$HOME/.dotnet
+export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools

@@ -9,16 +9,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(blink-cursor-mode nil)
  '(cua-mode t nil (cua-base))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(cmake-mode company dap-mode dockerfile-mode elixir-mode flycheck
-                helm-lsp helm-xref js2-mode json-mode lsp-mode
-                lsp-treemacs markdown-mode projectile py-autopep8
-                scss-mode typescript-mode yasnippet)))
-
+   '(dockerfile-mode go-mode js2-mode json-mode markdown-mode neotree
+                     py-autopep8 rust-mode scss-mode swagg treemacs
+                     typescript-mode yaml-mode)))
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
@@ -41,9 +38,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :foreground nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 158 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
-
-(set-face-attribute 'default nil :height 158)
+ '(default ((t (:inherit nil :stipple nil :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 158 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
 
 (defun my-frame-toggle ()
   "Maximize/Restore Emacs frame using 'wmctrl'."
@@ -139,62 +134,88 @@
 ; ALT + x list-packages
 ; CTRL + s less-css-mode
 ; click with the mouse on install
+(require 'swagg)
 
-;https://emacs-lsp.github.io/lsp-mode/tutorials/CPP-guide/
-(helm-mode)
-(require 'helm-xref)
-(define-key global-map [remap find-file] #'helm-find-files)
-(define-key global-map [remap execute-extended-command] #'helm-M-x)
-(define-key global-map [remap switch-to-buffer] #'helm-mini)
+(defun my/swagger-browser-preview ()
+  "Open the local swagger-ui-watcher page."
+  (interactive)
+  ;; This assumes you have started 'swagger-ui-watcher' in a terminal
+  (browse-url "http://127.0.0.1:8000"))
 
-(which-key-mode)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
+(global-set-key (kbd "C-c C-p") 'my/swagger-browser-preview)
 
-(setq gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
-      treemacs-space-between-root-nodes nil
-      company-idle-delay 60.0
-      company-minimum-prefix-length 1
-      lsp-idle-delay 0.1)  ;; clangd is fast
+;; Add this to your init.el
+(require 'treemacs)
+(global-set-key (kbd "C-x t") 'treemacs)
 
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (require 'dap-cpptools)
-  (yas-global-mode))
 
-(global-set-key (kbd "<f9>") 'lsp-clangd-find-other-file)
-(global-set-key (kbd "<f12>") 'xref-find-definitions)
-(global-set-key (kbd "<S-f12>") 'xref-go-back)
+(use-package treemacs
+  :ensure t
+  :bind
+  (:map global-map
+;        ("C-x d" . treemacs-select-window)
+        ("M-0"   . treemacs-select-window))
+  :config
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-project-follow-mode t)
+  (add-hook 'window-setup-hook 'treemacs))
 
-(load "/usr/share/emacs/site-lisp/clang-format-19/clang-format.el")
+;go install golang.org/x/tools/gopls@latest
+;install in package-list-packages: yasnippert, company, go-mode
 
-(use-package clang-format)
-(defun clang-format-save-hook()
-  "Create a buffer local save hook to apply `clang-format-buffer'"
-  ;; Only format if .clang-format is found
-  (when (locate-dominating-file "." ".clang-format")
-    (clang-format-buffer))
-  ;; Continue to save
-  nil)
+;; --- 1. PATH SETUP ---
+;; This ensures Emacs can find 'gopls' installed in your ~/go/bin
+(setenv "PATH" (concat (expand-file-name "~/go/bin") path-separator (getenv "PATH")))
+(add-to-list 'exec-path (expand-file-name "~/go/bin"))
 
-(define-minor-mode clang-format-on-save-mode
-  "Buffer-local mode to enable/disable automated clang format on save"
-  :lighter " ClangFormat"
-  (if clang-format-on-save-mode
-      (add-hook 'before-save-hook 'clang-format-save-hook nil t)
-    (remove-hook 'before-save-hook 'clang-format-save-hook t)))
+;; --- 2. COMPLETION ENGINE (Company Mode) ---
+(use-package company
+  :ensure t
+  :init
+  (global-company-mode)
+  :config
+  (setq company-idle-delay 0.05            ; Show menu almost instantly
+        company-minimum-prefix-length 1   ; Show menu after 1 character
+        company-tooltip-align-annotations t)
+  ;; This connects Company to Eglot's LSP data
+  (setq company-backends '((company-capf :with company-yasnippet))))
 
-;; Create a globalized minor mode to
-;;   - Auto enable the above mode only for C/C++, or glsl in your case
-;;   - Be able to turn it off globally if needed
-(define-globalized-minor-mode clang-format-auto-enable-mode clang-format-on-save-mode
-  (lambda()(clang-format-on-save-mode t))
-  :predicate '(c-mode c++-mode c-or-c++-mode))
-(clang-format-auto-enable-mode t)
+;; --- 3. GO MODE & LSP (Eglot) ---
+(setq gofmt-args '("-s"))
 
-(setq load-path (cons  "/usr/lib/erlang/lib/tools-4.1.1/emacs"
-load-path))
-(setq erlang-root-dir "/usr/local/otp")
-(setq exec-path (cons "/usr/local/otp/bin" exec-path))
-(require 'erlang-start)
+(defun my-go-mode-before-save-hook ()
+  "Function to run before saving Go files."
+  ;; Check if we are in go-mode OR go-ts-mode (for Emacs 29+)
+  (when (or (derived-mode-p 'go-mode) 
+            (derived-mode-p 'go-ts-mode))
+    (message "SAVE HOOK TRIGGERED!")
+    (gofmt-before-save) ; This handles the -s simplify flag
+    (ignore-errors (eglot-format-buffer))
+    (ignore-errors (eglot-code-action-organize-imports 1))))
+
+;; ADD THIS OUTSIDE OF USE-PACKAGE
+;; This ensures the hook exists the moment Emacs starts
+(add-hook 'before-save-hook #'my-go-mode-before-save-hook)
+
+(use-package go-mode
+  :ensure t
+  :mode "\\.go\\'"
+  :hook (go-mode . eglot-ensure))
+
+;; --- 4. EGLOT SETTINGS ---
+(with-eval-after-load 'eglot
+  (setq eglot-report-progress nil)
+  (add-to-list 'eglot-server-programs '(go-mode . ("gopls"))))
+
+;; --- 5. YASNIPPET ---
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+
+(setq create-lockfiles nil)
+(setq auto-save-file-name-transforms
+      `((".*" ,(temporary-file-directory) t)))
+
+(add-hook 'before-save-hook (lambda () (message "SAVE HOOK TRIGGERED!")) nil t)

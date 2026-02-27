@@ -1,0 +1,80 @@
+in devices
+
+<channel type='unix'>
+  <target type='virtio' name='org.qemu.guest_agent.0'/>
+  <address type='virtio-serial' controller='0' bus='0' port='1'/>
+</channel>
+
+
+from the red hat virtio ISO there is a folder guest agent, install it and reboot
+
+sudo usermod -aG libvirt $USER
+sudo usermod -aG kvm $USER
+
+newgrp libvirt
+newgrp kvm
+then logout login if the "groups" does not show these groups
+
+
+we run a command then we wait for the ourput directly or from a second command with a PID
+virsh -c qemu:///system qemu-agent-command win11 '{"execute":"guest-ping"}'
+virsh -c qemu:///system qemu-agent-command win11 '{"execute": "guest-exec", "arguments": { "path": "cmd.exe", "arg": ["/c", "hostname"], "capture-output": true }}'
+virsh -c qemu:///system qemu-agent-command win11 '{"execute": "guest-exec-status", "arguments": { "pid": 1228 }}'
+echo "VFYxDQo=" | base64 -d
+
+
+
+---------------
+to open this in the UI
+
+in the services of windows, find the qemu guest agent, and in properties allow to act on the desktop
+
+just to try the notepad run
+virsh -c qemu:///system qemu-agent-command win11 '{' '"execute":"guest-exec",' '"arguments":{' '"path":"powershell.exe",' '"arg":["-Command", "Start-Process notepad.exe"],' '"capture-output":true' '}' '}'
+virsh -c qemu:///system qemu-agent-command win11 '{"execute":"guest-exec-status", "arguments":{"pid":9220}}'
+
+wrapper to create the task in the task shceduler, it wil lappear in the task scheduler directly in the tab of Task sheduler library look well on it and not in leafs
+
+virsh -c qemu:///system qemu-agent-command win11 '{' '"execute":"guest-exec",' '"arguments":{' '"path":"powershell.exe",' '"arg":[' '"-Command",' '"$action = New-ScheduledTaskAction -Execute \"notepad.exe\";",' '"$principal = New-ScheduledTaskPrincipal -UserId \"thierry\" -LogonType Interactive -RunLevel Highest;",' '"$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries;",' '"Register-ScheduledTask -TaskName \"OpenUI\" -Action $action -Principal $principal -Settings $settings -Force"' ']' '}' '}'
+
+virsh -c qemu:///system qemu-agent-command win11 '{"execute":"guest-exec-status", "arguments":{"pid":1692}}'
+
+to actually run
+virsh -c qemu:///system qemu-agent-command win11 '{' '"execute":"guest-exec",' '"arguments":{' '"path":"schtasks.exe",' '"arg":["/Run", "/TN", "OpenUI"]' '}' '}'
+
+to query if a task is created
+virsh -c qemu:///system qemu-agent-command win11 '{' '"execute":"guest-exec",' '"arguments":{' '"path":"schtasks.exe",' '"arg":["/Query", "/TN", "OpenUI"],' '"capture-output":true' '}' '}'
+
+to list all tasks
+virsh -c qemu:///system qemu-agent-command win11 '{' \
+'"execute":"guest-exec",' \
+'"arguments":{' \
+'"path":"schtasks.exe",' \
+'"arg":["/Query", "/FO", "LIST", "/V"],' \
+'"capture-output":true' \
+'}' \
+'}'
+
+
+to remove the task
+virsh -c qemu:///system qemu-agent-command win11 '{' \
+'"execute":"guest-exec",' \
+'"arguments":{' \
+'"path":"schtasks.exe",' \
+'"arg":["/Delete", "/TN", "OpenUI", "/F"]' \
+'}' \
+'}'
+
+--> How to automate the UI:
+sudo apt update && sudo apt install wf-recorder cage elixir
+
+elixir ui_automation_recording.exs
+
+to run the video, format mkv prevents corruption from interruption
+
+# Install mpv
+sudo apt update && sudo apt install mpv -y
+
+# Play the video
+mpv ./qga_test_output.mkv
+

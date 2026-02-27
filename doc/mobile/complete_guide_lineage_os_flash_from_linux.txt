@@ -1,6 +1,6 @@
 This picture provides a proof of a successful installation of LineageOS.
 
-[![enter image description here][1]][1]
+[![image lost when editing][1]][1]
 
 This guide explains how to install LineageOS (open source Android) 21 (based on Android 14) on Samsung Galaxy S10 from Debian or Ubuntu Linux.
 
@@ -108,7 +108,7 @@ Then if your reboot enough and wipe data then heimdall will have no error and ca
 
 If the command below results with a red line of error (only official binaries...) on the phone's screen, you miss the step 3. bis above.
 
-Now we erase teh Samsung default recovery, and we put the LineageOS one. heimdall is just needed in download mode for doing this. Later, all flashing of other files will be down in fastboot mode with the fastboot command.
+Now we erase the Samsung default recovery, and we put the LineageOS one. heimdall is just needed in download mode for doing this. Later, all flashing of other files will be down in fastboot mode with the fastboot command.
 
     heimdall flash --RECOVERY recovery.img --no-reboot
 
@@ -163,11 +163,194 @@ fastboot flash vbmeta vbmeta.img
 
 The super_empty may fail, but it is not important.
 
-And flashing the recovery is optional it you already have it from the heimdall command. But I like to make a fresh one with newr files.
+And flashing the recovery is optional it you already have it from the heimdall command. But I like to make a fresh one with newer files.
 
 now reboot in recovery mode
 
+### 6.bis Optional. Install vendor.img from the stock OEM official from Samsung. This is very optional so you may move directly to point 7. But is is recommended to do it for security, stability and performance.
+
+Update the so-called blobs. update the official Samsung proprietary, closed-source drivers and firmware that LineageOS works with. There is still some proprietary stuff that LineageOS needs.
+
+If you do not do this, you will see out of date for vendor patches in lineageOS Settings -> in Security / Privacy -> in More security and privacy -> in Trust. Even if Samsung stopped releasing, it is good to have updated ones.
+
+To do this part, you need to install the Stock ROM from Samsung to get the newest drivers and firmware. Then you will need to install LineageOS again. To download the Stock ROM, you may use Bifrost (https://github.com/zacharee/SamloaderKotlin), or if you wnat something more official you can use Samsung Smart Switch.
+
+In the block below is explained in detail how to download the stock OEM from Samsung and install the vendor.img
+
+In the block after this one it is explained how to flash all the critical parts, and also why certain parts can be avoided.
+
+```none
+from a debian host
+
+sudo mkdir -p  /srv/chroot/debian
+sudo  debootstrap trixie /srv/chroot/debian http://deb.debian.org/debian
+cd /srv/chroot/debian
+mount -t proc /proc proc
+sudo mount -t proc /proc proc
+sudo mount --rbind /sys sys
+sudo mount --rbind /dev /mnt/dev
+sudo mount --rbind /dev dev
+sudo mount --bind /dev/pts dev/pts
+sudo mkdir tmp/.X11-unix
+ sudo mount --bind /tmp/.X11-unix tmp/.X11-unix
+ xhost +local:
+
+--
+and in the chroot
+
+   1  apt install wget
+    2  apt update
+    3  CPU=$(dpkg --print-architecture)
+    5  wget https://github.com/zacharee/SamloaderKotlin/releases/latest/download/bifrost_1.20.4_${CPU}.deb
+    6  mkdir WORK
+    7  mv bifrost_1.20.4_amd64.deb WORK/
+    8  cd WORK/
+   10  ls
+   11  dpkg -i bifrost_1.20.4_amd64.deb
+   13  apt install ./bifrost_1.20.4_amd64.deb
+   15  apt --fix-broken install
+   16  apt install ./bifrost_1.20.4_amd64.deb
+   26  apt update
+   27  apt install libglib2.0-bin
+   28  apt install libgtk-3-0
+   29  apt install default-jre
+   30  bifrost
+
+---
+
+in the settings about phone you may find your exact device model
+then you will be able to download the stock OEM in the form of a ZIP.
+we will just install the vendor.img in it. But a similar procedure can be used for all parts
+
+---------
+
+recovery mode and heimdall is required, you must not install vendor.img in fastboot. This is due to the dual partition system and the overriding.
+
+Reason (from Gemini):
+"Heimdall is an open-source tool that implements the proprietary flashing protocol used by Samsung's official flashing software, Odin.
+
+This protocol operates when the device is in Download Mode.
+
+Crucially, this low-level mode and its protocol are the only interfaces Samsung's hardware and bootloader expose for accessing and writing to certain critical partitions, including vendor, bootloader, modem, and in many cases, even the initial recovery partition.
+
+The bootloader itself controls the permissions and methods for writing to internal storage partitions. Samsung's bootloaders are programmed to accept commands for these low-level partitions only through their specific protocol (Heimdall/Odin) in Download Mode."
+
+---------
+rename the AP....tar.md5 in the zip file, tar -xf the file
+sudo apt install lz4
+lz4 -d vendor.img.lz4 allow to get vendor.img
+To flash using heimdall the vendor.img:
+enter the special download mode, then enter recovery mode, then enable adb in recovery mode, and the do adb reboot download on the debian linux.
+once in download mode run this
+sudo heimdall flash --VENDOR vendor.img --no-reboot
+IMPORTANT. when using power down and power to restartm immediately put the fingers for the recovery mode, or the flashing will be overriden.
+If you could enter recovery mode you succeeded. And the flashing of vendor.img worked
+
+It is normal that in settings of lineage os in security and privacy and more security options and in trust it wil lsay vendor out of date, because samesung stopped doing updates, and the one we flashed is old from 2023 but it is the latest.
+
+It is normal to have a build version mismatch between the vendor.img locally and the one from adb, as shown below. It seems that LineageOS forces this data to appear,but the vendor.img is still the good one.
+
+version from vendor.img after using simg2img (installable in debian bullseye in a chroot)
+sudo grep 'ro.vendor.build.version.incremental' vendor_mount/build.prop
+ro.vendor.build.version.incremental=G973FXXSGHWC1
+
+version from adb on the device:
+adb shell getprop | grep 'vendor.build.version.incremental'
+[ro.vendor.build.version.incremental]: [dbc0a2f32a]
+
+```
+
+
+Below is how to install Vendor, Bootloader full parts, and Modem connectivity parts.
+
+```none
+From Bifrost, I could download a zip that contains for my model 4 tar archive files:
+-rw-rw-r-- 1 thierry thierry 6372597950 Mar  8  2023 AP_G973FXXSGHWC1_CL25257816_QB62768582_REV01_user_low_ship_meta_OS12.tar.md5
+-rw-rw-r-- 1 thierry thierry    6062257 Mar  8  2023 BL_G973FXXSGHWC1_CL25257816_QB62768582_REV01_user_low_ship.tar.md5
+-rw-rw-r-- 1 thierry thierry   27986109 Mar  8  2023 CP_G973FXXSGHWB3_CP23788344_CL25257816_QB62585640_REV01_user_low_ship.tar.md5
+-rw-rw-r-- 1 thierry thierry   20254903 Mar  8  2023 CSC_BOG_G973FBOGGHVJ4_CL25354718_QB58100116_REV01_user_low_ship.tar.md5
+-rw-rw-r-- 1 thierry thierry   20244668 Mar  8  2023 HOME_CSC_BOG_G973FBOGGHVJ4_CL25354718_QB58100116_REV01_user_low_ship.tar.md5
+HOME_CSC_...	Region/Settings (NO-WIPE)	This file contains the same configuration data but is designed to be flashed while preserving user data. However, for a clean LineageOS installation, this file is generally avoided, as a clean wipe using the standard CSC file is preferred for maximum stability.
+
+
+Gemini explains the files: "The most important files to flash are the Bootloader (BL) and the Modem (CP), as they contain proprietary code that LineageOS cannot update itself.
+File	Component	Why it's Important for LineageOS
+BL_...	Bootloader	Security & Stability: Contains the core code that initializes your hardware. Newer versions often include critical security patches (e.g., against low-level exploits) and stability fixes for the hardware.
+CP_...	Modem/Radio	Efficiency & Functionality: Handles all cellular communication (calls, texts, mobile data, GPS). Flashing the latest version ensures optimal signal reception, better battery efficiency in cellular usage, and compatibility with modern network standards.
+AP_...	System/Vendor	Compatibility: Contains the proprietary vendor.img and dtb files (Device Tree Blob). LineageOS needs the correct, matching vendor files to access all your phone's hardware (camera, fingerprint sensor, display, etc.). You already extracted and flashed the vendor partition from here.
+
+Other Files
+
+File	Component	Role in LineageOS Installation
+CSC_...	Region/Settings	Optional Clean Slate: Flashing the CSC file (not HOME_CSC) performs a factory reset and ensures all partitions are completely cleaned and reset to their default state before you install LineageOS, which can sometimes prevent unexpected issues.
+HOME_CSC_...	Region/Settings (NO-WIPE)	This file contains the same configuration data but is designed to be flashed while preserving user data. However, for a clean LineageOS installation, this file is generally avoided, as a clean wipe using the standard CSC file is preferred for maximum stability."
+
+IMPORTANT ---> I decided to flash the vendor.img from AP, and the full content of the BL and CP.
+vendor and BL are for security and stability. And CP is for the network and modem to work well and be updated and secure.
+
+IMPORTANT --> I made sure the download mode never reboots the normal boot so I can manually restart to recovery mode and avoid an override (important for vendor.img and recovery.img), amd then I reinstalled full LineageOS after.
+
+to make heimdall work one must often redo the "adb reboot download" when in recovery mode with enable adb click
+the download mode loses connectivity over time so an adb reboot download refreshes it
+
+printing all the partitions
+
+ 1113  [2025-11-12 00:04:25] adb reboot download
+ 1114  [2025-11-12 00:04:54] heimdall download-pit --output g973f.pit --no-reboot
+ 1115  [2025-11-12 00:05:01] ll
+ 1116  [2025-11-12 00:05:06] less g973f.pit
+ 1117  [2025-11-12 00:05:54] heimdall print-pit --file g973f.pit | grep "Partition Name"
+
+flashing connectivity and modem firmware (untaring is not needed)
+
+ mkdir bl
+ 1099  [2025-11-11 23:57:36] cp BL_G973FXXSGHWC1_CL25257816_QB62768582_REV01_user_low_ship.tar.md5  bl/
+ 1100  [2025-11-11 23:57:50] mkdir cp
+ 1101  [2025-11-11 23:57:55] cp CP_G973FXXSGHWB3_CP23788344_CL25257816_QB62585640_REV01_user_low_ship.tar.md5 cp/
+ 1102  [2025-11-11 23:58:03] cd cp/
+ 1103  [2025-11-11 23:58:04] ll
+ 1104  [2025-11-11 23:58:21] tar -xf *
+ 1105  [2025-11-11 23:58:22] ll
+ 1106  [2025-11-11 23:58:40] lz4 -d modem.bin.lz4
+ 1107  [2025-11-11 23:58:41] ll
+1119  [2025-11-12 00:08:08] adb reboot download
+ 1120  [2025-11-12 00:10:02] heimdall flash --RADIO CP_G973FXXSGHWB3_CP23788344_CL25257816_QB62585640_REV01_user_low_ship.tar.md5
+ 1121  [2025-11-12 00:11:37] cd ..
+
+flashing bootloader part
+cd bl
+tax -xf BL_G973FXXSGHWC1_CL25257816_QB62768582_REV01_user_low_ship.tar.md5
+
+1136  [2025-11-12 00:27:05] adb reboot download
+ 1141  [2025-11-12 00:30:17] lz4 -d cm.bin.lz4 cm.bin
+ 1142  [2025-11-12 00:30:18] lz4 -d keystorage.bin.lz4 keystorage.bin
+ 1143  [2025-11-12 00:30:18] lz4 -d param.bin.lz4 param.bin
+ 1144  [2025-11-12 00:30:18] lz4 -d sboot.bin.lz4 sboot.bin
+ 1145  [2025-11-12 00:30:18] lz4 -d uh.bin.lz4 uh.bin
+ 1146  [2025-11-12 00:30:18] lz4 -d up_param.bin.lz4 up_param.bin
+ 1147  [2025-11-12 00:30:18] lz4 -d vbmeta.img.lz4 vbmeta.img
+ 1148  [2025-11-12 00:30:20] ll
+ 1150  [2025-11-12 00:35:24] adb reboot download
+ 1151  [2025-11-12 00:35:35] heimdall flash     --CM cm.bin     --KEYSTORAGE keystorage.bin     --PARAM param.bin     --BOOTLOADER sboot.bin     --UH uh.bin     --UP_PARAM up_param.bin     --VBMETA vbmeta.img
+ 1152  [2025-11-12 00:36:15] cd ..
+ 1153  [2025-11-12 00:36:18] ll
+ 1154  [2025-11-12 00:36:22] cd android16/
+ 1155  [2025-11-12 00:36:23] ll
+ 1156  [2025-11-12 00:36:38] fastboot flash vbmeta vbmeta.img
+ 1157  [2025-11-12 00:36:45] fastboot flash recovery recovery.img
+ 1158  [2025-11-12 00:36:55] fastboot flash dtb dtb.img
+ 1159  [2025-11-12 00:37:01] fastboot flash dtbo dtbo.img
+ 1160  [2025-11-12 00:37:06] fastboot flash boot boot.img
+ 1161  [2025-11-12 00:37:10] ll
+ 1162  [2025-11-12 00:37:44] adb sideload LINE.zip
+ 1163  [2025-11-12 00:41:02] adb sideload MIND.zip
+
+Then reboot and all is fine
+```
+
 ### 7. Install programs
+
+now reboot in recovery mode (see the step 3.bis above)
 
 be sure the gapps has the corresponding android version number.
 rename the lineageos zip in LINE.zip
@@ -179,11 +362,11 @@ With the recovery image from lineageOS, we use adb sideload
 
 You need to select in the recovery mode menu:
 
-Apply update  
-then go to adb Sideload and in sub-menus  
-you must go deep so that the sideload is activated   
-when you run adb devices it should say sideload.  
-adb devices can say unauthorized, recovery (if you do enable adb in the menu), or sideload  
+Apply update
+then go to adb Sideload and in sub-menus
+you must go deep so that the sideload is activated
+when you run adb devices it should say sideload.
+adb devices can say unauthorized, recovery (if you do enable adb in the menu), or sideload
 
 Now run sideload on the linage zip
 do not check to reboot
@@ -268,11 +451,6 @@ If the SMS do not work, check also MMS access point names in connection with you
 I made a guide on Medium:
 https://medium.com/@t.vilmart/installing-open-source-android-lineageos-d4583ad557b9
 
-https://medium.com/@t.vilmart/installing-open-source-android-lineageos-d4583ad557b9
-Better use the recovery.img from Lineage's website than to use TWRP.
-usual twrp on the internet that is more powerful to perform the installation
-However twrp [has a problem](https://twrp.me/site/update/2019/10/23/twrp-and-android-10.html) with dynamic partitions
-
 ---
 
 [archive](https://lineage-archive.timschumi.net/#beyond) of old versions of LineageOS
@@ -286,33 +464,3 @@ Links that I used:
 - [the heimdall error](https://android.stackexchange.com/questions/130392/heimdall-error-protocol-initialisation-failed-on-ubuntu) about bad download mode not launched by adb as it should
 - [the heimdall error about OEM](https://www.reddit.com/r/LineageOS/comments/hpifqk/error_failed_to_receive_session_end_confirmation/)
 - [how to start download](https://www.youtube.com/watch?v=8h1NWWpas8M) mode for Samsung Galaxy 10, it depends on the device
-
----
-
-If you are on Windows, this guide explains how to use Odin windows program, and TWRP (but TWRP does not work for Android 10+, so use the standard recovery.img from LineageOS)
-
-it worked on a galaxy S4, GT-19515, code jfvelte
-
-- [main wiki](https://www.howtogeek.com/348545/how-to-install-lineageos-on-android/)
-- [Install odin and install TWRT](https://nerdschalk.com/how-to-install-twrp-recovery-using-odin/) on the device (you must have a tar and use the app button only)
-you can skip the Samsung kies USB drivers since its hard to install
-- [The acat procedure](https://www.lineageosrom.com/2017/07/how-to-flash-custom-rom-via-odin.html) in ODIN is here : and you need a tar
-- [remove auto reboot](https://android.stackexchange.com/questions/143685/after-flashing-twrp-with-odin-nothing-happens-and-the-oem-recovery-is-still-the) or TWRT will not show up
-- then in twrt wipe 3 places and then reboot again in twrp
-
-adb.exe is here: once Android stdio is installed and and SK is installed in SDK manager
-
-    C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools
-    C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe devices
-    C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe push .\lineage-18.1.zip /sdcard
-    C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe push .\gapps11.zip /sdcard
-    C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell rm /sdcard/gapps11.zip
-    C:\Users\thierry.vilmart\AppData\Local\Android\Sdk\platform-tools\adb.exe shell rm /sdcard/lineage-18.1.zip
-
-Do not forget to remove those zip files to free space after setting up LineageOS, you need to enable debug mode (7 taps on build number in About phone)
-
-and then in develop options you need to enable USB debugging
-then the phone itself must allow always with a checkbox
-
-
-  [1]: https://i.sstatic.net/lGHaoOT9.png

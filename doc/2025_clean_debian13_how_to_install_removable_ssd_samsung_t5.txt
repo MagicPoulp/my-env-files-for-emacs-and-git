@@ -9,35 +9,153 @@ sudo fdisk -l
 dd /dev/zero /dev/sdb bs=512 count=1 status=progress
 dd /.../.iso /dev/sdb bs=512 status=progress; sync
 
-when stuck jsut wait a few minutes
+when stuck just wait a few minutes
 
---> to intsall debian on SSD:
+--> to install debian on SSD:
 
-boot the media, make new partitions on the ssd disk, do not daamge the real hard drive
-efi partition with bootable flag 300MB
-swap aprtition 10% of size or 4GB
+boot the media, make new partitions on the ssd disk, do not damage the real hard drive, and remove the 5% reserved space except on the logical hard disk at the end or the root / disk
+
+efi partition with bootable flag 512MB
+swap partition 10% of size or 4GB
 ext4 partition for debian
 
-at the end do not install grub, open a shell and do a manuel grub installation
+at the end of the debian installer do not install grub, open a shell and do a manuel grub installation
+export PATH=$PATH:/sbin
 fdisk -l
 mkdir -p /mnt/linux
 mount /dev/sdb3 /mnt/linux
+#or on an encrypted disk you can mount the logical disk in /dev/mapper/...
 ls to check
 cd /mnt/linux
 mount -t /proc proc/
+# or on an encypted disk:
+#mount -t proc /proc proc/
 mount --rbind /dev dev/
 mount --rbind /sys sys/
-/mnt/linux/bin/chroot /mnt/linux
+/mnt/linux/sbin/chroot /mnt/linux
 nano /etc/apt/apt.sources to remove the cdromve first line
 apt-get update
 apt-get install grub2-common
 apt-get install grub-efi-amd64
 
+# Secure boot is an option in the BIOS
+# to enable secure boot automatically
+apt-get install shim-signed
+#>>>>>>>>>>>>>>>>>>>>>
+# to boot in the BIOS, secure boot should be active, but also Windows third party CA, often in security in the BIOS
+
 fdisk -l
 mkdir -p /mnt/efi
 mnt /dev/sdb1 /mnt/efi
-grub-install /dev/sdb --target=x86_64-efi --booloader-id=GRUB --efi-directory=/mnt/efi --removable
+# --booloader-id=GRUB redundant and dangerous since --removable installs to the fallback place \EFI\BOOT\BOOTX64.EFI
+
+grub-install /dev/sdb --target=x86_64-efi --efi-directory=/mnt/efi --removable
+
 update-grub
 
-
 then go back and properly finish the installation, without installing grub in the gui
+
+--> to install with disk encryption
+
+need an additional unencrypted /boot partition of 1GB for grub, and if well mounted grub will use it automatically
+then encrypt the disk but not the /boot and add an LVM
+
+the /dev/sdb2 should be mounted on /boot after emptying the local /boot
+grub will automatically install in /boot
+
+--
+Manual Partitioning for Encryption (LUKS + LVM)
+
+The general idea is to have a small, unencrypted /boot partition (and an EFI System Partition for UEFI systems) and then use the remaining disk space to create a LUKS encrypted volume, which will, in turn, host an LVM Volume Group (VG). Inside the VG, you will create Logical Volumes (LVs) for your root file system (/), swap, and optionally /home.
+
+1. Initial Partitioning
+
+When you select Manual partitioning in the Debian installer, you'll first create the physical partitions.
+
+    EFI System Partition (ESP) - (For UEFI systems)
+
+    Size: 512 MB (recommended)
+
+Use as: EFI System Partition
+
+Flag: Set the bootable flag (or EFI boot flag).
+
+/boot Partition
+
+    Size: 1 GB (recommended)
+
+Use as: Ext4 journaling file system
+
+    Mount point: /boot
+
+    Note: This must be unencrypted for the GRUB bootloader to load the kernel and prompt for the encryption passphrase.
+
+Encrypted Partition (LUKS Physical Volume)
+
+    Size: Use the remaining free space on the disk.
+
+        Use as: physical volume for encryption (You'll select this later).
+
+2. Configure Encrypted Volumes (LUKS)
+
+Once the physical partitions are created, return to the main partitioning menu.
+
+    Select Configure encrypted volumes (or similar option).
+
+    Choose Create encrypted volumes and select the large partition you set aside for encryption (the "remaining free space" partition).
+
+    The installer will ask if you want to erase data on the partition. It's recommended to say Yes to wipe the partition with random data for better security (this may take a long time).
+
+You will be prompted to enter and confirm your encryption passphrase. Choose a strong one, as you will need this every time you boot your system.
+
+    After the process is complete, select Finish on the encrypted volumes menu. The installer should now show a new "decrypted" volume, typically     named something like sda3_crypt (if your encrypted partition was sda3).
+
+3. Configure Logical Volume Manager (LVM)
+
+Next, you will set up LVM inside the newly opened encrypted volume.
+
+    Back in the main partitioning menu, select Configure the Logical Volume Manager (LVM).
+
+Agree to write the changes to the disk.
+
+Create Volume Group (VG): Give your volume group a descriptive name (e.g., vg_system).
+
+Create Physical Volume (PV): Select the decrypted volume (e.g., sda3_crypt) to be the physical volume for your new volume group.
+
+Create Logical Volumes (LVs): Create the necessary logical volumes inside your volume group:
+
+    / (Root):
+
+        Name: lv_root (or similar)
+
+    Size: Choose an appropriate size (e.g., 20 GB or more).
+
+swap:
+
+    Name: lv_swap
+
+    Size: Typically equal to your RAM size, or as you prefer.
+
+        /home (Optional but recommended):
+
+            Name: lv_home
+
+            Size: Use the rest of the available space.
+
+4. Configure Logical Volumes for Use
+
+Return to the main partitioning menu and select each new logical volume (e.g., LV lv_root vg_system).
+
+    LV for / (lv_root):
+
+        Use as: Ext4 journaling file system
+
+    Mount point: /
+
+LV for swap (lv_swap):
+
+    Use as: swap area
+
+Finally, select Finish partitioning and write changes to disk
+
+

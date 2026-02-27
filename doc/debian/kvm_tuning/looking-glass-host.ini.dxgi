@@ -1,0 +1,9 @@
+[app]
+; Forces the use of the DX12 capture interface (standard for B7)
+capture=DXGI
+
+[d12]
+adapter=0
+; If you have multiple 'monitors' (QXL and Virtual), you may need
+; to specify which one to capture. '0' is usually the main one.
+output=0

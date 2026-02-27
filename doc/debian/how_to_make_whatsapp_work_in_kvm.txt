@@ -1,0 +1,16 @@
+Once the sound works in Windows and not in Whatsapp,
+
+deactivate windows settings/sound the normal speaker to just have Scream
+in control panel hardware and sound in sound you can disable the standard speaker
+and in the communications tab click on do nothing
+
+Then in whatsapp make sure the audio output is configured to "Scream communications" there must be 2 entries which is required by Whatsapp.
+Then calling someone will trigger a sound
+
+SETUP: right top to bottom has ethernet, USB with SSD, mechanical keyboard
+lefth has alimentation
+thunderbold adapter
+microphone
+camera
+mouse
+
