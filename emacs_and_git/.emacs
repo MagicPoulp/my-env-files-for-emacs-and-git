@@ -13,9 +13,10 @@
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(dockerfile-mode go-mode js2-mode json-mode markdown-mode neotree
-                     py-autopep8 rust-mode scss-mode swagg treemacs
-                     typescript-mode yaml-mode)))
+   '(dockerfile-mode go-mode js2-mode json-mode lsp-sonarlint lsp-ui
+                     markdown-mode neotree py-autopep8 rust-mode
+                     scss-mode swagg treemacs typescript-mode
+                     yaml-mode)))
 ;(vue-mode yaml-mode dart-mode kotlin-mode swift-mode csharp-mode typescript-mode py-autopep8 js2-mode scss-mode json-mode))))
 (blink-cursor-mode 0)
 
@@ -159,7 +160,8 @@
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
   (treemacs-project-follow-mode t)
-  (add-hook 'window-setup-hook 'treemacs))
+  )
+;  (add-hook 'window-setup-hook 'treemacs))
 
 ;go install golang.org/x/tools/gopls@latest
 ;install in package-list-packages: yasnippert, company, go-mode
@@ -219,3 +221,47 @@
       `((".*" ,(temporary-file-directory) t)))
 
 (add-hook 'before-save-hook (lambda () (message "SAVE HOOK TRIGGERED!")) nil t)
+
+(use-package lsp-mode
+  :ensure t
+  :custom
+  (lsp-auto-guess-root t)
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-session-file (expand-file-name ".lsp-session-v1" user-emacs-directory))
+  :hook ((python-mode . lsp)
+         (go-mode . lsp)))
+
+(use-package lsp-sonarlint
+  :ensure t
+  :custom
+  (lsp-sonarlint-auto-download t)
+  (lsp-sonarlint-enabled-analyzers '("python" "go"))
+  :config
+  (add-to-list 'lsp-sonarlint-modes-enabled 'python-mode)
+  (add-to-list 'lsp-sonarlint-modes-enabled 'go-mode))
+
+;; Server Connection
+(setq lsp-sonarlint-connections
+      '((sonarqube
+         (:connectionId "REPLACE"
+          :serverUrl "REPLACE"
+          :token "REPLACE"))))
+
+;; Project Mapping (Critical for Connected Mode)
+(setq lsp-sonarlint-project-connections
+      '((:connectionId "REPLACE"
+         :projectKey "REPLACE")))
+
+(use-package lsp-ui
+  :ensure t
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-sideline-enable t)
+  (lsp-ui-doc-enable t))
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+(provide '.emacs)
+;;; .emacs ends here
