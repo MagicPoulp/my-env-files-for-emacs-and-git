@@ -6,8 +6,9 @@
 # source of the trick to set up the bash history
 #https://stackoverflow.com/questions/9457233/unlimited-bash-history
 # increase shell history
-export HISTSIZE=100000000
-export HISTFILESIZE=100000000
+shopt -s histappend
+export HISTSIZE=-1
+export HISTFILESIZE=-1
 #add time stamp
 export HISTTIMEFORMAT="[%F %T] "
 # Change the file location because certain bash sessions truncate .bash_history file upon close.
@@ -15,7 +16,7 @@ export HISTTIMEFORMAT="[%F %T] "
 export HISTFILE=~/.bash_eternal_history
 # Force prompt to write history after every command.
 # http://superuser.com/questions/20900/bash-history-loss
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 export PATH=$PATH:$HOME/bin:/sbin:/usr/sbin
 
